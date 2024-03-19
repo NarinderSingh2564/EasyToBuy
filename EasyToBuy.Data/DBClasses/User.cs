@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace EasyToBuy.Data
+namespace EasyToBuy.Data.DBClasses
 {
     public class User
     {
