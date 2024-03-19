@@ -1,4 +1,4 @@
-﻿using EasyToBuy.Data;
+﻿using EasyToBuy.Data.DBClasses;
 using EasyToBuy.Repository.Abstract;
 using EasyToBuy.Services.Interactions;
 using System;

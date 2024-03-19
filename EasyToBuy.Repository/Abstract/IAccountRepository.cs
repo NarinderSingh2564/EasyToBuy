@@ -1,4 +1,4 @@
-﻿using EasyToBuy.Data;
+﻿using EasyToBuy.Data.DBClasses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
