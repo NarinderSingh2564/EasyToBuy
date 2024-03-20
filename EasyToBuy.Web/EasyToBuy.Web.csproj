@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EasyToBuy.Data\EasyToBuy.Data.csproj" />
+    <ProjectReference Include="..\EasyToBuy.Models\EasyToBuy.Models.csproj" />
     <ProjectReference Include="..\EasyToBuy.Repository\EasyToBuy.Repository.csproj" />
   </ItemGroup>
 

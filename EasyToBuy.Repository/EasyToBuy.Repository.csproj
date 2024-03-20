@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EasyToBuy.Data\EasyToBuy.Data.csproj" />
+    <ProjectReference Include="..\EasyToBuy.Models\EasyToBuy.Models.csproj" />
     <ProjectReference Include="..\EasyToBuy.Services\EasyToBuy.Services.csproj" />
   </ItemGroup>
 
