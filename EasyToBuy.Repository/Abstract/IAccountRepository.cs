@@ -1,4 +1,7 @@
 ﻿using EasyToBuy.Data.DBClasses;
+using EasyToBuy.Models.CommonModel;
+using EasyToBuy.Models.InputModels;
+using EasyToBuy.Models.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +12,8 @@ namespace EasyToBuy.Repository.Abstract
 {
     public interface IAccountRepository
     {
-        List<User> GetUsers();
+        Task<IEnumerable<StateModel>> GetStatesList();
+        Task<ApiResponseModel> StateAddEdit(StateInputModel stateInputModel);
+        Task<ApiResponseModel> StateDelete(int Id);
     }
 }

@@ -1,5 +1,6 @@
-﻿using EasyToBuy.Repository.Abstract;
-using Microsoft.AspNetCore.Http;
+﻿using EasyToBuy.Models.InputModels;
+using EasyToBuy.Models.UIModels;
+using EasyToBuy.Repository.Abstract;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EasyToBuy.Web.Controllers
@@ -14,12 +15,36 @@ namespace EasyToBuy.Web.Controllers
             _accountRepository = accountRepository;
         }
 
-        [HttpGet]
-        public IActionResult GetUserList()
+        [HttpGet("GetStatesList")]
+        public async Task<IActionResult> GetStatesList()
         {
-            var kk = _accountRepository.GetUsers();
-            return Ok(kk);
+            var response = await _accountRepository.GetStatesList();
+
+            return Ok(response);
         }
 
+        [HttpPost("StateAddEdit")]
+        public async Task<IActionResult> StateAddEdit(StateUIModel stateUIModel)
+        {
+            var stateInputModel = new StateInputModel();
+
+            stateInputModel.Id = stateUIModel.Id;
+            stateInputModel.CountryId = stateUIModel.CountryId;
+            stateInputModel.StateName = stateUIModel.StateName;
+            stateInputModel.IsActive = stateUIModel.IsActive;
+
+            var response = await _accountRepository.StateAddEdit(stateInputModel);
+
+            return Ok(response);
+        }
+
+        [HttpPost("StateDelete{Id}")]
+        public async Task<IActionResult> StateDelete([FromRoute]int Id)
+        {
+            var response = await _accountRepository.StateDelete(Id);
+            return Ok(response);
+        }
+
+        
     }
 }
