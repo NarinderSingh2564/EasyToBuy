@@ -64,7 +64,7 @@ namespace EasyToBuy.Services.Interactions
 
         public List<User> GetUsers()
         {
-            return _dbContext.UserMaster.ToList();
+            return _dbContext.UserMaster.ToList() ;
         }
 
 
