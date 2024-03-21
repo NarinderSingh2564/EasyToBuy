@@ -1,4 +1,7 @@
 ﻿using EasyToBuy.Data.DBClasses;
+using EasyToBuy.Models.CommonModel;
+using EasyToBuy.Models.InputModels;
+using EasyToBuy.Models.Models;
 using EasyToBuy.Repository.Abstract;
 using EasyToBuy.Services.Interactions;
 
@@ -6,19 +9,11 @@ namespace EasyToBuy.Repository.Concrete
 {
     public class AccountRepository:IAccountRepository
     {
-
         public async Task<ApiResponseModel> CheckUser(string mobile, string password)
         {
             using (AccountService accountService = new AccountService())
             {
                 return await accountService.CheckUser(mobile, password);
-            }
-        }
-        public async Task<ApiResponseModel> CountryAddEdit(CountryInputModel CountryInputModel)
-        {
-            using (AccountService accountService = new AccountService())
-            {
-                return await accountService.CountryAddEdit(CountryInputModel);
             }
         }
         public async Task<IEnumerable<CountryModel>> GetCountryList()
@@ -28,11 +23,18 @@ namespace EasyToBuy.Repository.Concrete
                 return await accountService.GetCountryList();
             }
         }
-        public async Task<ApiResponseModel> CountryDelete(int countryId)
+        public async Task<ApiResponseModel> CountryAddEdit(CountryInputModel countryInputModel)
         {
             using (AccountService accountService = new AccountService())
             {
-                return await accountService.CountryDelete(countryId);
+                return await accountService.CountryAddEdit(countryInputModel);
+            }
+        }
+        public async Task<ApiResponseModel> CountryDelete(int Id)
+        {
+            using (AccountService accountService = new AccountService())
+            {
+                return await accountService.CountryDelete(Id);
             }
         }
         public async Task<IEnumerable<StateModel>> GetStatesList()

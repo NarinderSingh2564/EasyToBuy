@@ -1,18 +1,15 @@
-﻿using EasyToBuy.Data.DBClasses;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using EasyToBuy.Models.CommonModel;
+using EasyToBuy.Models.InputModels;
+using EasyToBuy.Models.Models;
 
 namespace EasyToBuy.Repository.Abstract
 {
     public interface IAccountRepository
     {
         Task<ApiResponseModel> CheckUser(string mobile, string password);
-        Task<ApiResponseModel> CountryAddEdit(CountryInputModel CountryInputModel);
+        Task<ApiResponseModel> CountryAddEdit(CountryInputModel countryInputModel);
         Task<IEnumerable<CountryModel>> GetCountryList();
-        Task<ApiResponseModel> CountryDelete(int countryId);
+        Task<ApiResponseModel> CountryDelete(int Id);
         Task<IEnumerable<StateModel>> GetStatesList();
         Task<ApiResponseModel> StateAddEdit(StateInputModel stateInputModel);
         Task<ApiResponseModel> StateDelete(int Id);
