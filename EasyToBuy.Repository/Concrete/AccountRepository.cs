@@ -1,20 +1,41 @@
 ﻿using EasyToBuy.Data.DBClasses;
-using EasyToBuy.Models.CommonModel;
-using EasyToBuy.Models.InputModels;
-using EasyToBuy.Models.Model;
 using EasyToBuy.Repository.Abstract;
 using EasyToBuy.Services.Interactions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EasyToBuy.Repository.Concrete
 {
     public class AccountRepository:IAccountRepository
     {
-        public async Task<IEnumerable<StateModel>> GetStatesList() 
+
+        public async Task<ApiResponseModel> CheckUser(string mobile, string password)
+        {
+            using (AccountService accountService = new AccountService())
+            {
+                return await accountService.CheckUser(mobile, password);
+            }
+        }
+        public async Task<ApiResponseModel> CountryAddEdit(CountryInputModel CountryInputModel)
+        {
+            using (AccountService accountService = new AccountService())
+            {
+                return await accountService.CountryAddEdit(CountryInputModel);
+            }
+        }
+        public async Task<IEnumerable<CountryModel>> GetCountryList()
+        {
+            using (AccountService accountService = new AccountService())
+            {
+                return await accountService.GetCountryList();
+            }
+        }
+        public async Task<ApiResponseModel> CountryDelete(int countryId)
+        {
+            using (AccountService accountService = new AccountService())
+            {
+                return await accountService.CountryDelete(countryId);
+            }
+        }
+        public async Task<IEnumerable<StateModel>> GetStatesList()
         {
             using (AccountService accountService = new AccountService())
             {
@@ -35,6 +56,5 @@ namespace EasyToBuy.Repository.Concrete
                 return await accountService.StateDelete(Id);
             }
         }
-
     }
 }

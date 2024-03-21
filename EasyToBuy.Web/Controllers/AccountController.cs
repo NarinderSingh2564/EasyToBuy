@@ -1,6 +1,4 @@
-﻿using EasyToBuy.Models.InputModels;
-using EasyToBuy.Models.UIModels;
-using EasyToBuy.Repository.Abstract;
+﻿using EasyToBuy.Repository.Abstract;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EasyToBuy.Web.Controllers
@@ -15,6 +13,41 @@ namespace EasyToBuy.Web.Controllers
             _accountRepository = accountRepository;
         }
 
+        [HttpPost("CheckUser")]
+        public async Task<ApiResponseModel> CheckUser(string mobile, string password)
+        {
+            var response = await _accountRepository.CheckUser(mobile, password);
+
+            return response;
+        }
+
+        [HttpPost("CountryAddEdit")]
+        public async Task<ApiResponseModel> CountryAddEdit(CountryUIModel countryUIModel)
+        {
+            var countryInputModel = new CountryInputModel();
+
+            countryInputModel.Id = countryUIModel.Id;
+            countryInputModel.CountryName = countryUIModel.CountryName;
+            countryInputModel.CountryCode = countryUIModel.CountryCode;
+            countryInputModel.UpdatedBy = countryUIModel.UpdatedBy;
+            countryInputModel.CreatedBy = countryUIModel.CreatedBy;
+            countryInputModel.IsActive = countryUIModel.IsActive;
+
+            var response =  await _accountRepository.CountryAddEdit(countryInputModel);
+
+            return  response;
+        }
+
+        [HttpGet("GetCountryList")]
+        public async Task<IEnumerable<CountryModel>> GetCountryList()
+        {
+            var response = await _accountRepository.GetCountryList();
+
+            return response;
+        }
+
+        [HttpPost("CountryDelete{countryId}")]
+        public async Task<ApiResponseModel> CountryDelete([FromRoute] int countryId)
         [HttpGet("GetStatesList")]
         public async Task<IActionResult> GetStatesList()
         {
@@ -41,10 +74,10 @@ namespace EasyToBuy.Web.Controllers
         [HttpPost("StateDelete{Id}")]
         public async Task<IActionResult> StateDelete([FromRoute]int Id)
         {
-            var response = await _accountRepository.StateDelete(Id);
-            return Ok(response);
+            var response = await _accountRepository.CountryDelete(countryId);
+
+            return response;
         }
 
-        
     }
 }
