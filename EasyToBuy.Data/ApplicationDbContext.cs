@@ -10,16 +10,16 @@ namespace EasyToBuy.Data
         {
             
         }
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options):base (options)
-        {
+        //public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options):base (options)
+        //{
                 
-        }
+        //}
 
-        public DbSet<User> UserMaster { get; set; }
         public DbSet<Country> tblCountry { get; set; }
         public DbSet<State> tblState { get; set; }
         public DbSet<City> tblCity { get; set; }
-
+        public DbSet<User> tblUser { get; set; }
+        public DbSet<Address> tblAddress { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -1,28 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace EasyToBuy.Data.DBClasses
+﻿namespace EasyToBuy.Models.UIModels
 {
-    public class User
+    public class UserUIModel
     {
-        [Key]
         public int Id { get; set; }
-
-        [StringLength(30)]
         public string FullName { get; set; }
-
-        [StringLength(15)]
-        public string Mobile { get; set; } 
-
-        [StringLength(50)]
+        public string Mobile { get; set; }
         public string Email { get; set; }
-
-        [StringLength(10)]
-        public string Password { get; set; } 
+        public string Password { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
         public bool IsActive { get; set; }
-
     }
 }

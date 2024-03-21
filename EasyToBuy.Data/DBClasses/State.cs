@@ -9,7 +9,7 @@ namespace EasyToBuy.Data.DBClasses
         public int Id { get; set; }
 
         [Column(TypeName = "varchar(20)")]
-        public string StateName { get; set; }
+        public string StateName { get; set; } = string.Empty;
 
         [ForeignKey("Countrys")]
         public int CountryId { get; set; }

@@ -9,10 +9,10 @@ namespace EasyToBuy.Data.DBClasses
         public int Id { get; set; }
 
         [Column(TypeName = "varchar(10)")]
-        public string CountryCode { get; set; }
+        public string CountryCode { get; set; } = string.Empty;
 
         [Column(TypeName = "varchar(30)")]
-        public string CountryName { get; set; }
+        public string CountryName { get; set; } = string.Empty;
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }
