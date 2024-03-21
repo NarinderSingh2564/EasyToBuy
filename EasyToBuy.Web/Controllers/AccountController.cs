@@ -1,4 +1,8 @@
-﻿using EasyToBuy.Repository.Abstract;
+﻿using EasyToBuy.Models.CommonModel;
+using EasyToBuy.Models.InputModels;
+using EasyToBuy.Models.Models;
+using EasyToBuy.Models.UIModels;
+using EasyToBuy.Repository.Abstract;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EasyToBuy.Web.Controllers
@@ -7,11 +11,13 @@ namespace EasyToBuy.Web.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
+        #region PRIVATE VARIABLES
         private IAccountRepository _accountRepository;
         public AccountController(IAccountRepository accountRepository)
         {
             _accountRepository = accountRepository;
         }
+        #endregion
 
         [HttpPost("CheckUser")]
         public async Task<ApiResponseModel> CheckUser(string mobile, string password)
@@ -20,6 +26,16 @@ namespace EasyToBuy.Web.Controllers
 
             return response;
         }
+
+
+        [HttpGet("GetCountryList")]
+        public async Task<IEnumerable<CountryModel>> GetCountryList()
+        {
+            var response = await _accountRepository.GetCountryList();
+
+            return response;
+        }
+
 
         [HttpPost("CountryAddEdit")]
         public async Task<ApiResponseModel> CountryAddEdit(CountryUIModel countryUIModel)
@@ -38,16 +54,16 @@ namespace EasyToBuy.Web.Controllers
             return  response;
         }
 
-        [HttpGet("GetCountryList")]
-        public async Task<IEnumerable<CountryModel>> GetCountryList()
+
+        [HttpPost("CountryDelete{countryId}")]
+        public async Task<ApiResponseModel> CountryDelete([FromRoute] int Id)
         {
-            var response = await _accountRepository.GetCountryList();
+            var response = await _accountRepository.CountryDelete(Id);
 
             return response;
         }
 
-        [HttpPost("CountryDelete{countryId}")]
-        public async Task<ApiResponseModel> CountryDelete([FromRoute] int countryId)
+
         [HttpGet("GetStatesList")]
         public async Task<IActionResult> GetStatesList()
         {
@@ -55,6 +71,7 @@ namespace EasyToBuy.Web.Controllers
 
             return Ok(response);
         }
+
 
         [HttpPost("StateAddEdit")]
         public async Task<IActionResult> StateAddEdit(StateUIModel stateUIModel)
@@ -71,12 +88,13 @@ namespace EasyToBuy.Web.Controllers
             return Ok(response);
         }
 
+
         [HttpPost("StateDelete{Id}")]
         public async Task<IActionResult> StateDelete([FromRoute]int Id)
         {
-            var response = await _accountRepository.CountryDelete(countryId);
+            var response = await _accountRepository.StateDelete(Id);
 
-            return response;
+            return Ok(response);
         }
 
     }
