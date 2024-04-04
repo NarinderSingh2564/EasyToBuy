@@ -15,4 +15,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EasyToBuy.Models\EasyToBuy.Models.csproj" />
+  </ItemGroup>
+
 </Project>

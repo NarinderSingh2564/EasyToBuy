@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EasyToBuy.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class createdatabase : Migration
+    public partial class addTables : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -46,6 +46,27 @@ namespace EasyToBuy.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tblCountry", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tblUser",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FullName = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Mobile = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    CreatedBy = table.Column<int>(type: "int", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tblUser", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -129,6 +150,73 @@ namespace EasyToBuy.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "tblAddress",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    CityId = table.Column<int>(type: "int", nullable: false),
+                    StateId = table.Column<int>(type: "int", nullable: false),
+                    CountryId = table.Column<int>(type: "int", nullable: false),
+                    FullAddress = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Pincode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    CreatedBy = table.Column<int>(type: "int", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tblAddress", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_tblAddress_tblCity_CityId",
+                        column: x => x.CityId,
+                        principalTable: "tblCity",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tblAddress_tblCountry_CountryId",
+                        column: x => x.CountryId,
+                        principalTable: "tblCountry",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_tblAddress_tblState_StateId",
+                        column: x => x.StateId,
+                        principalTable: "tblState",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_tblAddress_tblUser_UserId",
+                        column: x => x.UserId,
+                        principalTable: "tblUser",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblAddress_CityId",
+                table: "tblAddress",
+                column: "CityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblAddress_CountryId",
+                table: "tblAddress",
+                column: "CountryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblAddress_StateId",
+                table: "tblAddress",
+                column: "StateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblAddress_UserId",
+                table: "tblAddress",
+                column: "UserId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_tblCity_StateId",
                 table: "tblCity",
@@ -149,16 +237,22 @@ namespace EasyToBuy.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "tblCity");
+                name: "tblAddress");
 
             migrationBuilder.DropTable(
                 name: "tblProduct");
 
             migrationBuilder.DropTable(
-                name: "tblState");
+                name: "tblCity");
+
+            migrationBuilder.DropTable(
+                name: "tblUser");
 
             migrationBuilder.DropTable(
                 name: "tblCategory");
+
+            migrationBuilder.DropTable(
+                name: "tblState");
 
             migrationBuilder.DropTable(
                 name: "tblCountry");

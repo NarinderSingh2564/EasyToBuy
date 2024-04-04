@@ -1,6 +1,6 @@
 ﻿using EasyToBuy.Data.DBClasses;
+using EasyToBuy.Models.SPResults;
 using Microsoft.EntityFrameworkCore;
-using System.Data;
 
 namespace EasyToBuy.Data
 {
@@ -10,22 +10,19 @@ namespace EasyToBuy.Data
         {
 
         }
-        //public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options):base (options)
-        //{
-                
-        //}
-
+        
         public DbSet<Country> tblCountry { get; set; }
         public DbSet<State> tblState { get; set; }
         public DbSet<City> tblCity { get; set; }
-        public DbSet<Category> tblCategory { get; set; }
-        public DbSet<Product> tblProduct { get; set; }
         public DbSet<User> tblUser { get; set; }
         public DbSet<Address> tblAddress { get; set; }
-
+        public DbSet<Category> tblCategory { get; set; }
+        public DbSet<Product> tblProduct { get; set; }
+        public DbSet<Cart> tblCart { get; set; }
+        public DbSet<SPGetCartDetailsByCustomerId_Result> cartDetailsByCustomerId_Results { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=DESKTOP-J96KAUR\\SQLEXPRESS;Database=EasyToBuyDb;Trusted_Connection=True;TrustServerCertificate=True;Trusted_Connection=True;");
+            optionsBuilder.UseSqlServer("Server=DESKTOP-E86JM10\\SQLEXPRESS;Database=EasyToBuyDb;Trusted_Connection=True;TrustServerCertificate=True;Trusted_Connection=True;");
         }
 
     }
