@@ -16,6 +16,7 @@ builder.Services.AddSwaggerGen();
 //builder.Services.AddDbContext<ApplicationDbContext>(x => x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 var app = builder.Build();
 
@@ -25,6 +26,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(option => option.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.UseHttpsRedirection();
 

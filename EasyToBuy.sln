@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyToBuy.Web", "EasyToBuy.Web\EasyToBuy.Web.csproj", "{6B9E468E-EA81-4812-93C1-0A584FED1E1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyToBuy.Web", "EasyToBuy.Web\EasyToBuy.Web.csproj", "{6B9E468E-EA81-4812-93C1-0A584FED1E1D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyToBuy.Data", "EasyToBuy.Data\EasyToBuy.Data.csproj", "{2DCC4155-2467-43CE-8E25-3CCF1964E813}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyToBuy.Data", "EasyToBuy.Data\EasyToBuy.Data.csproj", "{2DCC4155-2467-43CE-8E25-3CCF1964E813}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyToBuy.Services", "EasyToBuy.Services\EasyToBuy.Services.csproj", "{EEBAA933-D8F4-4CEE-BA44-98A4CF1468C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyToBuy.Services", "EasyToBuy.Services\EasyToBuy.Services.csproj", "{EEBAA933-D8F4-4CEE-BA44-98A4CF1468C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyToBuy.Repository", "EasyToBuy.Repository\EasyToBuy.Repository.csproj", "{BB3ADB8A-75D7-4125-A120-469F9163078D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyToBuy.Repository", "EasyToBuy.Repository\EasyToBuy.Repository.csproj", "{BB3ADB8A-75D7-4125-A120-469F9163078D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyToBuy.Models", "EasyToBuy.Models\EasyToBuy.Models.csproj", "{A10D8DAD-DF5F-4B80-8363-5724FFDF0AE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyToBuy.Models", "EasyToBuy.Models\EasyToBuy.Models.csproj", "{A10D8DAD-DF5F-4B80-8363-5724FFDF0AE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

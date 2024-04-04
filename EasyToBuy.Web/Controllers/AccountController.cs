@@ -1,4 +1,5 @@
 ﻿using EasyToBuy.Models.CommonModel;
+using EasyToBuy.Models.CommonModels;
 using EasyToBuy.Models.InputModels;
 using EasyToBuy.Models.Models;
 using EasyToBuy.Models.UIModels;
@@ -20,9 +21,9 @@ namespace EasyToBuy.Web.Controllers
         #endregion
 
         [HttpPost("CheckUser")]
-        public async Task<ApiResponseModel> CheckUser(string mobile, string password)
+        public async Task<ApiResponseModel> CheckUser(LoginModel loginModel)
         {
-            var response = await _accountRepository.CheckUser(mobile, password);
+            var response = await _accountRepository.CheckUser(loginModel.Mobile, loginModel.Password);
 
             return response;
         }
