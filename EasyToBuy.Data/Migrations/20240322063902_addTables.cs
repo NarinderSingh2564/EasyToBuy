@@ -18,6 +18,7 @@ namespace EasyToBuy.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CategoryName = table.Column<string>(type: "varchar(30)", nullable: false),
+                    PackingMode = table.Column<string>(type: "varchar(10)", nullable: false),
                     CreatedBy = table.Column<int>(type: "int", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedBy = table.Column<int>(type: "int", nullable: true),

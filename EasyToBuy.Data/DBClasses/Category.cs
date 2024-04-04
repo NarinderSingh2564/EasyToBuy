@@ -14,7 +14,10 @@ namespace EasyToBuy.Data.DBClasses
         public int Id { get; set; }
 
         [Column(TypeName = "varchar(30)")]
-        public string? CategoryName { get; set; }
+        public string CategoryName { get; set; }
+
+        [Column(TypeName = "varchar(10)")]
+        public string PackingMode { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }
