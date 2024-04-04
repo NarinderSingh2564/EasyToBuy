@@ -10,6 +10,7 @@ namespace EasyToBuy.Models.InputModels
     {
         public int Id { get; set; }
         public string CategoryName { get; set; }
+        public string PackingMode { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }

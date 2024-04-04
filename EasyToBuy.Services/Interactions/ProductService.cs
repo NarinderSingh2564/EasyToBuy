@@ -74,6 +74,7 @@ namespace EasyToBuy.Services.Interactions
                     {
                        Id = category.Id,
                        CategoryName = category.CategoryName,
+                       PackingMode = category.PackingMode,
                        IsActive = category.IsActive,
                     });
                 }
@@ -98,6 +99,7 @@ namespace EasyToBuy.Services.Interactions
                     {
                         Id = category.Id,
                         CategoryName= category.CategoryName,
+                        PackingMode=category.PackingMode,
                         IsActive = category.IsActive,
                     });
                 }
@@ -128,6 +130,7 @@ namespace EasyToBuy.Services.Interactions
                     if (dbCategory != null)
                     {
                         dbCategory.CategoryName = categoryInputModel.CategoryName;
+                        dbCategory.PackingMode = categoryInputModel.PackingMode;
                         dbCategory.UpdatedBy = categoryInputModel.UpdatedBy;
                         dbCategory.UpdatedOn = DateTime.Now;
                         dbCategory.IsActive = categoryInputModel.IsActive;
@@ -137,6 +140,7 @@ namespace EasyToBuy.Services.Interactions
                         var categoryObj = new Category();
 
                         categoryObj.CategoryName = categoryInputModel.CategoryName;
+                        categoryObj.PackingMode = categoryInputModel.PackingMode;
                         categoryObj.CreatedBy = categoryInputModel.CreatedBy;
                         categoryObj.CreatedOn = DateTime.Now;
                         categoryObj.IsActive = categoryInputModel.IsActive;

@@ -45,6 +45,7 @@ namespace EasyToBuy.Web.Controllers
 
             categoryInputModel.Id = categoryUIModel.Id;
             categoryInputModel.CategoryName = categoryUIModel.CategoryName;
+            categoryInputModel.PackingMode = categoryUIModel.PackingMode;
            categoryInputModel.CreatedBy = categoryUIModel.CreatedBy;
            categoryInputModel.UpdatedBy = categoryUIModel.UpdatedBy;
             categoryInputModel.IsActive = categoryUIModel.IsActive;
