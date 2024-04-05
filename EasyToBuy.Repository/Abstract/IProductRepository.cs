@@ -12,8 +12,9 @@ namespace EasyToBuy.Repository.Abstract
         Task<ApiResponseModel> CategoryAddEdit(CategoryInputModel categoryInputModel);
         Task<ApiResponseModel> CategoryDelete(int Id);
         Task<IEnumerable<ProductModel>> GetProductList();
+        Task<IEnumerable<SPGetProductDetails_Result>> GetProductDetails();
         Task<IEnumerable<ProductModel>> GetProductById(int Id);
-        Task<IEnumerable<ProductModel>> GetProductByCategory(int categoryId);
+        Task<IEnumerable<SPGetProductDetailsByCategoryId_Result>> GetProductByCategory(int categoryId);
         Task<ApiResponseModel> ProductAddEdit(ProductInputModel productInputModel);
         Task<ApiResponseModel> ProductDelete(int Id);
         Task<ApiResponseModel> AddToCart(CartInputModel cartInputModel);

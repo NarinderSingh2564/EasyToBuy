@@ -44,6 +44,13 @@ namespace EasyToBuy.Repository.Concrete
                 return await productService.GetProductList();
             }
         }
+        public async Task<IEnumerable<SPGetProductDetails_Result>> GetProductDetails()
+        {
+            using (ProductService productService = new ProductService())
+            {
+                return await productService.GetProductDetails();
+            }
+        }
         public async Task<IEnumerable<ProductModel>> GetProductById(int Id)
         {
             using (ProductService productService = new ProductService())
@@ -51,7 +58,7 @@ namespace EasyToBuy.Repository.Concrete
                 return await productService.GetProductById(Id);
             }
         }
-        public async Task<IEnumerable<ProductModel>> GetProductByCategory(int categoryId)
+        public async Task<IEnumerable<SPGetProductDetailsByCategoryId_Result>> GetProductByCategory(int categoryId)
         {
             using (ProductService productService = new ProductService())
             {

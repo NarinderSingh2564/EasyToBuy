@@ -20,6 +20,8 @@ namespace EasyToBuy.Data
         public DbSet<Product> tblProduct { get; set; }
         public DbSet<Cart> tblCart { get; set; }
         public DbSet<SPGetCartDetailsByCustomerId_Result> cartDetailsByCustomerId_Results { get; set; }
+        public DbSet<SPGetProductDetails_Result> productDetails_Results { get; set; }
+        public DbSet<SPGetProductDetailsByCategoryId_Result> productDetailsByCategory_Results { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Server=DESKTOP-E86JM10\\SQLEXPRESS;Database=EasyToBuyDb;Trusted_Connection=True;TrustServerCertificate=True;Trusted_Connection=True;");

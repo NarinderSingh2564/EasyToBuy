@@ -72,7 +72,14 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
-        [HttpGet("GetProductById")]
+        [HttpGet("GetProductDetails")]
+        public async Task<IEnumerable<SPGetProductDetails_Result>> GetProductDetails()
+        {
+            var response = await _productRepository.GetProductDetails();
+            return response;
+        }
+
+       [HttpGet("GetProductById")]
         public async Task<IEnumerable<ProductModel>> GetProductById(int Id)
         {
             var response = await _productRepository.GetProductById(Id);
@@ -81,7 +88,7 @@ namespace EasyToBuy.Web.Controllers
         }
 
         [HttpGet("GetProductByCategory")]
-        public async Task<IEnumerable<ProductModel>> GetProductByCategory(int categoryId)
+        public async Task<IEnumerable<SPGetProductDetailsByCategoryId_Result>> GetProductByCategory(int categoryId)
         {
             var response = await _productRepository.GetProductByCategory(categoryId);
 

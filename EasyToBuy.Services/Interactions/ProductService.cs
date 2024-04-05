@@ -218,6 +218,24 @@ namespace EasyToBuy.Services.Interactions
 
             return productList;
         }
+        public async Task<IEnumerable<SPGetProductDetails_Result>> GetProductDetails()
+        {
+            var productDetails = new List<SPGetProductDetails_Result>();
+
+            try
+            {
+                var sqlQuery = "exec spGetProductDetails";
+
+
+                productDetails = await _dbContext.productDetails_Results.FromSqlRaw(sqlQuery).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return productDetails;
+        }
         public async Task<IEnumerable<ProductModel>> GetProductById(int Id)
         {
             var productById = new List<ProductModel>();
@@ -250,30 +268,17 @@ namespace EasyToBuy.Services.Interactions
 
             return productById;
         }
-        public async Task<IEnumerable<ProductModel>> GetProductByCategory(int categoryId)
+        public async Task<IEnumerable<SPGetProductDetailsByCategoryId_Result>> GetProductByCategory(int categoryId)
         {
-            var productByCategory = new List<ProductModel>();
+            var productByCategory = new List<SPGetProductDetailsByCategoryId_Result>();
 
             try
             {
-                var dbProductByCategory = await _dbContext.tblProduct.Where(x => x.CategoryId == categoryId).ToListAsync();
-                foreach (var product in dbProductByCategory)
-                {
-                    productByCategory.Add(new ProductModel
-                    {
+                var sqlQuery = "exec spGetProductDetailsByCategoryId @CategoryId";
 
-                        Id = product.Id,
-                        ProductSku = product.ProductSku,
-                        ProductName = product.ProductName,
-                        ProductPrice = product.ProductPrice,
-                        ProductShortName = product.ProductShortName,
-                        ProductDescription = product.ProductDescription,
-                        ProductImageUrl = product.ProductImageUrl,
-                        ProductTimeSpan = product.ProductTimeSpan,
-                        CategoryId = product.CategoryId,
-                        IsActive = product.IsActive,
-                    });
-                }
+                SqlParameter parameter = new SqlParameter("@CategoryId", categoryId);
+
+                productByCategory = await _dbContext.productDetailsByCategory_Results.FromSqlRaw(sqlQuery, parameter).ToListAsync();
             }
             catch (Exception ex)
             {
