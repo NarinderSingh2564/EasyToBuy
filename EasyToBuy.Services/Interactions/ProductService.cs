@@ -72,10 +72,10 @@ namespace EasyToBuy.Services.Interactions
                 {
                     categoryList.Add(new CategoryModel
                     {
-                       Id = category.Id,
-                       CategoryName = category.CategoryName,
-                       PackingMode = category.PackingMode,
-                       IsActive = category.IsActive,
+                        Id = category.Id,
+                        CategoryName = category.CategoryName,
+                        PackingMode = category.PackingMode,
+                        IsActive = category.IsActive,
                     });
                 }
             }
@@ -98,8 +98,8 @@ namespace EasyToBuy.Services.Interactions
                     categoryById.Add(new CategoryModel
                     {
                         Id = category.Id,
-                        CategoryName= category.CategoryName,
-                        PackingMode=category.PackingMode,
+                        CategoryName = category.CategoryName,
+                        PackingMode = category.PackingMode,
                         IsActive = category.IsActive,
                     });
                 }
@@ -125,33 +125,33 @@ namespace EasyToBuy.Services.Interactions
                 //}
                 //else
                 //{
-                    var dbCategory = await _dbContext.tblCategory.Where(x => x.Id == categoryInputModel.Id).FirstOrDefaultAsync();
+                var dbCategory = await _dbContext.tblCategory.Where(x => x.Id == categoryInputModel.Id).FirstOrDefaultAsync();
 
-                    if (dbCategory != null)
-                    {
-                        dbCategory.CategoryName = categoryInputModel.CategoryName;
-                        dbCategory.PackingMode = categoryInputModel.PackingMode;
-                        dbCategory.UpdatedBy = categoryInputModel.UpdatedBy;
-                        dbCategory.UpdatedOn = DateTime.Now;
-                        dbCategory.IsActive = categoryInputModel.IsActive;
-                    }
-                    else
-                    {
-                        var categoryObj = new Category();
+                if (dbCategory != null)
+                {
+                    dbCategory.CategoryName = categoryInputModel.CategoryName;
+                    dbCategory.PackingMode = categoryInputModel.PackingMode;
+                    dbCategory.UpdatedBy = categoryInputModel.UpdatedBy;
+                    dbCategory.UpdatedOn = DateTime.Now;
+                    dbCategory.IsActive = categoryInputModel.IsActive;
+                }
+                else
+                {
+                    var categoryObj = new Category();
 
-                        categoryObj.CategoryName = categoryInputModel.CategoryName;
-                        categoryObj.PackingMode = categoryInputModel.PackingMode;
-                        categoryObj.CreatedBy = categoryInputModel.CreatedBy;
-                        categoryObj.CreatedOn = DateTime.Now;
-                        categoryObj.IsActive = categoryInputModel.IsActive;
+                    categoryObj.CategoryName = categoryInputModel.CategoryName;
+                    categoryObj.PackingMode = categoryInputModel.PackingMode;
+                    categoryObj.CreatedBy = categoryInputModel.CreatedBy;
+                    categoryObj.CreatedOn = DateTime.Now;
+                    categoryObj.IsActive = categoryInputModel.IsActive;
 
-                        await _dbContext.AddAsync(categoryObj);
-                    }
+                    await _dbContext.AddAsync(categoryObj);
+                }
 
-                    await _dbContext.SaveChangesAsync();
+                await _dbContext.SaveChangesAsync();
 
-                    apiResponseModel.Status = true;
-                    apiResponseModel.Message = categoryInputModel.Id > 0 ? "Category updated successfully." : "Category added successfully.";
+                apiResponseModel.Status = true;
+                apiResponseModel.Message = categoryInputModel.Id > 0 ? "Category updated successfully." : "Category added successfully.";
                 //}
             }
             catch (Exception ex)
@@ -196,18 +196,18 @@ namespace EasyToBuy.Services.Interactions
                 {
                     productList.Add(new ProductModel()
                     {
-                       
-                       Id= product.Id,
-                       ProductSku = product.ProductSku,
-                       ProductName = product.ProductName,
-                       ProductPrice = product.ProductPrice,
-                       ProductShortName = product.ProductShortName,
-                       ProductDescription = product.ProductDescription,
-                       ProductImageUrl = product.ProductImageUrl,
-                       ProductTimeSpan = product.ProductTimeSpan,
-                       CategoryId = product.CategoryId,
-                       //CategoryName = product.Categorys?.CategoryName,
-                       IsActive= product.IsActive,
+
+                        Id = product.Id,
+                        ProductSku = product.ProductSku,
+                        ProductName = product.ProductName,
+                        ProductPrice = product.ProductPrice,
+                        ProductShortName = product.ProductShortName,
+                        ProductDescription = product.ProductDescription,
+                        ProductImageUrl = product.ProductImageUrl,
+                        ProductTimeSpan = product.ProductTimeSpan,
+                        CategoryId = product.CategoryId,
+                        //CategoryName = product.Categorys?.CategoryName,
+                        IsActive = product.IsActive,
                     });
                 }
             }
@@ -218,16 +218,25 @@ namespace EasyToBuy.Services.Interactions
 
             return productList;
         }
-        public async Task<IEnumerable<SPGetProductDetails_Result>> GetProductDetails()
+        public async Task<IEnumerable<SPGetProductDetails_Result>> GetProductDetails(int categoryId)
         {
             var productDetails = new List<SPGetProductDetails_Result>();
 
             try
             {
-                var sqlQuery = "exec spGetProductDetails";
+                if (categoryId == 0)
+                {
+                    var sqlQuery = "exec spGetProductDetails @CategoryId";
+                    SqlParameter parameter = new SqlParameter("@CategoryId", DBNull.Value);
+                    productDetails = await _dbContext.productDetails_Results.FromSqlRaw(sqlQuery, parameter).ToListAsync();
 
-
-                productDetails = await _dbContext.productDetails_Results.FromSqlRaw(sqlQuery).ToListAsync();
+                }
+                else
+                {
+                    var sqlQuery = "exec spGetProductDetails @CategoryId";
+                    SqlParameter parameter = new SqlParameter("@CategoryId", categoryId);
+                    productDetails = await _dbContext.productDetails_Results.FromSqlRaw(sqlQuery, parameter).ToListAsync();
+                }
             }
             catch (Exception ex)
             {
@@ -268,70 +277,51 @@ namespace EasyToBuy.Services.Interactions
 
             return productById;
         }
-        public async Task<IEnumerable<SPGetProductDetailsByCategoryId_Result>> GetProductByCategory(int categoryId)
-        {
-            var productByCategory = new List<SPGetProductDetailsByCategoryId_Result>();
-
-            try
-            {
-                var sqlQuery = "exec spGetProductDetailsByCategoryId @CategoryId";
-
-                SqlParameter parameter = new SqlParameter("@CategoryId", categoryId);
-
-                productByCategory = await _dbContext.productDetailsByCategory_Results.FromSqlRaw(sqlQuery, parameter).ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                var msg = ex.Message;
-            }
-
-            return productByCategory;
-        }
         public async Task<ApiResponseModel> ProductAddEdit(ProductInputModel productInputModel)
         {
             var apiResponseModel = new ApiResponseModel();
             try
             {
-                    var dbProduct = await _dbContext.tblProduct.Where(x => x.Id == productInputModel.Id).FirstOrDefaultAsync();
+                var dbProduct = await _dbContext.tblProduct.Where(x => x.Id == productInputModel.Id).FirstOrDefaultAsync();
 
-                    if (dbProduct != null)
-                    {
-                        dbProduct.ProductSku = productInputModel.ProductSku;
-                        dbProduct.ProductName = productInputModel.ProductName;
-                        dbProduct.ProductPrice = productInputModel.ProductPrice;
-                        dbProduct.ProductShortName = productInputModel.ProductShortName;
-                        dbProduct.ProductDescription = productInputModel.ProductDescription;
-                        dbProduct.ProductImageUrl = productInputModel.ProductImageUrl;
-                        dbProduct.ProductTimeSpan = productInputModel.ProductTimeSpan;
-                        dbProduct.CategoryId = productInputModel.CategoryId;
-                        dbProduct.UpdatedBy = productInputModel.UpdatedBy;
-                        dbProduct.UpdatedOn = DateTime.Now;
-                        dbProduct.IsActive = productInputModel.IsActive;
-                    }
-                    else
-                    {
-                        var productObj = new Product();
+                if (dbProduct != null)
+                {
+                    dbProduct.ProductSku = productInputModel.ProductSku;
+                    dbProduct.ProductName = productInputModel.ProductName;
+                    dbProduct.ProductPrice = productInputModel.ProductPrice;
+                    dbProduct.ProductShortName = productInputModel.ProductShortName;
+                    dbProduct.ProductDescription = productInputModel.ProductDescription;
+                    dbProduct.ProductImageUrl = productInputModel.ProductImageUrl;
+                    dbProduct.ProductTimeSpan = productInputModel.ProductTimeSpan;
+                    dbProduct.CategoryId = productInputModel.CategoryId;
+                    dbProduct.UpdatedBy = productInputModel.UpdatedBy;
+                    dbProduct.UpdatedOn = DateTime.Now;
+                    dbProduct.IsActive = productInputModel.IsActive;
+                }
+                else
+                {
+                    var productObj = new Product();
 
-                        productObj.ProductSku = productInputModel.ProductSku;
-                        productObj.ProductName = productInputModel.ProductName;
-                        productObj.ProductPrice = productInputModel.ProductPrice;
-                        productObj.ProductShortName = productInputModel.ProductShortName;
-                        productObj.ProductDescription = productInputModel.ProductDescription;
-                        productObj.ProductImageUrl = productInputModel.ProductImageUrl;
-                        productObj.ProductTimeSpan = productInputModel.ProductTimeSpan;
-                        productObj.CategoryId = productInputModel.CategoryId;
-                        productObj.CreatedBy = productInputModel.CreatedBy;
-                        productObj.CreatedOn = DateTime.Now;
-                        productObj.IsActive = productInputModel.IsActive;
+                    productObj.ProductSku = productInputModel.ProductSku;
+                    productObj.ProductName = productInputModel.ProductName;
+                    productObj.ProductPrice = productInputModel.ProductPrice;
+                    productObj.ProductShortName = productInputModel.ProductShortName;
+                    productObj.ProductDescription = productInputModel.ProductDescription;
+                    productObj.ProductImageUrl = productInputModel.ProductImageUrl;
+                    productObj.ProductTimeSpan = productInputModel.ProductTimeSpan;
+                    productObj.CategoryId = productInputModel.CategoryId;
+                    productObj.CreatedBy = productInputModel.CreatedBy;
+                    productObj.CreatedOn = DateTime.Now;
+                    productObj.IsActive = productInputModel.IsActive;
 
-                        await _dbContext.AddAsync(productObj);
-                    }
+                    await _dbContext.AddAsync(productObj);
+                }
 
-                    await _dbContext.SaveChangesAsync();
+                await _dbContext.SaveChangesAsync();
 
-                    apiResponseModel.Status = true;
-                    apiResponseModel.Message = productInputModel.Id > 0 ? "Product updated successfully." : "Product added successfully.";
-                
+                apiResponseModel.Status = true;
+                apiResponseModel.Message = productInputModel.Id > 0 ? "Product updated successfully." : "Product added successfully.";
+
             }
             catch (Exception ex)
             {
@@ -420,11 +410,11 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                  var sqlQuery = "exec spGetCartDetailsByCustomerId @CustomerId";
+                var sqlQuery = "exec spGetCartDetailsByCustomerId @CustomerId";
 
-                  SqlParameter parameter = new SqlParameter("@CustomerId", customerId);
+                SqlParameter parameter = new SqlParameter("@CustomerId", customerId);
 
-                  cartListByCustomerId = await _dbContext.cartDetailsByCustomerId_Results.FromSqlRaw(sqlQuery,parameter).ToListAsync();
+                cartListByCustomerId = await _dbContext.cartDetailsByCustomerId_Results.FromSqlRaw(sqlQuery, parameter).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -439,7 +429,7 @@ namespace EasyToBuy.Services.Interactions
             try
             {
                 var cartObj = await _dbContext.tblCart.Where(x => x.Id == id).FirstOrDefaultAsync();
-                if(cartObj != null)
+                if (cartObj != null)
                 {
                     _dbContext.tblCart.Remove(cartObj);
                     await _dbContext.SaveChangesAsync();
@@ -447,7 +437,7 @@ namespace EasyToBuy.Services.Interactions
                     apiResponseModel.Message = "Product removed from cart successfully.";
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 var msg = ex.Message;
             }
