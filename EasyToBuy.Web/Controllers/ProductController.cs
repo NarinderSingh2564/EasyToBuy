@@ -1,4 +1,5 @@
-﻿using EasyToBuy.Models.CommonModel;
+﻿using EasyToBuy.Data.DBClasses;
+using EasyToBuy.Models.CommonModel;
 using EasyToBuy.Models.InputModels;
 using EasyToBuy.Models.Models;
 using EasyToBuy.Models.SPResults;
@@ -63,12 +64,19 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
-        [HttpGet("GetProductList")]
-        public async Task<IEnumerable<ProductModel>> GetProductList()
+        //[HttpGet("GetProductList")]
+        //public async Task<IEnumerable<ProductModel>> GetProductList()
+        //{
+
+        //    var response = await _productRepository.GetProductList();
+
+        //    return response;
+        //}
+
+        [HttpGet("GetProductDetails")]
+        public async Task<IEnumerable<SPGetProductDetails_Result>> GetProductDetails(int categoryId)
         {
-
-            var response = await _productRepository.GetProductList();
-
+            var response = await _productRepository.GetProductDetails(categoryId);
             return response;
         }
 
@@ -76,14 +84,6 @@ namespace EasyToBuy.Web.Controllers
         public async Task<IEnumerable<ProductModel>> GetProductById(int Id)
         {
             var response = await _productRepository.GetProductById(Id);
-
-            return response;
-        }
-
-        [HttpGet("GetProductByCategory")]
-        public async Task<IEnumerable<ProductModel>> GetProductByCategory(int categoryId)
-        {
-            var response = await _productRepository.GetProductByCategory(categoryId);
 
             return response;
         }
