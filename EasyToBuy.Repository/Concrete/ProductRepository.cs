@@ -9,34 +9,6 @@ namespace EasyToBuy.Repository.Concrete
 {
     public class ProductRepository :  IProductRepository
     {
-        public async Task<IEnumerable<CategoryModel>> GetCategoryList()
-        {
-            using(ProductService productService = new ProductService())
-            {
-                return await productService.GetCategoryList();
-            }
-        }
-        public async Task<IEnumerable<CategoryModel>> GetCategoryById(int Id)
-        {
-            using (ProductService productService = new ProductService())
-            {
-                return await productService.GetCategoryById(Id);
-            }
-        }
-        public async Task<ApiResponseModel> CategoryAddEdit(CategoryInputModel categoryInputModel)
-        {
-            using (ProductService productService = new ProductService())
-            {
-                return await productService.CategoryAddEdit(categoryInputModel);
-            }
-        }
-        public async Task<ApiResponseModel> CategoryDelete(int Id)
-        {
-            using (ProductService productService = new ProductService())
-            {
-                return await productService.CategoryDelete(Id);
-            }
-        }
         public async Task<IEnumerable<ProductModel>> GetProductList()
         {
             using (ProductService productService = new ProductService())
@@ -72,33 +44,6 @@ namespace EasyToBuy.Repository.Concrete
                 return await productService.ProductDelete(Id);
             }
         }
-        public async Task<ApiResponseModel> AddToCart(CartInputModel cartInputModel)
-        {
-            using (ProductService productService = new ProductService())
-            {
-                return await productService.AddToCart(cartInputModel);
-            }
-        }
-        public async Task<IEnumerable<CartModel>> GetCartList()
-        {
-            using (ProductService productService = new ProductService())
-            {
-                return await productService.GetCartList();
-            }
-        }
-        public async Task<IEnumerable<SPGetCartDetailsByCustomerId_Result>> GetCartListByCustomerId(int customerId)
-        {
-            using (ProductService productService = new ProductService())
-            {
-                return await productService.GetCartListByCustomerId(customerId);
-            }
-        }
-        public async Task<ApiResponseModel> RemoveProductFromCart(int id)
-        {
-            using (ProductService productService = new ProductService())
-            {
-                return await productService.RemoveProductFromCart(id);
-            }
-        }
+
     }
 }
