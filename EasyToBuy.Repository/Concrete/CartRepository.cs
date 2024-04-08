@@ -21,11 +21,11 @@ namespace EasyToBuy.Repository.Concrete
                 return await cartService.AddToCart(cartInputModel);
             }
         }
-        public async Task<IEnumerable<SPGetCartDetailsByCustomerId_Result>> GetCartListByCustomerId(int customerId)
+        public async Task<IEnumerable<SPGetCartDetailsByCustomerId_Result>> GetCartDetailsByCustomerId(int customerId)
         {
             using (CartService cartService = new CartService())
             {
-                return await cartService.GetCartListByCustomerId(customerId);
+                return await cartService.GetCartDetailsByCustomerId(customerId);
             }
         }
         public async Task<ApiResponseModel> RemoveProductFromCart(int id)

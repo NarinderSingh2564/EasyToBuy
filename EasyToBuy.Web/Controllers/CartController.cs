@@ -37,10 +37,10 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
-        [HttpGet("GetCartListByCustomerId")]
-        public async Task<IEnumerable<SPGetCartDetailsByCustomerId_Result>> GetCartListByCustomerId(int customerId)
+        [HttpGet("GetCartDetailsByCustomerId")]
+        public async Task<IEnumerable<SPGetCartDetailsByCustomerId_Result>> GetCartDetailsByCustomerId(int customerId)
         {
-            var response = await _cartRepository.GetCartListByCustomerId(customerId);
+            var response = await _cartRepository.GetCartDetailsByCustomerId(customerId);
             return response;
         }
 

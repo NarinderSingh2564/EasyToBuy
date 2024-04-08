@@ -7,7 +7,7 @@ namespace EasyToBuy.Repository.Abstract
     public interface ICartRepository
     {
         Task<ApiResponseModel> AddToCart(CartInputModel cartInputModel);
-        Task<IEnumerable<SPGetCartDetailsByCustomerId_Result>> GetCartListByCustomerId(int customerId);
+        Task<IEnumerable<SPGetCartDetailsByCustomerId_Result>> GetCartDetailsByCustomerId(int customerId);
         Task<ApiResponseModel> RemoveProductFromCart(int id);
     }
 }

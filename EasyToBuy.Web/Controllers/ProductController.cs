@@ -56,6 +56,8 @@ namespace EasyToBuy.Web.Controllers
             productInputModel.ProductSku = productUIModel.ProductSku;
             productInputModel.ProductName = productUIModel.ProductName;
             productInputModel.ProductPrice = productUIModel.ProductPrice;
+            productInputModel.ProductDiscount = productUIModel.ProductDiscount;
+            productInputModel.PriceAfterDiscount = productUIModel.PriceAfterDiscount;
             productInputModel.ProductShortName = productUIModel.ProductShortName;
             productInputModel.ProductDescription = productUIModel.ProductDescription;
             productInputModel.ProductImageUrl = productUIModel.ProductImageUrl;
@@ -70,13 +72,7 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
-        [HttpPost("ProductDelete")]
-        public async Task<ApiResponseModel> ProductDelete(int Id)
-        {
-            var response = await _productRepository.ProductDelete(Id);
 
-            return response;
-        }
 
     }
 }

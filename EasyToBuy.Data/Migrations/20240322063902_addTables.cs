@@ -79,6 +79,8 @@ namespace EasyToBuy.Data.Migrations
                     ProductSku = table.Column<string>(type: "varchar(30)", nullable: false),
                     ProductName = table.Column<string>(type: "varchar(40)", nullable: false),
                     ProductPrice = table.Column<int>(type: "int", nullable: false),
+                    ProductDiscount = table.Column<int>(type: "int", nullable: false),
+                    PriceAfterDiscount = table.Column<decimal>(type: "decimal", nullable: false),
                     ProductShortName = table.Column<string>(type: "varchar(30)", nullable: false),
                     ProductDescription = table.Column<string>(type: "varchar(200)", nullable: false),
                     ProductImageUrl = table.Column<string>(type: "varchar(200)", nullable: false),
