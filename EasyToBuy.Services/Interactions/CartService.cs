@@ -70,14 +70,22 @@ namespace EasyToBuy.Services.Interactions
             var apiResponseModel = new ApiResponseModel();
             try
             {
-                var cartObj = new Cart();
+                var isProductExists = await _dbContext.tblCart.Where(x => x.ProductId == cartInputModel.ProductId && x.CustomerId == cartInputModel.CustomerId).FirstOrDefaultAsync();
+                if (isProductExists != null)
+                {
+                    isProductExists.Quantity += cartInputModel.Quantity;
+                }
+                else
+                {
+                    var cartObj = new Cart();
 
-                cartObj.CustomerId = cartInputModel.CustomerId;
-                cartObj.ProductId = cartInputModel.ProductId;
-                cartObj.Quantity = cartInputModel.Quantity;
-                cartObj.AddedDate = DateTime.Now;
+                    cartObj.CustomerId = cartInputModel.CustomerId;
+                    cartObj.ProductId = cartInputModel.ProductId;
+                    cartObj.Quantity = cartInputModel.Quantity;
+                    cartObj.AddedDate = DateTime.Now;
 
-                await _dbContext.AddAsync(cartObj);
+                    await _dbContext.AddAsync(cartObj);
+                }
                 await _dbContext.SaveChangesAsync();
 
                 apiResponseModel.Status = true;
@@ -89,7 +97,7 @@ namespace EasyToBuy.Services.Interactions
             }
             return apiResponseModel;
         }
-        public async Task<IEnumerable<SPGetCartDetailsByCustomerId_Result>> GetCartListByCustomerId(int customerId)
+        public async Task<IEnumerable<SPGetCartDetailsByCustomerId_Result>> GetCartDetailsByCustomerId(int customerId)
         {
             var cartListByCustomerId = new List<SPGetCartDetailsByCustomerId_Result>();
 

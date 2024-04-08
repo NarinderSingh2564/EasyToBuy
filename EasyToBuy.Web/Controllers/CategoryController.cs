@@ -53,12 +53,6 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
-        [HttpPost("CategoryDelete")]
-        public async Task<ApiResponseModel> CategoryDelete(int Id)
-        {
-            var response = await _categoryRepository.CategoryDelete(Id);
-
-            return response;
-        }
+     
     }
 }

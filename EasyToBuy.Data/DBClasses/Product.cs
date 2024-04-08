@@ -19,6 +19,8 @@ namespace EasyToBuy.Data.DBClasses
         [Column(TypeName = "varchar(40)")]
         public string ProductName { get; set; }
         public int ProductPrice { get; set; }
+        public int ProductDiscount { get; set; }
+        public decimal PriceAfterDiscount { get; set; }
 
         [Column(TypeName = "varchar(30)")]
         public string ProductShortName { get; set; }
