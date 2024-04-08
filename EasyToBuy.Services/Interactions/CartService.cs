@@ -105,7 +105,7 @@ namespace EasyToBuy.Services.Interactions
             {
                 var sqlQuery = "exec spGetCartDetailsByCustomerId @CustomerId";
 
-                SqlParameter parameter = new SqlParameter("@CustomerId", customerId);
+                SqlParameter parameter = new SqlParameter("@CustomerId", customerId); 
 
                 cartListByCustomerId._cartListItems = await _dbContext.cartDetailsByCustomerId_Results.FromSqlRaw(sqlQuery, parameter).ToListAsync();
 
