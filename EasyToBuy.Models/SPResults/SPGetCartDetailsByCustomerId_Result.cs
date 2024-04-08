@@ -8,7 +8,7 @@
 
         public GetCartDetailsByCustomerId()
         {
-            priceDetails = new PriceDetails();
+             priceDetails = new PriceDetails();
             _cartListItems = new List<SPGetCartDetailsByCustomerId_Result>();
         }
     }
@@ -18,21 +18,21 @@
         public int Id { get; set; }
         public string ProductShortName { get; set; } = string.Empty;
         public int ProductPrice { get; set; }
-        public decimal ProductDiscount { get; set; }
+        public int ProductDiscount { get; set; }
         public decimal ProductDiscountPrice { get; set; }
         public decimal ProductPriceAfterDiscount{ get; set; }
         public string ProductDescription { get; set; } = string.Empty;
         public string ProductImageUrl { get; set; } = string.Empty;
-        public string DeliveryTimeSpan { get; set; } = string.Empty;
+        public string ProductTimeSpan { get; set; } = string.Empty;
         public int Quantity { get; set; }
-        public int TotalProductPrice { get; set; }
+        public decimal TotalProductPrice { get; set; }
     }
 
     public class PriceDetails
     {
-        public int TotalPrice { get; set; }
-        public int TotalDiscountPrice { get; set; }
-        public int TotaCartPrice { get; set; }
+        public int TotalProductPrice { get; set; }
+        public decimal TotalDiscountPrice { get; set; }
+        public decimal TotalCartPrice { get; set; }
     }
 
 }

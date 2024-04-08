@@ -7,7 +7,8 @@
         public string ProductName { get; set; }
         public int ProductPrice { get; set; }
         public int ProductDiscount { get; set; }
-        public decimal PriceAfterDiscount { get; set; }
+        public decimal ProductDiscountPrice { get; set; }
+        public decimal ProductPriceAfterDiscount { get; set; }
         public string ProductShortName { get; set; }
         public string ProductDescription { get; set; }
         public string ProductImageUrl { get; set; }

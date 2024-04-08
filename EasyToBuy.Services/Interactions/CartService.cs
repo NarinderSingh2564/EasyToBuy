@@ -110,9 +110,9 @@ namespace EasyToBuy.Services.Interactions
                 cartListByCustomerId._cartListItems = await _dbContext.cartDetailsByCustomerId_Results.FromSqlRaw(sqlQuery, parameter).ToListAsync();
 
 
-                cartListByCustomerId.priceDetails.TotalPrice = cartListByCustomerId._cartListItems.Sum(x => x.TotalProductPrice);
-                //cartListByCustomerId.priceDetails.TotalDiscountPrice = cartListByCustomerId._cartListItems.Sum(x => x.disc);
-                //cartListByCustomerId.priceDetails.TotalPrice = cartListByCustomerId._cartListItems.Sum(x => x.TotalProductPrice);
+                cartListByCustomerId.priceDetails.TotalProductPrice = cartListByCustomerId._cartListItems.Sum(x => x.ProductPrice);
+                cartListByCustomerId.priceDetails.TotalDiscountPrice = cartListByCustomerId._cartListItems.Sum(x =>x.ProductDiscountPrice);
+                cartListByCustomerId.priceDetails.TotalCartPrice = cartListByCustomerId._cartListItems.Sum(x => x.TotalProductPrice);
 
             }
             catch (Exception ex)
