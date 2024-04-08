@@ -23,55 +23,14 @@ namespace EasyToBuy.Web.Controllers
         }
         #endregion
 
-        [HttpGet("GetCategoryList")]
-        public async Task<IEnumerable<CategoryModel>> GetCategoryList()
+        [HttpGet("GetProductList")]
+
+        public async Task<IEnumerable<ProductModel>> GetProductList()
         {
-            var response = await _productRepository.GetCategoryList();
+            var response = await _productRepository.GetProductList();
 
             return response;
         }
-
-        [HttpGet("GetCategoryById")]
-        public async Task<IEnumerable<CategoryModel>> GetCategoryById(int Id)
-        {
-            var response = await _productRepository.GetCategoryById(Id);
-
-            return response;
-        }
-
-        [HttpPost("CategoryAddEdit")]
-        public async Task<ApiResponseModel> CategoryAddEdit(CategoryUIModel categoryUIModel)
-        {
-            var categoryInputModel = new CategoryInputModel();
-
-            categoryInputModel.Id = categoryUIModel.Id;
-            categoryInputModel.CategoryName = categoryUIModel.CategoryName;
-            categoryInputModel.PackingMode = categoryUIModel.PackingMode;
-           categoryInputModel.CreatedBy = categoryUIModel.CreatedBy;
-           categoryInputModel.UpdatedBy = categoryUIModel.UpdatedBy;
-            categoryInputModel.IsActive = categoryUIModel.IsActive;
-
-            var response = await _productRepository.CategoryAddEdit(categoryInputModel);
-
-            return response;
-        }
-
-        [HttpPost("CategoryDelete")]
-        public async Task<ApiResponseModel> CategoryDelete(int Id)
-        {
-            var response = await _productRepository.CategoryDelete(Id);
-
-            return response;
-        }
-
-        //[HttpGet("GetProductList")]
-        //public async Task<IEnumerable<ProductModel>> GetProductList()
-        //{
-
-        //    var response = await _productRepository.GetProductList();
-
-        //    return response;
-        //}
 
         [HttpGet("GetProductDetails")]
         public async Task<IEnumerable<SPGetProductDetails_Result>> GetProductDetails(int categoryId)
@@ -119,43 +78,5 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
-        [HttpPost("AddToCart")]
-        public async Task<ApiResponseModel> AddToCart(CartUIModel cartUIModel)
-        {
-            var cartInputModel = new CartInputModel();
-
-            cartInputModel.Id = cartUIModel.Id;
-            cartInputModel.ProductId = cartUIModel.ProductId;
-            cartInputModel.CustomerId = cartUIModel.CustomerId;
-            cartInputModel.Quantity = cartUIModel.Quantity;
-          
-            var response = await _productRepository.AddToCart(cartInputModel);
-
-            return response;
-        }
-
-        [HttpGet("GetCartList")]
-        public async Task<IEnumerable<CartModel>> GetCartList()
-        {
-            var response = await _productRepository.GetCartList();
-
-            return response;
-        }
-
-        [HttpGet("GetCartListByCustomerId")]
-        public async Task<IEnumerable<SPGetCartDetailsByCustomerId_Result>> GetCartListByCustomerId(int customerId)
-        {
-            var response = await _productRepository.GetCartListByCustomerId(customerId);
-
-            return response;
-        }
-
-        [HttpPost("RemoveProductFromCart")]
-        public async Task<ApiResponseModel> RemoveProductFromCart(int id)
-        {
-            var response = await _productRepository.RemoveProductFromCart(id);
-
-            return response;
-        }
     }
 }

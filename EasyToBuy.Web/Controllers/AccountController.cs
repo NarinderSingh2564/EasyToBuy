@@ -93,6 +93,7 @@ namespace EasyToBuy.Web.Controllers
         [HttpPost("StateDelete{Id}")]
         public async Task<IActionResult> StateDelete([FromRoute]int Id)
         {
+            var kk = string.Empty;
             var response = await _accountRepository.StateDelete(Id);
 
             return Ok(response);
