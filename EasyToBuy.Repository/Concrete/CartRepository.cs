@@ -21,7 +21,7 @@ namespace EasyToBuy.Repository.Concrete
                 return await cartService.AddToCart(cartInputModel);
             }
         }
-        public async Task<IEnumerable<SPGetCartDetailsByCustomerId_Result>> GetCartDetailsByCustomerId(int customerId)
+        public async Task<GetCartDetailsByCustomerId> GetCartDetailsByCustomerId(int customerId)
         {
             using (CartService cartService = new CartService())
             {
