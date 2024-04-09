@@ -20,7 +20,8 @@ namespace EasyToBuy.Data.DBClasses
         public string ProductName { get; set; }
         public int ProductPrice { get; set; }
         public int ProductDiscount { get; set; }
-        public decimal PriceAfterDiscount { get; set; }
+        public decimal ProductDiscountPrice { get; set; }
+        public decimal ProductPriceAfterDiscount { get; set; }
 
         [Column(TypeName = "varchar(30)")]
         public string ProductShortName { get; set; }

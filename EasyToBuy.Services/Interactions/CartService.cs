@@ -97,17 +97,23 @@ namespace EasyToBuy.Services.Interactions
             }
             return apiResponseModel;
         }
-        public async Task<IEnumerable<SPGetCartDetailsByCustomerId_Result>> GetCartDetailsByCustomerId(int customerId)
+        public async Task<GetCartDetailsByCustomerId> GetCartDetailsByCustomerId(int customerId)
         {
-            var cartListByCustomerId = new List<SPGetCartDetailsByCustomerId_Result>();
+            var cartListByCustomerId = new GetCartDetailsByCustomerId();
 
             try
             {
                 var sqlQuery = "exec spGetCartDetailsByCustomerId @CustomerId";
 
-                SqlParameter parameter = new SqlParameter("@CustomerId", customerId);
+                SqlParameter parameter = new SqlParameter("@CustomerId", customerId); 
 
-                cartListByCustomerId = await _dbContext.cartDetailsByCustomerId_Results.FromSqlRaw(sqlQuery, parameter).ToListAsync();
+                cartListByCustomerId._cartListItems = await _dbContext.cartDetailsByCustomerId_Results.FromSqlRaw(sqlQuery, parameter).ToListAsync();
+
+
+                cartListByCustomerId.priceDetails.TotalProductPrice = cartListByCustomerId._cartListItems.Sum(x => x.ProductPrice);
+                cartListByCustomerId.priceDetails.TotalDiscountPrice = cartListByCustomerId._cartListItems.Sum(x =>x.ProductDiscountPrice);
+                cartListByCustomerId.priceDetails.TotalCartPrice = cartListByCustomerId._cartListItems.Sum(x => x.TotalProductPrice);
+
             }
             catch (Exception ex)
             {

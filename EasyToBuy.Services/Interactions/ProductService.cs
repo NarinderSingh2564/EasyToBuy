@@ -78,7 +78,7 @@ namespace EasyToBuy.Services.Interactions
                         ProductName = product.ProductName,
                         ProductPrice = product.ProductPrice,
                         ProductDiscount = product.ProductDiscount,
-                        PriceAfterDiscount = product.PriceAfterDiscount,
+                        ProductPriceAfterDiscount = product.ProductPriceAfterDiscount,
                         ProductShortName = product.ProductShortName,
                         ProductDescription = product.ProductDescription,
                         ProductImageUrl = product.ProductImageUrl,
@@ -139,7 +139,7 @@ namespace EasyToBuy.Services.Interactions
                         ProductName = product.ProductName,
                         ProductPrice = product.ProductPrice,
                         ProductDiscount = product.ProductDiscount,
-                        PriceAfterDiscount = product.PriceAfterDiscount,
+                        ProductPriceAfterDiscount = product.ProductPriceAfterDiscount,
                         ProductShortName = product.ProductShortName,
                         ProductDescription = product.ProductDescription,
                         ProductImageUrl = product.ProductImageUrl,
@@ -169,7 +169,8 @@ namespace EasyToBuy.Services.Interactions
                     dbProduct.ProductName = productInputModel.ProductName;
                     dbProduct.ProductPrice = productInputModel.ProductPrice;
                     dbProduct.ProductDiscount = productInputModel.ProductDiscount;
-                    dbProduct.PriceAfterDiscount = productInputModel.PriceAfterDiscount;
+                    dbProduct.ProductDiscountPrice = productInputModel.ProductDiscountPrice;
+                    dbProduct.ProductPriceAfterDiscount = productInputModel.ProductPriceAfterDiscount;
                     dbProduct.ProductShortName = productInputModel.ProductShortName;
                     dbProduct.ProductDescription = productInputModel.ProductDescription;
                     dbProduct.ProductImageUrl = productInputModel.ProductImageUrl;
@@ -187,7 +188,8 @@ namespace EasyToBuy.Services.Interactions
                     productObj.ProductName = productInputModel.ProductName;
                     productObj.ProductPrice = productInputModel.ProductPrice;
                     productObj.ProductDiscount = productInputModel.ProductDiscount;
-                    productObj.PriceAfterDiscount= productInputModel.PriceAfterDiscount;
+                    productObj.ProductDiscountPrice = productInputModel.ProductDiscountPrice;
+                    productObj.ProductPriceAfterDiscount = productInputModel.ProductPriceAfterDiscount;
                     productObj.ProductShortName = productInputModel.ProductShortName;
                     productObj.ProductDescription = productInputModel.ProductDescription;
                     productObj.ProductImageUrl = productInputModel.ProductImageUrl;

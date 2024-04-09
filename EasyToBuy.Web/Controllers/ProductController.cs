@@ -57,7 +57,8 @@ namespace EasyToBuy.Web.Controllers
             productInputModel.ProductName = productUIModel.ProductName;
             productInputModel.ProductPrice = productUIModel.ProductPrice;
             productInputModel.ProductDiscount = productUIModel.ProductDiscount;
-            productInputModel.PriceAfterDiscount = productUIModel.PriceAfterDiscount;
+            productInputModel.ProductDiscountPrice = productUIModel.ProductPrice * Decimal.Divide(productUIModel.ProductDiscount,100);
+            productInputModel.ProductPriceAfterDiscount = productUIModel.ProductPriceAfterDiscount;
             productInputModel.ProductShortName = productUIModel.ProductShortName;
             productInputModel.ProductDescription = productUIModel.ProductDescription;
             productInputModel.ProductImageUrl = productUIModel.ProductImageUrl;
