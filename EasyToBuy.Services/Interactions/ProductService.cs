@@ -62,7 +62,7 @@ namespace EasyToBuy.Services.Interactions
         #endregion
 
         public async Task<IEnumerable<ProductModel>> GetProductList()
-        {
+        { 
             var productList = new List<ProductModel>();
 
             try
