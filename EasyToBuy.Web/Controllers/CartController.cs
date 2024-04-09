@@ -39,7 +39,7 @@ namespace EasyToBuy.Web.Controllers
 
         [HttpGet("GetCartDetailsByCustomerId")]
         public async Task<GetCartDetailsByCustomerId> GetCartDetailsByCustomerId(int customerId)
-        {
+            {
             return await _cartRepository.GetCartDetailsByCustomerId(customerId);
         }
 
