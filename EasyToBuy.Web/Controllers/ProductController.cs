@@ -24,10 +24,17 @@ namespace EasyToBuy.Web.Controllers
         #endregion
 
         [HttpGet("GetProductList")]
-
         public async Task<IEnumerable<ProductModel>> GetProductList()
         {
             var response = await _productRepository.GetProductList();
+
+            return response;
+        }
+
+        [HttpGet("GetProductWeightList")]
+        public async Task<IEnumerable<ProductWeightModel>> GetProductWeightList()
+        {
+            var response = await _productRepository.GetProductWeightList();
 
             return response;
         }
@@ -64,6 +71,8 @@ namespace EasyToBuy.Web.Controllers
             productInputModel.ProductImageUrl = productUIModel.ProductImageUrl;
             productInputModel.ProductTimeSpan = productUIModel.ProductTimeSpan;
             productInputModel.CategoryId = productUIModel.CategoryId;
+            productInputModel.ProductWeightId = productUIModel.ProductWeightId;
+            productInputModel.ShowProductWeight = productUIModel.ShowProductWeight;
             productInputModel.CreatedBy = productUIModel.CreatedBy;
             productInputModel.UpdatedBy = productUIModel.UpdatedBy;
             productInputModel.IsActive = productUIModel.IsActive;
@@ -72,8 +81,6 @@ namespace EasyToBuy.Web.Controllers
 
             return response;
         }
-
-
 
     }
 }

@@ -4,6 +4,7 @@ using EasyToBuy.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyToBuy.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240409100628_product-weight")]
+    partial class productweight
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -274,12 +277,6 @@ namespace EasyToBuy.Data.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(50)");
 
-                    b.Property<int>("ProductWeightId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("ShowProductWeight")
-                        .HasColumnType("bit");
-
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("int");
 
@@ -289,8 +286,6 @@ namespace EasyToBuy.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("ProductWeightId");
 
                     b.ToTable("tblProduct");
                 });
@@ -570,15 +565,7 @@ namespace EasyToBuy.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EasyToBuy.Data.DBClasses.ProductWeight", "ProductWeights")
-                        .WithMany()
-                        .HasForeignKey("ProductWeightId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Categorys");
-
-                    b.Navigation("ProductWeights");
                 });
 
             modelBuilder.Entity("EasyToBuy.Data.DBClasses.State", b =>

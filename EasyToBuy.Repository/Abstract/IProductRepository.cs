@@ -8,6 +8,7 @@ namespace EasyToBuy.Repository.Abstract
     public interface IProductRepository
     {
         Task<IEnumerable<ProductModel>> GetProductList();
+        Task<IEnumerable<ProductWeightModel>> GetProductWeightList();
         Task<IEnumerable<SPGetProductDetails_Result>> GetProductDetails(int categoryId);
         Task<IEnumerable<ProductModel>> GetProductById(int Id);
         Task<ApiResponseModel> ProductAddEdit(ProductInputModel productInputModel);

@@ -38,6 +38,11 @@ namespace EasyToBuy.Data.DBClasses
         [ForeignKey("Categorys")]
         public int CategoryId { get; set; }
         public Category Categorys { get; set; }
+
+        [ForeignKey("ProductWeights")]
+        public int ProductWeightId { get; set; }
+        public ProductWeights ProductWeights { get; set; }
+        public bool ShowProductWeight { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }
