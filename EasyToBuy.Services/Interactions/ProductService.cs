@@ -84,6 +84,8 @@ namespace EasyToBuy.Services.Interactions
                         ProductImageUrl = product.ProductImageUrl,
                         ProductTimeSpan = product.ProductTimeSpan,
                         CategoryId = product.CategoryId,
+                        ProductWeightId = product.ProductWeightId,
+                        ShowProductWeight = product.ShowProductWeight,
                         IsActive = product.IsActive,
                     });
                 }
@@ -94,6 +96,31 @@ namespace EasyToBuy.Services.Interactions
             }
 
             return productList;
+        }
+
+        public async Task<IEnumerable<ProductWeightModel>> GetProductWeightList()
+        {
+            var productWeightList = new List<ProductWeightModel>();
+
+            try
+            {
+                var dbProductWeightList = await _dbContext.tblProductWeight.ToListAsync();
+                foreach (var weight in dbProductWeightList)
+                {
+                    productWeightList.Add(new ProductWeightModel()
+                    {
+                        Id= weight.Id,
+                        ProductWeight = weight.ProductWeight,
+                        IsActive= weight.IsActive,
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return productWeightList;
         }
         public async Task<IEnumerable<SPGetProductDetails_Result>> GetProductDetails(int categoryId)
         {
@@ -176,6 +203,8 @@ namespace EasyToBuy.Services.Interactions
                     dbProduct.ProductImageUrl = productInputModel.ProductImageUrl;
                     dbProduct.ProductTimeSpan = productInputModel.ProductTimeSpan;
                     dbProduct.CategoryId = productInputModel.CategoryId;
+                    dbProduct.ProductWeightId = productInputModel.ProductWeightId;
+                    dbProduct.ShowProductWeight = productInputModel.ShowProductWeight;
                     dbProduct.UpdatedBy = productInputModel.UpdatedBy;
                     dbProduct.UpdatedOn = DateTime.Now;
                     dbProduct.IsActive = productInputModel.IsActive;
@@ -195,7 +224,9 @@ namespace EasyToBuy.Services.Interactions
                     productObj.ProductImageUrl = productInputModel.ProductImageUrl;
                     productObj.ProductTimeSpan = productInputModel.ProductTimeSpan;
                     productObj.CategoryId = productInputModel.CategoryId;
-                    productObj.CreatedBy = productInputModel.CreatedBy;
+                    productObj.ProductWeightId = productInputModel.ProductWeightId;
+                    productObj.ShowProductWeight = productInputModel.ShowProductWeight;
+                    productObj.CreatedBy = productInputModel.CreatedBy; 
                     productObj.CreatedOn = DateTime.Now;
                     productObj.IsActive = productInputModel.IsActive;
 

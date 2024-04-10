@@ -14,6 +14,8 @@
         public string ProductImageUrl { get; set; }
         public string ProductTimeSpan { get; set; }
         public int CategoryId { get; set; }
+        public int ProductWeightId { get; set; }
+        public bool ShowProductWeight { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }

@@ -112,7 +112,7 @@ namespace EasyToBuy.Services.Interactions
 
                 cartListByCustomerId.priceDetails.TotalProductPrice = cartListByCustomerId._cartListItems.Sum(x => x.ProductPrice);
                 cartListByCustomerId.priceDetails.TotalDiscountPrice = cartListByCustomerId._cartListItems.Sum(x =>x.ProductDiscountPrice);
-                cartListByCustomerId.priceDetails.TotalCartPrice = cartListByCustomerId._cartListItems.Sum(x => x.TotalProductPrice);
+                cartListByCustomerId.priceDetails.TotalCartPrice = cartListByCustomerId._cartListItems.Sum(x => x.ProductPriceAfterDiscount);
 
             }
             catch (Exception ex)

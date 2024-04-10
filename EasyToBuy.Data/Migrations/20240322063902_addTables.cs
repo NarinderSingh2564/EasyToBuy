@@ -83,10 +83,12 @@ namespace EasyToBuy.Data.Migrations
                     ProductDiscountPrice = table.Column<decimal>(type: "decimal", nullable: false),
                     ProductPriceAfterDiscount = table.Column<decimal>(type: "decimal", nullable: false),
                     ProductShortName = table.Column<string>(type: "varchar(30)", nullable: false),
-                    ProductDescription = table.Column<string>(type: "varchar(200)", nullable: false),
+                    ProductDescription = table.Column<string>(type: "varchar(500)", nullable: false),
                     ProductImageUrl = table.Column<string>(type: "varchar(200)", nullable: false),
                     ProductTimeSpan = table.Column<string>(type: "varchar(50)", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
+                    ProductWeightId = table.Column<int>(type: "int", nullable: false),
+                    ShowProductWeight = table.Column<bool>(type: "bit", nullable: false),
                     CreatedBy = table.Column<int>(type: "int", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedBy = table.Column<int>(type: "int", nullable: true),
@@ -102,6 +104,13 @@ namespace EasyToBuy.Data.Migrations
                         principalTable: "tblCategory",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                     name: "FK_tblProduct_tblProductWeight_ProductWeightId",
+                     column: x => x.ProductWeightId,
+                     principalTable: "tblProductWeight",
+                     principalColumn: "Id",
+                     onDelete: ReferentialAction.Cascade);
+
                 });
 
             migrationBuilder.CreateTable(
@@ -230,6 +239,11 @@ namespace EasyToBuy.Data.Migrations
                 name: "IX_tblProduct_CategoryId",
                 table: "tblProduct",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+              name: "IX_tblProduct_ProductWeightId",
+              table: "tblProduct",
+              column: "ProductWeightId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblState_CountryId",

@@ -18,6 +18,7 @@ namespace EasyToBuy.Data
         public DbSet<Address> tblAddress { get; set; }
         public DbSet<Category> tblCategory { get; set; }
         public DbSet<Product> tblProduct { get; set; }
+        public DbSet<ProductWeights> tblProductWeight { get; set; }
         public DbSet<Cart> tblCart { get; set; }
         public DbSet<SPGetCartDetailsByCustomerId_Result> cartDetailsByCustomerId_Results { get; set; }
         public DbSet<SPGetProductDetails_Result> productDetails_Results { get; set; }
