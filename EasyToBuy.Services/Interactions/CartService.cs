@@ -73,7 +73,7 @@ namespace EasyToBuy.Services.Interactions
                 var isProductExists = await _dbContext.tblCart.Where(x => x.ProductId == cartInputModel.ProductId && x.CustomerId == cartInputModel.CustomerId).FirstOrDefaultAsync();
                 if (isProductExists != null)
                 {
-                    isProductExists.Quantity += cartInputModel.Quantity;
+                    isProductExists.Quantity = cartInputModel.Quantity;
                 }
                 else
                 {
@@ -112,7 +112,7 @@ namespace EasyToBuy.Services.Interactions
 
                 cartListByCustomerId.priceDetails.TotalProductPrice = cartListByCustomerId._cartListItems.Sum(x => x.ProductPrice);
                 cartListByCustomerId.priceDetails.TotalDiscountPrice = cartListByCustomerId._cartListItems.Sum(x =>x.ProductDiscountPrice);
-                cartListByCustomerId.priceDetails.TotalCartPrice = cartListByCustomerId._cartListItems.Sum(x => x.ProductPriceAfterDiscount);
+                cartListByCustomerId.priceDetails.TotalCartPrice = cartListByCustomerId._cartListItems.Sum(x => x.TotalProductPrice);
 
             }
             catch (Exception ex)
