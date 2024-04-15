@@ -40,9 +40,9 @@ namespace EasyToBuy.Web.Controllers
         }
 
         [HttpGet("GetProductDetails")]
-        public async Task<IEnumerable<SPGetProductDetails_Result>> GetProductDetails(int categoryId)
+        public async Task<IEnumerable<SPGetProductDetails_Result>> GetProductDetails(int categoryId, string? searchText)
         {
-            var response = await _productRepository.GetProductDetails(categoryId);
+            var response = await _productRepository.GetProductDetails(categoryId, searchText);
             return response;
         }
 

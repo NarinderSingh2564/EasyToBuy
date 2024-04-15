@@ -9,7 +9,7 @@ namespace EasyToBuy.Repository.Abstract
     {
         Task<IEnumerable<ProductModel>> GetProductList();
         Task<IEnumerable<ProductWeightModel>> GetProductWeightList();
-        Task<IEnumerable<SPGetProductDetails_Result>> GetProductDetails(int categoryId);
+        Task<IEnumerable<SPGetProductDetails_Result>> GetProductDetails(int categoryId, string searchText);
         Task<IEnumerable<ProductModel>> GetProductById(int Id);
         Task<ApiResponseModel> ProductAddEdit(ProductInputModel productInputModel);
         Task<ApiResponseModel> ProductDelete(int Id);

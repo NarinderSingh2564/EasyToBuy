@@ -23,11 +23,11 @@ namespace EasyToBuy.Repository.Concrete
                 return await productService.GetProductWeightList();
             }
         }
-        public async Task<IEnumerable<SPGetProductDetails_Result>> GetProductDetails(int categoryId)
+        public async Task<IEnumerable<SPGetProductDetails_Result>> GetProductDetails(int categoryId, string searchText)
         {
             using (ProductService productService = new ProductService())
             {
-                return await productService.GetProductDetails(categoryId);
+                return await productService.GetProductDetails(categoryId,searchText);
             }
         }
         public async Task<IEnumerable<ProductModel>> GetProductById(int Id)
