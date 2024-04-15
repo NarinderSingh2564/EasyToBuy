@@ -109,9 +109,9 @@ namespace EasyToBuy.Services.Interactions
                 {
                     productWeightList.Add(new ProductWeightModel()
                     {
-                        Id= weight.Id,
+                        Id = weight.Id,
                         ProductWeight = weight.ProductWeight,
-                        IsActive= weight.IsActive,
+                        IsActive = weight.IsActive,
                     });
                 }
             }
@@ -122,25 +122,17 @@ namespace EasyToBuy.Services.Interactions
 
             return productWeightList;
         }
-        public async Task<IEnumerable<SPGetProductDetails_Result>> GetProductDetails(int categoryId)
+        public async Task<IEnumerable<SPGetProductDetails_Result>> GetProductDetails(int categoryId, string searchText)
         {
             var productDetails = new List<SPGetProductDetails_Result>();
 
             try
             {
-                if (categoryId == 0)
-                {
-                    var sqlQuery = "exec spGetProductDetails @CategoryId";
-                    SqlParameter parameter = new SqlParameter("@CategoryId", DBNull.Value);
-                    productDetails = await _dbContext.productDetails_Results.FromSqlRaw(sqlQuery, parameter).ToListAsync();
-
-                }
-                else
-                {
-                    var sqlQuery = "exec spGetProductDetails @CategoryId";
-                    SqlParameter parameter = new SqlParameter("@CategoryId", categoryId);
-                    productDetails = await _dbContext.productDetails_Results.FromSqlRaw(sqlQuery, parameter).ToListAsync();
-                }
+                var sqlQuery = "exec spGetProductDetails @CategoryId,@SearchText";
+                SqlParameter parameter1 = new SqlParameter("@CategoryId", categoryId != 0 ? categoryId : "0");
+                SqlParameter parameter2 = new SqlParameter("@SearchText", string.IsNullOrEmpty(searchText) ? DBNull.Value : searchText);
+                productDetails = await _dbContext.productDetails_Results.FromSqlRaw(sqlQuery, parameter1, parameter2).ToListAsync();
+               
             }
             catch (Exception ex)
             {
@@ -226,7 +218,7 @@ namespace EasyToBuy.Services.Interactions
                     productObj.CategoryId = productInputModel.CategoryId;
                     productObj.ProductWeightId = productInputModel.ProductWeightId;
                     productObj.ShowProductWeight = productInputModel.ShowProductWeight;
-                    productObj.CreatedBy = productInputModel.CreatedBy; 
+                    productObj.CreatedBy = productInputModel.CreatedBy;
                     productObj.CreatedOn = DateTime.Now;
                     productObj.IsActive = productInputModel.IsActive;
 
@@ -270,6 +262,6 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
- 
+
     }
 }
