@@ -12,18 +12,9 @@ namespace EasyToBuy.Data.DBClasses
         [ForeignKey("User")]
         public int UserId { get; set; }
         public User User { get; set; }
-
-        [ForeignKey("City")]
-        public int CityId { get; set; }
-        public City City { get; set; }
-
-        [ForeignKey("State")]
-        public int StateId { get; set; }
-        public State State { get; set; }
-
-        [ForeignKey("Country")]
-        public int CountryId { get; set; }
-        public Country Country { get; set; }
+        public string City { get; set; }
+        public string State{ get; set; }
+        public string Country{ get; set; }
 
         [StringLength(100)]
         public string FullAddress { get; set; } = string.Empty;
@@ -35,6 +26,7 @@ namespace EasyToBuy.Data.DBClasses
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
         public bool IsActive { get; set; }
+        public bool IsDeliveryAddress { get; set; }
 
     }
 }
