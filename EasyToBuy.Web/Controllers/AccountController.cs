@@ -28,6 +28,23 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
+        [HttpPost("UserRegistration")]
+
+        public async Task<ApiResponseModel> UserRegistration(UserUIModel userUIModel)
+        {
+            var userInputModel = new UserInputModel();
+
+            userInputModel.Id = userUIModel.Id;
+            userInputModel.FullName = userUIModel.FullName;
+            userInputModel.Email = userUIModel.Email;
+            userInputModel.Mobile = userUIModel.Mobile;
+            userInputModel.Password = userUIModel.Password;
+            userInputModel.CreatedBy = 1;
+
+            var response = await _accountRepository.UserRegistration(userInputModel);
+
+            return response;
+        }
 
         [HttpGet("GetCountryList")]
         public async Task<IEnumerable<CountryModel>> GetCountryList()
