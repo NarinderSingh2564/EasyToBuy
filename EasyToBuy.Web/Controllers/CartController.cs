@@ -31,11 +31,20 @@ namespace EasyToBuy.Web.Controllers
             cartInputModel.ProductId = cartUIModel.ProductId;
             cartInputModel.CustomerId = cartUIModel.CustomerId;
             cartInputModel.Quantity = cartUIModel.Quantity;
+            cartInputModel.RequestFrom = cartUIModel.RequestFrom;
 
             var response = await _cartRepository.AddToCart(cartInputModel);
 
             return response;
         }
+
+
+        [HttpGet("CheckProductInCart")]
+        public async Task<ApiResponseModel> CheckProductInCart(int ProductId, int CustomerId)
+        {
+            return await _cartRepository.CheckProductInCart(ProductId, CustomerId);
+        }
+
 
         [HttpGet("GetCartDetailsByCustomerId")]
         public async Task<GetCartDetailsByCustomerId> GetCartDetailsByCustomerId(int customerId)

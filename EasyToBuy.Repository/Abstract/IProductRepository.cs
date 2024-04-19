@@ -13,6 +13,6 @@ namespace EasyToBuy.Repository.Abstract
         Task<IEnumerable<ProductModel>> GetProductById(int Id);
         Task<ApiResponseModel> ProductAddEdit(ProductInputModel productInputModel);
         Task<ApiResponseModel> ProductDelete(int Id);
-       
+        Task<IEnumerable<SPGetProductDescriptionByProductId_Result>> GetProductDescriptionByProductId(int productId);
     }
 }

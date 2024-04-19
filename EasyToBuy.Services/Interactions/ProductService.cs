@@ -263,5 +263,23 @@ namespace EasyToBuy.Services.Interactions
             return apiResponseModel;
         }
 
+        public async Task<IEnumerable<SPGetProductDescriptionByProductId_Result>> GetProductDescriptionByProductId(int productId)
+        {
+            var productDescription = new List<SPGetProductDescriptionByProductId_Result>();
+
+            try
+            {
+                var sqlQuery = "exec spGetProductDescriptionByProductId @ProductId";
+                SqlParameter parameter1 = new SqlParameter("@ProductId", productId);
+                productDescription = await _dbContext.productDescription_Results.FromSqlRaw(sqlQuery, parameter1).ToListAsync();
+
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return productDescription;
+        }
     }
 }
