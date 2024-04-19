@@ -1,4 +1,5 @@
-﻿using EasyToBuy.Data.DBClasses;
+﻿using System.Reflection;
+using EasyToBuy.Data.DBClasses;
 using EasyToBuy.Models.CommonModel;
 using EasyToBuy.Models.InputModels;
 using EasyToBuy.Models.Models;
@@ -18,11 +19,19 @@ namespace EasyToBuy.Repository.Concrete
             }
         }
 
+
         public async Task<ApiResponseModel> GetAddressListByUserId(int userID)
         {
             using (AccountService accountService = new AccountService())
             {
                 return await accountService.GetAddressListByUserId(userID);
+
+        public async Task<ApiResponseModel> UserRegistration(UserInputModel userInputModel)
+        {
+            using (AccountService accountService = new AccountService())
+            {
+                return await accountService.UserRegistration(userInputModel);
+
             }
         }
         public async Task<IEnumerable<CountryModel>> GetCountryList()

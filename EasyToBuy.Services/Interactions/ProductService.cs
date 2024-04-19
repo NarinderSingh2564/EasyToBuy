@@ -128,7 +128,7 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var sqlQuery = "exec spGetProductDetails @CategoryId,@SearchText";
+                var sqlQuery = "exec spGetProductListDetails @CategoryId,@SearchText";
                 SqlParameter parameter1 = new SqlParameter("@CategoryId", categoryId != 0 ? categoryId : "0");
                 SqlParameter parameter2 = new SqlParameter("@SearchText", string.IsNullOrEmpty(searchText) ? DBNull.Value : searchText);
                 productDetails = await _dbContext.productDetails_Results.FromSqlRaw(sqlQuery, parameter1, parameter2).ToListAsync();
