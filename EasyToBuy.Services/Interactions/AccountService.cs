@@ -103,7 +103,28 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        
+
+        public async Task<ApiResponseModel> GetAddressListByUserId(int userID)
+        {
+            var apiResponseModel = new ApiResponseModel();
+
+            try
+            {
+                var tblAddressList = await _dbContext.tblAddress.Where(x => x.UserId == userID).ToListAsync();
+
+                apiResponseModel.Response = tblAddressList;
+                apiResponseModel.Status = true;
+               
+            }
+            catch (Exception ex)
+            {
+                var message = ex.Message;
+            }
+
+            return apiResponseModel;
+        }
+
+
         public async Task<IEnumerable<CountryModel>> GetCountryList()
         {
             var countryList = new List<CountryModel>();
