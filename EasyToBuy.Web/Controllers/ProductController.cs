@@ -82,5 +82,13 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
+
+        [HttpGet("GetProductDescriptionByProductId")]
+        public async Task<IEnumerable<SPGetProductDescriptionByProductId_Result>> GetProductDescriptionByProductId(int productId)
+        {
+            var response = await _productRepository.GetProductDescriptionByProductId(productId);
+            return response;
+        }
+
     }
 }

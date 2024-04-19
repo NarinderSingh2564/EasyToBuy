@@ -70,31 +70,56 @@ namespace EasyToBuy.Services.Interactions
             var apiResponseModel = new ApiResponseModel();
             try
             {
-                var isProductExists = await _dbContext.tblCart.Where(x => x.ProductId == cartInputModel.ProductId && x.CustomerId == cartInputModel.CustomerId).FirstOrDefaultAsync();
-                if (isProductExists != null)
+                if (cartInputModel.RequestFrom == "Cart")
                 {
-                    isProductExists.Quantity = cartInputModel.Quantity;
+                    var isProductExists = await _dbContext.tblCart.Where(x => x.ProductId == cartInputModel.ProductId && x.CustomerId == cartInputModel.CustomerId).FirstOrDefaultAsync();
+                    if (isProductExists != null)
+                    {
+                        isProductExists.Quantity = cartInputModel.Quantity;
+
+                        await _dbContext.SaveChangesAsync();
+                        apiResponseModel.Status = true;
+                        apiResponseModel.Message = "Quantity is successfully updated";
+                    }
+                    else
+                    {
+                        apiResponseModel.Status = false;
+                        apiResponseModel.Message = " This Product is not exist in cart List";
+                    }
                 }
                 else
                 {
-                    var cartObj = new Cart();
+                    var isProductExists = await _dbContext.tblCart.Where(x => x.ProductId == cartInputModel.ProductId && x.CustomerId == cartInputModel.CustomerId).FirstOrDefaultAsync();
+                    if (isProductExists != null)
+                    {
+                        apiResponseModel.Status = false;
+                        apiResponseModel.Message = "This Product is already exist in your cart.";
+                    }
+                    else
+                    {
+                        var cartObj = new Cart();
 
-                    cartObj.CustomerId = cartInputModel.CustomerId;
-                    cartObj.ProductId = cartInputModel.ProductId;
-                    cartObj.Quantity = cartInputModel.Quantity;
-                    cartObj.AddedDate = DateTime.Now;
+                        cartObj.CustomerId = cartInputModel.CustomerId;
+                        cartObj.ProductId = cartInputModel.ProductId;
+                        cartObj.Quantity = cartInputModel.Quantity;
+                        cartObj.AddedDate = DateTime.Now;
 
-                    await _dbContext.AddAsync(cartObj);
+                        await _dbContext.AddAsync(cartObj);
+                        await _dbContext.SaveChangesAsync();
+
+                        apiResponseModel.Status = true;
+                        apiResponseModel.Message = "Product added to cart successfully.";
+                    }
                 }
-                await _dbContext.SaveChangesAsync();
-
-                apiResponseModel.Status = true;
-                apiResponseModel.Message = "Product added to cart successfully.";
             }
             catch (Exception ex)
             {
                 var msg = ex.Message;
+                apiResponseModel.Status = false;
+
+
             }
+
             return apiResponseModel;
         }
         public async Task<GetCartDetailsByCustomerId> GetCartDetailsByCustomerId(int customerId)
@@ -105,13 +130,13 @@ namespace EasyToBuy.Services.Interactions
             {
                 var sqlQuery = "exec spGetCartDetailsByCustomerId @CustomerId";
 
-                SqlParameter parameter = new SqlParameter("@CustomerId", customerId); 
+                SqlParameter parameter = new SqlParameter("@CustomerId", customerId);
 
                 cartListByCustomerId._cartListItems = await _dbContext.cartDetailsByCustomerId_Results.FromSqlRaw(sqlQuery, parameter).ToListAsync();
 
 
                 cartListByCustomerId.priceDetails.TotalProductPrice = cartListByCustomerId._cartListItems.Sum(x => x.ProductPrice);
-                cartListByCustomerId.priceDetails.TotalDiscountPrice = cartListByCustomerId._cartListItems.Sum(x =>x.ProductDiscountPrice);
+                cartListByCustomerId.priceDetails.TotalDiscountPrice = cartListByCustomerId._cartListItems.Sum(x => x.ProductDiscountPrice);
                 cartListByCustomerId.priceDetails.TotalCartPrice = cartListByCustomerId._cartListItems.Sum(x => x.TotalProductPrice);
 
             }
@@ -137,6 +162,29 @@ namespace EasyToBuy.Services.Interactions
                 }
             }
             catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+            return apiResponseModel;
+        }
+        public async Task<ApiResponseModel> CheckProductInCart(int productId, int customerId)
+        {
+            var apiResponseModel = new ApiResponseModel();
+
+            try
+            {
+                var isProductExist = await _dbContext.tblCart.Where(x => x.ProductId == productId && x.CustomerId == customerId).FirstOrDefaultAsync();
+                if (isProductExist != null)
+                {
+                    apiResponseModel.Status = true;
+                 
+                }
+                else
+                {
+                    apiResponseModel.Status = false;
+                }
+            }
+            catch(Exception ex)
             {
                 var msg = ex.Message;
             }

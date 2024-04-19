@@ -21,6 +21,16 @@ namespace EasyToBuy.Repository.Concrete
                 return await cartService.AddToCart(cartInputModel);
             }
         }
+
+        public async Task<ApiResponseModel> CheckProductInCart(int ProductId, int CustomerId)
+        {
+            using (CartService cartService = new CartService())
+            {
+                return await cartService.CheckProductInCart(ProductId, CustomerId);
+            }
+        }
+
+        
         public async Task<GetCartDetailsByCustomerId> GetCartDetailsByCustomerId(int customerId)
         {
             using (CartService cartService = new CartService())

@@ -22,6 +22,8 @@ namespace EasyToBuy.Data
         public DbSet<Cart> tblCart { get; set; }
         public DbSet<SPGetCartDetailsByCustomerId_Result> cartDetailsByCustomerId_Results { get; set; }
         public DbSet<SPGetProductDetails_Result> productDetails_Results { get; set; }
+
+        public DbSet<SPGetProductDescriptionByProductId_Result> productDescription_Results { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Server=SG2NWPLS19SQL-v09.mssql.shr.prod.sin2.secureserver.net;Database=EasyToBuyDb;User Id=EasyToBuy_Admin; Password=Bloom@2564;Trusted_Connection=False;TrustServerCertificate=true;Integrated Security=false;");
