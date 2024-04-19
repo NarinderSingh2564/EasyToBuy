@@ -5,11 +5,10 @@ using EasyToBuy.Models.InputModels;
 using EasyToBuy.Models.Models;
 using EasyToBuy.Repository.Abstract;
 using EasyToBuy.Services.Interactions;
-using System.Reflection;
 
 namespace EasyToBuy.Repository.Concrete
 {
-    public class AccountRepository:IAccountRepository
+    public class AccountRepository : IAccountRepository
     {
         public async Task<ApiResponseModel> CheckUser(string mobile, string password)
         {
@@ -19,12 +18,13 @@ namespace EasyToBuy.Repository.Concrete
             }
         }
 
-
         public async Task<ApiResponseModel> GetAddressListByUserId(int userID)
         {
             using (AccountService accountService = new AccountService())
             {
                 return await accountService.GetAddressListByUserId(userID);
+            }
+        }
 
         public async Task<ApiResponseModel> UserRegistration(UserInputModel userInputModel)
         {
