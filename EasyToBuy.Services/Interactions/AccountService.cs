@@ -4,6 +4,7 @@ using EasyToBuy.Data.DBClasses;
 using EasyToBuy.Models.CommonModel;
 using EasyToBuy.Models.InputModels;
 using EasyToBuy.Models.Models;
+using EasyToBuy.Models.UIModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyToBuy.Services.Interactions
@@ -57,26 +58,25 @@ namespace EasyToBuy.Services.Interactions
         }
 
         #endregion
-
-        public async Task<ApiResponseModel> CheckUser(string mobile , string password)
+        public async Task<ApiResponseModel> CheckUser(string mobile, string password)
         {
             var apiResponseModel = new ApiResponseModel();
 
             try
             {
-                var dbUser = await _dbContext.tblUser.Where(x=>x.Mobile == mobile).FirstOrDefaultAsync();
+                var dbUser = await _dbContext.tblUser.Where(x => x.Mobile == mobile).FirstOrDefaultAsync();
 
                 if (dbUser == null)
                 {
                     apiResponseModel.Status = false;
                     apiResponseModel.Message = "User not found.";
                 }
-                else if(dbUser.Password != password)
+                else if (dbUser.Password != password)
                 {
                     apiResponseModel.Status = false;
                     apiResponseModel.Message = "Incorrect password.";
                 }
-                else if(!dbUser.IsActive)
+                else if (!dbUser.IsActive)
                 {
                     apiResponseModel.Status = false;
                     apiResponseModel.Message = "User is not active.";
@@ -103,7 +103,47 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        
+
+        public async Task<ApiResponseModel> UserRegistration(UserInputModel userInputModel)
+        {
+            var apiResponseModel = new ApiResponseModel();
+
+            try
+            {
+                var isUserExists = await _dbContext.tblUser.Where(x => x.Mobile == userInputModel.Mobile).FirstOrDefaultAsync();
+                
+                if (isUserExists != null)
+                {
+                    apiResponseModel.Status = false;
+                    apiResponseModel.Message = "This mobile number is already registered.";
+                }
+                
+                else
+                {
+                    var dbUser = new User();
+
+                    dbUser.FullName = userInputModel.FullName;
+                    dbUser.Email = userInputModel.Email;
+                    dbUser.Mobile = userInputModel.Mobile;
+                    dbUser.Password = userInputModel.Password;
+                    dbUser.CreatedBy = userInputModel.CreatedBy;
+                    dbUser.CreatedOn = DateTime.Now;
+                    dbUser.IsActive = true;
+
+                    await _dbContext.tblUser.AddAsync(dbUser);
+                    await _dbContext.SaveChangesAsync();
+
+                    apiResponseModel.Status = true;
+                    apiResponseModel.Message = "User registered successfully.";
+                }
+            }
+            catch (Exception ex)
+            {
+                var message = ex.Message;
+            }
+
+            return apiResponseModel;
+        }
         public async Task<IEnumerable<CountryModel>> GetCountryList()
         {
             var countryList = new List<CountryModel>();
@@ -207,7 +247,6 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-
         public async Task<IEnumerable<StateModel>> GetStatesList()
         {
             var stateModel = new List<StateModel>();
@@ -227,7 +266,6 @@ namespace EasyToBuy.Services.Interactions
             }
             return stateModel;
         }
-
         public async Task<ApiResponseModel> StateAddEdit(StateInputModel stateInputModel)
         {
             var apiresponseModel = new ApiResponseModel();
@@ -275,7 +313,6 @@ namespace EasyToBuy.Services.Interactions
             }
             return apiresponseModel;
         }
-
         public async Task<ApiResponseModel> StateDelete(int Id)
         {
             var apiresponseModel = new ApiResponseModel();
