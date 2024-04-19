@@ -28,6 +28,16 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
+
+        [HttpGet("GetAddressListByUserId")]
+        public async Task<ApiResponseModel> GetAddressListByUserId(int userID)
+        {
+            var response = await _accountRepository.GetAddressListByUserId(userID);
+
+            return response;
+        }
+        
+
         [HttpPost("UserRegistration")]
 
         public async Task<ApiResponseModel> UserRegistration(UserUIModel userUIModel)
@@ -45,6 +55,7 @@ namespace EasyToBuy.Web.Controllers
 
             return response;
         }
+
 
         [HttpGet("GetCountryList")]
         public async Task<IEnumerable<CountryModel>> GetCountryList()

@@ -104,12 +104,23 @@ namespace EasyToBuy.Services.Interactions
             return apiResponseModel;
         }
 
+
+        public async Task<ApiResponseModel> GetAddressListByUserId(int userID)
+
         public async Task<ApiResponseModel> UserRegistration(UserInputModel userInputModel)
+
         {
             var apiResponseModel = new ApiResponseModel();
 
             try
             {
+
+                var tblAddressList = await _dbContext.tblAddress.Where(x => x.UserId == userID).ToListAsync();
+
+                apiResponseModel.Response = tblAddressList;
+                apiResponseModel.Status = true;
+               
+
                 var isUserExists = await _dbContext.tblUser.Where(x => x.Mobile == userInputModel.Mobile).FirstOrDefaultAsync();
                 
                 if (isUserExists != null)
@@ -136,6 +147,7 @@ namespace EasyToBuy.Services.Interactions
                     apiResponseModel.Status = true;
                     apiResponseModel.Message = "User registered successfully.";
                 }
+
             }
             catch (Exception ex)
             {
@@ -144,6 +156,7 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
+
         public async Task<IEnumerable<CountryModel>> GetCountryList()
         {
             var countryList = new List<CountryModel>();
