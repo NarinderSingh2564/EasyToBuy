@@ -133,13 +133,6 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-
-                var tblAddressList = await _dbContext.tblAddress.Where(x => x.UserId == userID).ToListAsync();
-
-                apiResponseModel.Response = tblAddressList;
-                apiResponseModel.Status = true;
-
-
                 var isUserExists = await _dbContext.tblUser.Where(x => x.Mobile == userInputModel.Mobile).FirstOrDefaultAsync();
 
                 if (isUserExists != null)
