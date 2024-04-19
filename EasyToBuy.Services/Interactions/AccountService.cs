@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Reflection;
 using EasyToBuy.Data;
 using EasyToBuy.Data.DBClasses;
 using EasyToBuy.Models.CommonModel;
@@ -106,6 +107,24 @@ namespace EasyToBuy.Services.Interactions
 
 
         public async Task<ApiResponseModel> GetAddressListByUserId(int userID)
+        {
+            var apiResponseModel = new ApiResponseModel();
+
+            try
+            {
+                var addressList = await _dbContext.tblAddress.Where(x => x.UserId == userID).ToListAsync();
+
+                apiResponseModel.Response = addressList;
+                apiResponseModel.Status = true;
+            }
+            catch (Exception ex)
+            {
+                var message = ex.Message;
+                apiResponseModel.Status = false;
+            }
+
+            return apiResponseModel;
+        }
 
         public async Task<ApiResponseModel> UserRegistration(UserInputModel userInputModel)
 
@@ -119,16 +138,16 @@ namespace EasyToBuy.Services.Interactions
 
                 apiResponseModel.Response = tblAddressList;
                 apiResponseModel.Status = true;
-               
+
 
                 var isUserExists = await _dbContext.tblUser.Where(x => x.Mobile == userInputModel.Mobile).FirstOrDefaultAsync();
-                
+
                 if (isUserExists != null)
                 {
                     apiResponseModel.Status = false;
                     apiResponseModel.Message = "This mobile number is already registered.";
                 }
-                
+
                 else
                 {
                     var dbUser = new User();
