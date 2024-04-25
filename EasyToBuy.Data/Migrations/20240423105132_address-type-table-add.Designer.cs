@@ -4,6 +4,7 @@ using EasyToBuy.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyToBuy.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240423105132_address-type-table-add")]
+    partial class addresstypetableadd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,9 +32,6 @@ namespace EasyToBuy.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AddressTypeId")
-                        .HasColumnType("int");
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -77,8 +77,6 @@ namespace EasyToBuy.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AddressTypeId");
 
                     b.HasIndex("UserId");
 
@@ -623,19 +621,11 @@ namespace EasyToBuy.Data.Migrations
 
             modelBuilder.Entity("EasyToBuy.Data.DBClasses.Address", b =>
                 {
-                    b.HasOne("EasyToBuy.Data.DBClasses.AddressType", "AddressType")
-                        .WithMany()
-                        .HasForeignKey("AddressTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("EasyToBuy.Data.DBClasses.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("AddressType");
 
                     b.Navigation("User");
                 });

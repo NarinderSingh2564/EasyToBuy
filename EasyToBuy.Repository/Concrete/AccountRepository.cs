@@ -17,15 +17,6 @@ namespace EasyToBuy.Repository.Concrete
                 return await accountService.CheckUser(mobile, password);
             }
         }
-
-        public async Task<ApiResponseModel> GetAddressListByUserId(int userID)
-        {
-            using (AccountService accountService = new AccountService())
-            {
-                return await accountService.GetAddressListByUserId(userID);
-            }
-        }
-
         public async Task<ApiResponseModel> UserRegistration(UserInputModel userInputModel)
         {
             using (AccountService accountService = new AccountService())
@@ -34,6 +25,49 @@ namespace EasyToBuy.Repository.Concrete
 
             }
         }
+        public async Task<IEnumerable<AddressModel>> GetAddressListByUserId(int userID)
+        {
+            using (AccountService accountService = new AccountService())
+            {
+                return await accountService.GetAddressListByUserId(userID);
+            }
+        }
+        public async Task<IEnumerable<AddressTypeModel>> GetAddressTypeList()
+        {
+            using (AccountService accountService = new AccountService())
+            {
+                return await accountService.GetAddressTypeList();
+
+            }
+        }
+        public async Task<ApiResponseModel> AddressAddEdit(AddressInputModel addressInputModel)
+        {
+            using (AccountService accountService = new AccountService())
+            {
+                return await accountService.AddressAddEdit(addressInputModel);
+
+            }
+        }
+        public async Task<ApiResponseModel> SetDeliveryAddress(int id, int userId)
+        {
+            using (AccountService accountService = new AccountService())
+            {
+                return await accountService.SetDeliveryAddress(id, userId);
+
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
         public async Task<IEnumerable<CountryModel>> GetCountryList()
         {
             using (AccountService accountService = new AccountService())

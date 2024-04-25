@@ -16,6 +16,7 @@ namespace EasyToBuy.Data
         public DbSet<City> tblCity { get; set; }
         public DbSet<User> tblUser { get; set; }
         public DbSet<Address> tblAddress  { get; set; }
+        public DbSet<AddressType> tblAddressType { get; set; }
         public DbSet<Category> tblCategory { get; set; }
         public DbSet<Product> tblProduct { get; set; }
         public DbSet<ProductWeights> tblProductWeight { get; set; } 
