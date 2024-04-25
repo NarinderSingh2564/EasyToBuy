@@ -20,6 +20,7 @@ namespace EasyToBuy.Web.Controllers
         }
         #endregion
 
+
         [HttpPost("CheckUser")]
         public async Task<ApiResponseModel> CheckUser(LoginModel loginModel)
         {
@@ -28,18 +29,7 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
-
-        [HttpGet("GetAddressListByUserId")]
-        public async Task<ApiResponseModel> GetAddressListByUserId(int userID)
-        {
-            var response = await _accountRepository.GetAddressListByUserId(userID);
-
-            return response;
-        }
-        
-
         [HttpPost("UserRegistration")]
-
         public async Task<ApiResponseModel> UserRegistration(UserUIModel userUIModel)
         {
             var userInputModel = new UserInputModel();
@@ -56,76 +46,131 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
-
-        [HttpGet("GetCountryList")]
-        public async Task<IEnumerable<CountryModel>> GetCountryList()
+        [HttpGet("GetAddressListByUserId")]
+        public async Task<IEnumerable<AddressModel>> GetAddressListByUserId(int userID)
         {
-            var response = await _accountRepository.GetCountryList();
+            var response = await _accountRepository.GetAddressListByUserId(userID);
+
+            return response;
+        }
+
+        [HttpGet("GetAddressTypeList")]
+        public async Task<IEnumerable<AddressTypeModel>> GetAddressTypeList()
+        {
+            var response = await _accountRepository.GetAddressTypeList();
+
+            return response;
+        }
+
+        [HttpPost("AddressAddEdit")]
+        public async Task<ApiResponseModel> AddressAddEdit(AddressUIModel addressUIModel)
+        {
+            var addressInputModel = new AddressInputModel();
+            
+            addressInputModel.Id = addressUIModel.Id;
+            addressInputModel.UserId = addressUIModel.UserId;
+            addressInputModel.FullAddress = addressUIModel.FullAddress;
+            addressInputModel.Pincode = addressUIModel.Pincode;
+            addressInputModel.City = addressUIModel.City;
+            addressInputModel.State = addressUIModel.State;
+            addressInputModel.Country = addressUIModel.Country;
+            addressInputModel.AddressTypeId = addressUIModel.AddressTypeId;
+            addressInputModel.CreatedBy = addressUIModel.CreatedBy;
+            addressInputModel.UpdatedBy = addressUIModel.UpdatedBy;
+
+            var response = await _accountRepository.AddressAddEdit(addressInputModel);
+           
+            return response;
+        }
+
+        [HttpPost("SetDeliveryAddress")]
+        public async Task<ApiResponseModel> SetDeliveryAddress(int id, int userId)
+        {
+            var response = await _accountRepository.SetDeliveryAddress(id, userId);
 
             return response;
         }
 
 
-        [HttpPost("CountryAddEdit")]
-        public async Task<ApiResponseModel> CountryAddEdit(CountryUIModel countryUIModel)
-        {
-            var countryInputModel = new CountryInputModel();
-
-            countryInputModel.Id = countryUIModel.Id;
-            countryInputModel.CountryName = countryUIModel.CountryName;
-            countryInputModel.CountryCode = countryUIModel.CountryCode;
-            countryInputModel.UpdatedBy = countryUIModel.UpdatedBy;
-            countryInputModel.CreatedBy = countryUIModel.CreatedBy;
-            countryInputModel.IsActive = countryUIModel.IsActive;
-
-            var response =  await _accountRepository.CountryAddEdit(countryInputModel);
-
-            return  response;
-        }
 
 
-        [HttpPost("CountryDelete{countryId}")]
-        public async Task<ApiResponseModel> CountryDelete([FromRoute] int Id)
-        {
-            var response = await _accountRepository.CountryDelete(Id);
-
-            return response;
-        }
 
 
-        [HttpGet("GetStatesList")]
-        public async Task<IActionResult> GetStatesList()
-        {
-            var response = await _accountRepository.GetStatesList();
-
-            return Ok(response);
-        }
 
 
-        [HttpPost("StateAddEdit")]
-        public async Task<IActionResult> StateAddEdit(StateUIModel stateUIModel)
-        {
-            var stateInputModel = new StateInputModel();
-
-            stateInputModel.Id = stateUIModel.Id;
-            stateInputModel.CountryId = stateUIModel.CountryId;
-            stateInputModel.StateName = stateUIModel.StateName;
-            stateInputModel.IsActive = stateUIModel.IsActive;
-
-            var response = await _accountRepository.StateAddEdit(stateInputModel);
-
-            return Ok(response);
-        }
 
 
-        [HttpPost("StateDelete{Id}")]
-        public async Task<IActionResult> StateDelete([FromRoute]int Id)
-        {
-            var kk = string.Empty;
-            var response = await _accountRepository.StateDelete(Id);
 
-            return Ok(response);
-        }
+
+        //[HttpGet("GetCountryList")]
+        //public async Task<IEnumerable<CountryModel>> GetCountryList()
+        //{
+        //    var response = await _accountRepository.GetCountryList();
+
+        //    return response;
+        //}
+
+
+        //[HttpPost("CountryAddEdit")]
+        //public async Task<ApiResponseModel> CountryAddEdit(CountryUIModel countryUIModel)
+        //{
+        //    var countryInputModel = new CountryInputModel();
+
+        //    countryInputModel.Id = countryUIModel.Id;
+        //    countryInputModel.CountryName = countryUIModel.CountryName;
+        //    countryInputModel.CountryCode = countryUIModel.CountryCode;
+        //    countryInputModel.UpdatedBy = countryUIModel.UpdatedBy;
+        //    countryInputModel.CreatedBy = countryUIModel.CreatedBy;
+        //    countryInputModel.IsActive = countryUIModel.IsActive;
+
+        //    var response =  await _accountRepository.CountryAddEdit(countryInputModel);
+
+        //    return  response;
+        //}
+
+
+        //[HttpPost("CountryDelete{countryId}")]
+        //public async Task<ApiResponseModel> CountryDelete([FromRoute] int Id)
+        //{
+        //    var response = await _accountRepository.CountryDelete(Id);
+
+        //    return response;
+        //}
+
+
+        //[HttpGet("GetStatesList")]
+        //public async Task<IActionResult> GetStatesList()
+        //{
+        //    var response = await _accountRepository.GetStatesList();
+
+        //    return Ok(response);
+        //}
+
+
+        //[HttpPost("StateAddEdit")]
+        //public async Task<IActionResult> StateAddEdit(StateUIModel stateUIModel)
+        //{
+        //    var stateInputModel = new StateInputModel();
+
+        //    stateInputModel.Id = stateUIModel.Id;
+        //    stateInputModel.CountryId = stateUIModel.CountryId;
+        //    stateInputModel.StateName = stateUIModel.StateName;
+        //    stateInputModel.IsActive = stateUIModel.IsActive;
+
+        //    var response = await _accountRepository.StateAddEdit(stateInputModel);
+
+        //    return Ok(response);
+        //}
+
+
+        //[HttpPost("StateDelete{Id}")]
+        //public async Task<IActionResult> StateDelete([FromRoute]int Id)
+        //{
+        //    var kk = string.Empty;
+        //    var response = await _accountRepository.StateDelete(Id);
+
+        //    return Ok(response);
+        //}
 
     }
 }
