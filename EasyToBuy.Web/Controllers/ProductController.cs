@@ -60,16 +60,14 @@ namespace EasyToBuy.Web.Controllers
             var productInputModel = new ProductInputModel();
 
             productInputModel.Id = productUIModel.Id;
-            productInputModel.ProductSku = productUIModel.ProductSku;
+            productInputModel.VendorId = productUIModel.VendorId;
             productInputModel.ProductName = productUIModel.ProductName;
             productInputModel.ProductPrice = productUIModel.ProductPrice;
             productInputModel.ProductDiscount = productUIModel.ProductDiscount;
             productInputModel.ProductDiscountPrice = productUIModel.ProductPrice * Decimal.Divide(productUIModel.ProductDiscount,100);
             productInputModel.ProductPriceAfterDiscount = productUIModel.ProductPriceAfterDiscount;
-            productInputModel.ProductShortName = productUIModel.ProductShortName;
             productInputModel.ProductDescription = productUIModel.ProductDescription;
-            productInputModel.ProductImageUrl = productUIModel.ProductImageUrl;
-            productInputModel.ProductTimeSpan = productUIModel.ProductTimeSpan;
+            productInputModel.ProductImage = productUIModel.ProductImage;
             productInputModel.CategoryId = productUIModel.CategoryId;
             productInputModel.ProductWeightId = productUIModel.ProductWeightId;
             productInputModel.ShowProductWeight = productUIModel.ShowProductWeight;

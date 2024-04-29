@@ -21,9 +21,9 @@ namespace EasyToBuy.Data
         public DbSet<Product> tblProduct { get; set; }
         public DbSet<ProductWeights> tblProductWeight { get; set; } 
         public DbSet<Cart> tblCart { get; set; }
+        public DbSet<Vendor> tblVendor { get; set; }
         public DbSet<SPGetCartDetailsByCustomerId_Result> cartDetailsByCustomerId_Results { get; set; }
         public DbSet<SPGetProductDetails_Result> productDetails_Results { get; set; }
-
         public DbSet<SPGetProductDescriptionByProductId_Result> productDescription_Results { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

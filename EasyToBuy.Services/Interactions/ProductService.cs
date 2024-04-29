@@ -74,15 +74,12 @@ namespace EasyToBuy.Services.Interactions
                     {
 
                         Id = product.Id,
-                        ProductSku = product.ProductSku,
                         ProductName = product.ProductName,
                         ProductPrice = product.ProductPrice,
                         ProductDiscount = product.ProductDiscount,
                         ProductPriceAfterDiscount = product.ProductPriceAfterDiscount,
-                        ProductShortName = product.ProductShortName,
                         ProductDescription = product.ProductDescription,
-                        ProductImageUrl = product.ProductImageUrl,
-                        ProductTimeSpan = product.ProductTimeSpan,
+                        ProductImage = product.ProductImage,
                         CategoryId = product.CategoryId,
                         ProductWeightId = product.ProductWeightId,
                         ShowProductWeight = product.ShowProductWeight,
@@ -154,15 +151,12 @@ namespace EasyToBuy.Services.Interactions
                     {
 
                         Id = product.Id,
-                        ProductSku = product.ProductSku,
                         ProductName = product.ProductName,
                         ProductPrice = product.ProductPrice,
                         ProductDiscount = product.ProductDiscount,
                         ProductPriceAfterDiscount = product.ProductPriceAfterDiscount,
-                        ProductShortName = product.ProductShortName,
                         ProductDescription = product.ProductDescription,
-                        ProductImageUrl = product.ProductImageUrl,
-                        ProductTimeSpan = product.ProductTimeSpan,
+                        ProductImage = product.ProductImage,
                         CategoryId = product.CategoryId,
                         IsActive = product.IsActive,
                     });
@@ -184,16 +178,13 @@ namespace EasyToBuy.Services.Interactions
 
                 if (dbProduct != null)
                 {
-                    dbProduct.ProductSku = productInputModel.ProductSku;
                     dbProduct.ProductName = productInputModel.ProductName;
                     dbProduct.ProductPrice = productInputModel.ProductPrice;
                     dbProduct.ProductDiscount = productInputModel.ProductDiscount;
                     dbProduct.ProductDiscountPrice = productInputModel.ProductDiscountPrice;
                     dbProduct.ProductPriceAfterDiscount = productInputModel.ProductPriceAfterDiscount;
-                    dbProduct.ProductShortName = productInputModel.ProductShortName;
                     dbProduct.ProductDescription = productInputModel.ProductDescription;
-                    dbProduct.ProductImageUrl = productInputModel.ProductImageUrl;
-                    dbProduct.ProductTimeSpan = productInputModel.ProductTimeSpan;
+                    dbProduct.ProductImage = productInputModel.ProductImage;
                     dbProduct.CategoryId = productInputModel.CategoryId;
                     dbProduct.ProductWeightId = productInputModel.ProductWeightId;
                     dbProduct.ShowProductWeight = productInputModel.ShowProductWeight;
@@ -205,16 +196,14 @@ namespace EasyToBuy.Services.Interactions
                 {
                     var productObj = new Product();
 
-                    productObj.ProductSku = productInputModel.ProductSku;
+                    productObj.VendorId = productInputModel.VendorId;
                     productObj.ProductName = productInputModel.ProductName;
                     productObj.ProductPrice = productInputModel.ProductPrice;
                     productObj.ProductDiscount = productInputModel.ProductDiscount;
                     productObj.ProductDiscountPrice = productInputModel.ProductDiscountPrice;
                     productObj.ProductPriceAfterDiscount = productInputModel.ProductPriceAfterDiscount;
-                    productObj.ProductShortName = productInputModel.ProductShortName;
                     productObj.ProductDescription = productInputModel.ProductDescription;
-                    productObj.ProductImageUrl = productInputModel.ProductImageUrl;
-                    productObj.ProductTimeSpan = productInputModel.ProductTimeSpan;
+                    productObj.ProductImage = productInputModel.ProductImage;
                     productObj.CategoryId = productInputModel.CategoryId;
                     productObj.ProductWeightId = productInputModel.ProductWeightId;
                     productObj.ShowProductWeight = productInputModel.ShowProductWeight;
@@ -262,7 +251,6 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-
         public async Task<IEnumerable<SPGetProductDescriptionByProductId_Result>> GetProductDescriptionByProductId(int productId)
         {
             var productDescription = new List<SPGetProductDescriptionByProductId_Result>();
