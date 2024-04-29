@@ -4,6 +4,7 @@ using EasyToBuy.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyToBuy.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240426050848_vendor-table-add")]
+    partial class vendortableadd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -286,19 +289,31 @@ namespace EasyToBuy.Data.Migrations
                     b.Property<decimal>("ProductDiscountPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("ProductImage")
+                    b.Property<string>("ProductImageUrl")
                         .IsRequired()
-                        .HasColumnType("varchar(150)");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<string>("ProductName")
                         .IsRequired()
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("varchar(40)");
 
                     b.Property<int>("ProductPrice")
                         .HasColumnType("int");
 
                     b.Property<decimal>("ProductPriceAfterDiscount")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ProductShortName")
+                        .IsRequired()
+                        .HasColumnType("varchar(30)");
+
+                    b.Property<string>("ProductSku")
+                        .IsRequired()
+                        .HasColumnType("varchar(30)");
+
+                    b.Property<string>("ProductTimeSpan")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
 
                     b.Property<int>("ProductWeightId")
                         .HasColumnType("int");
@@ -312,16 +327,11 @@ namespace EasyToBuy.Data.Migrations
                     b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("VendorId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("ProductWeightId");
-
-                    b.HasIndex("VendorId");
 
                     b.ToTable("tblProduct");
                 });
@@ -482,17 +492,22 @@ namespace EasyToBuy.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<bool>("IsLicensed")
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime?>("LastLoginDate")
-                        .HasColumnType("datetime2");
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsLicensed")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("LicenseExpiredOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Mobile")
-                        .HasColumnType("int");
+                    b.Property<string>("Mobile")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -504,23 +519,15 @@ namespace EasyToBuy.Data.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
-                    b.Property<int>("Pincode")
-                        .HasColumnType("int");
+                    b.Property<string>("Pincode")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("State")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
-
-                    b.Property<string>("StatusRemarks")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("int");
@@ -767,17 +774,9 @@ namespace EasyToBuy.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EasyToBuy.Data.DBClasses.Vendor", "Vendor")
-                        .WithMany()
-                        .HasForeignKey("VendorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Categorys");
 
                     b.Navigation("ProductWeights");
-
-                    b.Navigation("Vendor");
                 });
 
             modelBuilder.Entity("EasyToBuy.Data.DBClasses.State", b =>
