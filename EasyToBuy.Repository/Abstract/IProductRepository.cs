@@ -7,12 +7,9 @@ namespace EasyToBuy.Repository.Abstract
 {
     public interface IProductRepository
     {
-        Task<IEnumerable<ProductModel>> GetProductList();
-        Task<IEnumerable<ProductWeightModel>> GetProductWeightList();
-        Task<IEnumerable<SPGetProductDetails_Result>> GetProductDetails(int categoryId, string searchText);
-        Task<IEnumerable<ProductModel>> GetProductById(int Id);
+        Task<IEnumerable<SPGetProductList_Result>> GetProductList(int categoryId, string? searchText,int vendorId,string role);
         Task<ApiResponseModel> ProductAddEdit(ProductInputModel productInputModel);
-        Task<ApiResponseModel> ProductDelete(int Id);
-        Task<IEnumerable<SPGetProductDescriptionByProductId_Result>> GetProductDescriptionByProductId(int productId);
+        Task<IEnumerable<SPGetProductDetailsById_Result>> GetProductDetailsById(int productId);
+        Task<IEnumerable<ProductWeightModel>> GetProductWeightList();
     }
 }

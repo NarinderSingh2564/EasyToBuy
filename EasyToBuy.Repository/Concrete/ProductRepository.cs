@@ -9,11 +9,25 @@ namespace EasyToBuy.Repository.Concrete
 {
     public class ProductRepository :  IProductRepository
     {
-        public async Task<IEnumerable<ProductModel>> GetProductList()
+        public async Task<IEnumerable<SPGetProductList_Result>> GetProductList(int categoryId, string? searchText, int vendorId, string role)
         {
             using (ProductService productService = new ProductService())
             {
-                return await productService.GetProductList();
+                return await productService.GetProductList(categoryId,searchText,vendorId,role);
+            }
+        }
+        public async Task<ApiResponseModel> ProductAddEdit(ProductInputModel productInputModel)
+        {
+            using (ProductService productService = new ProductService())
+            {
+                return await productService.ProductAddEdit(productInputModel);
+            }
+        }
+        public async Task<IEnumerable<SPGetProductDetailsById_Result>> GetProductDetailsById(int productId)
+        {
+            using (ProductService productService = new ProductService())
+            {
+                return await productService.GetProductDetailsById(productId);
             }
         }
         public async Task<IEnumerable<ProductWeightModel>> GetProductWeightList()
@@ -24,42 +38,6 @@ namespace EasyToBuy.Repository.Concrete
             }
         }
         
-        public async Task<IEnumerable<SPGetProductDetails_Result>> GetProductDetails(int categoryId, string searchText)
-        {
-            using (ProductService productService = new ProductService())
-            {
-                return await productService.GetProductDetails(categoryId,searchText);
-            }
-        }
-
-        public async Task<IEnumerable<SPGetProductDescriptionByProductId_Result>> GetProductDescriptionByProductId(int productId)
-        {
-            using (ProductService productService = new ProductService())
-            {
-                return await productService.GetProductDescriptionByProductId(productId);
-            }
-        }
-        public async Task<IEnumerable<ProductModel>> GetProductById(int Id)
-        {
-            using (ProductService productService = new ProductService())
-            {
-                return await productService.GetProductById(Id);
-            }
-        }
-        public async Task<ApiResponseModel> ProductAddEdit(ProductInputModel productInputModel)
-        {
-            using (ProductService productService = new ProductService())
-            {
-                return await productService.ProductAddEdit(productInputModel);
-            }
-        }
-        public async Task<ApiResponseModel> ProductDelete(int Id)
-        {
-            using (ProductService productService = new ProductService())
-            {
-                return await productService.ProductDelete(Id);
-            }
-        }
 
     }
 }

@@ -130,7 +130,6 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-
         public async Task<IEnumerable<VendorModel>> GetVendorList()
         {
             var vendorList = new List<VendorModel>();
@@ -210,12 +209,6 @@ namespace EasyToBuy.Services.Interactions
                     }
                     else if (dbVendor.Status == "Approved")
                     {
-                        if(dbVendor.Password != password)
-                        {
-                            apiResponseModel.Status = false;
-                            apiResponseModel.Message = "Incorrect password";
-
-                        }
                         apiResponseModel.Status = true;
                         apiResponseModel.Message = "User logged in successfully";
                         apiResponseModel.Response = dbVendor;
