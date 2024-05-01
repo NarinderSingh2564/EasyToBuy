@@ -262,17 +262,17 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var dbAdressByUserId = await _dbContext.tblAddress.Where(x=>x.UserId == userId).ToListAsync();
-                
+                var dbAdressByUserId = await _dbContext.tblAddress.Where(x => x.UserId == userId).ToListAsync();
+
                 if (dbAdressByUserId.Count > 0)
                 {
-                    foreach(var item  in dbAdressByUserId)
+                    foreach (var item in dbAdressByUserId)
                     {
-                        item.IsDeliveryAddress= false;
+                        item.IsDeliveryAddress = false;
                     }
                 }
 
-                var deliveryAddress = await _dbContext.tblAddress.Where(x=>x.Id == id).FirstOrDefaultAsync();
+                var deliveryAddress = await _dbContext.tblAddress.Where(x => x.Id == id).FirstOrDefaultAsync();
                 if (deliveryAddress != null)
                 {
                     deliveryAddress.IsDeliveryAddress = true;
@@ -290,202 +290,5 @@ namespace EasyToBuy.Services.Interactions
             return apiResponseModel;
         }
 
-
-
-
-
-
-
-        public async Task<IEnumerable<CountryModel>> GetCountryList()
-        {
-            var countryList = new List<CountryModel>();
-
-            try
-            {
-                var dbCountryList = await _dbContext.tblCountry.ToListAsync();
-                foreach (var country in dbCountryList)
-                {
-                    countryList.Add(new CountryModel
-                    {
-                        Id = country.Id,
-                        CountryCode = country.CountryCode,
-                        CountryName = country.CountryName,
-                        IsActive = country.IsActive
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                var msg = ex.Message;
-            }
-
-            return countryList;
-        }
-        public async Task<ApiResponseModel> CountryAddEdit(CountryInputModel countryInputModel)
-        {
-            var apiResponseModel = new ApiResponseModel();
-
-            try
-            {
-                var isCountryExists = await _dbContext.tblCountry.Where(x => x.CountryName == countryInputModel.CountryName).FirstOrDefaultAsync();
-
-                if (isCountryExists != null)
-                {
-                    apiResponseModel.Status = false;
-                    apiResponseModel.Message = "This country already exists.";
-                }
-
-                else
-                {
-                    var dbCountry = await _dbContext.tblCountry.Where(x => x.Id == countryInputModel.Id).FirstOrDefaultAsync();
-
-                    if (dbCountry != null)
-                    {
-                        dbCountry.CountryName = countryInputModel.CountryName;
-                        dbCountry.CountryCode = countryInputModel.CountryCode;
-                        dbCountry.UpdatedBy = countryInputModel.UpdatedBy;
-                        dbCountry.UpdatedOn = DateTime.Now;
-                        dbCountry.IsActive = countryInputModel.IsActive;
-                    }
-                    else
-                    {
-                        var countryObj = new Country();
-
-                        countryObj.CountryName = countryInputModel.CountryName;
-                        countryObj.CountryCode = countryInputModel.CountryCode;
-                        countryObj.CreatedBy = countryInputModel.CreatedBy;
-                        countryObj.CreatedOn = DateTime.Now;
-                        countryObj.IsActive = countryInputModel.IsActive;
-
-                        await _dbContext.AddAsync(countryObj);
-                    }
-
-                    await _dbContext.SaveChangesAsync();
-
-                    apiResponseModel.Status = true;
-                    apiResponseModel.Message = countryInputModel.Id > 0 ? "Country updated successfully." : "Country added successfully.";
-                }
-
-            }
-
-            catch (Exception ex)
-            {
-                var msg = ex.Message;
-            }
-
-            return apiResponseModel;
-        }
-        public async Task<ApiResponseModel> CountryDelete(int countryId)
-        {
-            var apiResponseModel = new ApiResponseModel();
-
-            try
-            {
-                var dbCountry = await _dbContext.tblCountry.FindAsync(countryId);
-                if (dbCountry != null)
-                {
-                    dbCountry.IsActive = false;
-                    await _dbContext.SaveChangesAsync();
-
-                    apiResponseModel.Status = true;
-                    apiResponseModel.Message = "Country deleted successfully.";
-                }
-            }
-
-            catch (Exception ex)
-            {
-                var msg = ex.Message;
-            }
-
-            return apiResponseModel;
-        }
-        public async Task<IEnumerable<StateModel>> GetStatesList()
-        {
-            var stateModel = new List<StateModel>();
-
-            var dbStateList = await _dbContext.tblState.ToListAsync();
-
-            foreach (var state in dbStateList)
-            {
-                stateModel.Add(new StateModel
-                {
-                    Id = state.Id,
-                    CountryId = state.CountryId,
-                    StateName = state.StateName,
-                    //Countrys = state.tblCountry.Countrys,
-                    IsActive = state.IsActive,
-                });
-            }
-            return stateModel;
-        }
-        public async Task<ApiResponseModel> StateAddEdit(StateInputModel stateInputModel)
-        {
-            var apiresponseModel = new ApiResponseModel();
-            try
-            {
-                var checkStateDuplicate = await _dbContext.tblState.Where(x => x.StateName == stateInputModel.StateName && x.Id != stateInputModel.Id).FirstOrDefaultAsync();
-                if (checkStateDuplicate != null)
-                {
-                    apiresponseModel.Status = false;
-                    apiresponseModel.Message = "This State is already exist";
-                }
-                else
-                {
-                    var checkStateExist = await _dbContext.tblState.Where(x => x.Id == stateInputModel.Id).FirstOrDefaultAsync();
-                    if (checkStateExist != null)
-                    {
-                        checkStateExist.StateName = stateInputModel.StateName;
-                        checkStateExist.CountryId = stateInputModel.CountryId;
-                        checkStateExist.UpdatedOn = DateTime.Now;
-                        checkStateExist.UpdatedBy = stateInputModel.Id;
-                        checkStateExist.IsActive = stateInputModel.IsActive;
-                    }
-                    else
-                    {
-                        var objectState = new State();
-
-                        objectState.StateName = stateInputModel.StateName;
-                        objectState.CountryId = stateInputModel.CountryId;
-                        objectState.CreatedBy = stateInputModel.Id;
-                        objectState.CreatedOn = DateTime.Now;
-                        objectState.IsActive = stateInputModel.IsActive;
-
-                        await _dbContext.tblState.AddAsync(objectState);
-                    }
-                    await _dbContext.SaveChangesAsync();
-
-                    apiresponseModel.Status = true;
-                    apiresponseModel.Message = stateInputModel.Id <= 0 ? "Add State Successfully" : "State Successfully Updated";
-
-                }
-            }
-            catch (Exception e)
-            {
-                var msg = e.Message;
-            }
-            return apiresponseModel;
-        }
-        public async Task<ApiResponseModel> StateDelete(int Id)
-        {
-            var apiresponseModel = new ApiResponseModel();
-
-            try
-            {
-                var checkStateExist = await _dbContext.tblState.FindAsync(Id);
-                if (checkStateExist != null)
-                {
-                    checkStateExist.IsActive = false;
-                }
-                await _dbContext.SaveChangesAsync();
-
-                apiresponseModel.Status = true;
-                apiresponseModel.Message = "State Successfully Delete.";
-            }
-            catch (Exception e)
-            {
-                var msg = e.Message;
-            }
-            return apiresponseModel;
-        }
     }
 }

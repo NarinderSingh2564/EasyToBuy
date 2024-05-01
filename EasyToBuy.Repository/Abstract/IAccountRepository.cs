@@ -12,27 +12,5 @@ namespace EasyToBuy.Repository.Abstract
         Task<IEnumerable<AddressTypeModel>> GetAddressTypeList();
         Task<ApiResponseModel> AddressAddEdit(AddressInputModel addressInputModel);
         Task<ApiResponseModel> SetDeliveryAddress(int id, int userId);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        Task<ApiResponseModel> CountryAddEdit(CountryInputModel countryInputModel);
-        Task<IEnumerable<CountryModel>> GetCountryList();
-        Task<ApiResponseModel> CountryDelete(int Id);
-        Task<IEnumerable<StateModel>> GetStatesList();
-        Task<ApiResponseModel> StateAddEdit(StateInputModel stateInputModel);
-        Task<ApiResponseModel> StateDelete(int Id);
     }
 }

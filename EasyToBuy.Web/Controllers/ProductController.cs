@@ -24,32 +24,9 @@ namespace EasyToBuy.Web.Controllers
         #endregion
 
         [HttpGet("GetProductList")]
-        public async Task<IEnumerable<ProductModel>> GetProductList()
+        public async Task<IEnumerable<SPGetProductList_Result>> GetProductList(int categoryId, string? searchText,int vendorId, string? role)
         {
-            var response = await _productRepository.GetProductList();
-
-            return response;
-        }
-
-        [HttpGet("GetProductWeightList")]
-        public async Task<IEnumerable<ProductWeightModel>> GetProductWeightList()
-        {
-            var response = await _productRepository.GetProductWeightList();
-
-            return response;
-        }
-
-        [HttpGet("GetProductDetails")]
-        public async Task<IEnumerable<SPGetProductDetails_Result>> GetProductDetails(int categoryId, string? searchText)
-        {
-            var response = await _productRepository.GetProductDetails(categoryId, searchText);
-            return response;
-        }
-
-        [HttpGet("GetProductById")]
-        public async Task<IEnumerable<ProductModel>> GetProductById(int Id)
-        {
-            var response = await _productRepository.GetProductById(Id);
+            var response = await _productRepository.GetProductList(categoryId,searchText,vendorId, role);
 
             return response;
         }
@@ -80,13 +57,21 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
+        [HttpGet("GetProductDetailsById")]
+        public async Task<IEnumerable<SPGetProductDetailsById_Result>> GetProductDetailsById(int productId)
+      {
+            var response = await _productRepository.GetProductDetailsById(productId);
 
-        [HttpGet("GetProductDescriptionByProductId")]
-        public async Task<IEnumerable<SPGetProductDescriptionByProductId_Result>> GetProductDescriptionByProductId(int productId)
-        {
-            var response = await _productRepository.GetProductDescriptionByProductId(productId);
             return response;
         }
 
+        [HttpGet("GetProductWeightList")]
+        public async Task<IEnumerable<ProductWeightModel>> GetProductWeightList()
+        {
+            var response = await _productRepository.GetProductWeightList();
+
+            return response;
+        }
+ 
     }
 }
