@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EasyToBuy.Data;
+﻿using EasyToBuy.Data;
 using EasyToBuy.Data.DBClasses;
+using EasyToBuy.Data.SPClasses;
 using EasyToBuy.Models.CommonModel;
 using EasyToBuy.Models.InputModels;
-using EasyToBuy.Models.Models;
-using EasyToBuy.Models.SPResults;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 
 namespace EasyToBuy.Services.Interactions
 {

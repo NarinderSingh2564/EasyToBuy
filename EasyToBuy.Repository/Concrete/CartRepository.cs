@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using EasyToBuy.Data.SPClasses;
 using EasyToBuy.Models.CommonModel;
 using EasyToBuy.Models.InputModels;
-using EasyToBuy.Models.Models;
-using EasyToBuy.Models.SPResults;
 using EasyToBuy.Repository.Abstract;
 using EasyToBuy.Services.Interactions;
 

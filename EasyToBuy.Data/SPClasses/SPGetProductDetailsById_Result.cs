@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EasyToBuy.Models.SPResults
+namespace EasyToBuy.Data.SPClasses
 {
+    [NotMapped]
     public class SPGetProductDetailsById_Result
     {
         public int Id { get; set; }

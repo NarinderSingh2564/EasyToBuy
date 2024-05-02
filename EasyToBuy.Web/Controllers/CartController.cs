@@ -1,7 +1,6 @@
-﻿using EasyToBuy.Models.CommonModel;
+﻿using EasyToBuy.Data.SPClasses;
+using EasyToBuy.Models.CommonModel;
 using EasyToBuy.Models.InputModels;
-using EasyToBuy.Models.Models;
-using EasyToBuy.Models.SPResults;
 using EasyToBuy.Models.UIModels;
 using EasyToBuy.Repository.Abstract;
 using EasyToBuy.Repository.Concrete;

@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
 using EasyToBuy.Data;
 using EasyToBuy.Data.DBClasses;
+using EasyToBuy.Data.SPClasses;
 using EasyToBuy.Models.CommonModel;
 using EasyToBuy.Models.InputModels;
 using EasyToBuy.Models.Models;
-using EasyToBuy.Models.SPResults;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 

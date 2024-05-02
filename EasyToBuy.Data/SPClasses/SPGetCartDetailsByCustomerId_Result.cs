@@ -1,6 +1,7 @@
-﻿namespace EasyToBuy.Models.SPResults
-{
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
+namespace EasyToBuy.Data.SPClasses
+{
     public class GetCartDetailsByCustomerId
     {
         public PriceDetails priceDetails { get; set; }
@@ -13,6 +14,7 @@
         }
     }
 
+    [NotMapped]
     public class SPGetCartDetailsByCustomerId_Result
     {
         public int Id { get; set; }
