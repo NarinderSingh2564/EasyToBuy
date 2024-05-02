@@ -1,7 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EasyToBuy.Models.SPResults
+namespace EasyToBuy.Data.SPClasses
 {
+
+    [NotMapped]
     public class SPGetProductList_Result
     {
         [Key]
@@ -10,7 +13,7 @@ namespace EasyToBuy.Models.SPResults
         //public int ProductId { get; set; }
         public int VendorId { get; set; }
         public string ProductName { get; set; } = string.Empty;
-        public int ProductPrice { get; set; } 
+        public int ProductPrice { get; set; }
         public int ProductDiscount { get; set; }
         public decimal ProductDiscountPrice { get; set; }
         public decimal ProductPriceAfterDiscount { get; set; }

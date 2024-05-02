@@ -1,6 +1,6 @@
-﻿using EasyToBuy.Models.CommonModel;
+﻿using EasyToBuy.Data.SPClasses;
+using EasyToBuy.Models.CommonModel;
 using EasyToBuy.Models.InputModels;
-using EasyToBuy.Models.SPResults;
 
 namespace EasyToBuy.Repository.Abstract
 {
