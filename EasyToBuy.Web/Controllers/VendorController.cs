@@ -62,9 +62,10 @@ namespace EasyToBuy.Web.Controllers
 
         [HttpPost("VendorLogin")]
 
-        public async Task<ApiResponseModel> VendorLogin(int mobile, string password)
+        public async Task<ApiResponseModel> VendorLogin(string mobile, string password)
         {
             var response = await _vendorRepository.VendorLogin(mobile, password);
+
             return response;
         }
     }

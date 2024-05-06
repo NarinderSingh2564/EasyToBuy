@@ -16,7 +16,7 @@ namespace EasyToBuy.Data.DBClasses
         public string State{ get; set; }
         public string Country{ get; set; }
 
-        [StringLength(100)]
+        [StringLength(200)]
         public string FullAddress { get; set; } = string.Empty;
 
         [ForeignKey("AddressType")]

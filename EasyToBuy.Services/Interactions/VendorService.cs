@@ -192,7 +192,7 @@ namespace EasyToBuy.Services.Interactions
             return apiResponseModel;
         }
 
-        public async Task<ApiResponseModel> VendorLogin(int mobile, string password)
+        public async Task<ApiResponseModel> VendorLogin(string mobile, string password)
         {
             var apiResponseModel = new ApiResponseModel();
 

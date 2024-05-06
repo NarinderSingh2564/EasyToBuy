@@ -14,7 +14,7 @@ namespace EasyToBuy.Repository.Abstract
         Task<ApiResponseModel> VendorAddEdit(VendorInputModel vendorInputModel);
         Task<IEnumerable<VendorModel>> GetVendorList();
         Task<ApiResponseModel> VendorStatusUpdate(int vendorId, int userId, string status, string statusRemarks);
-        Task<ApiResponseModel> VendorLogin(int mobile, string password);
+        Task<ApiResponseModel> VendorLogin(string mobile, string password);
 
     }
 }

@@ -13,8 +13,6 @@ namespace EasyToBuy.Data.SPClasses
             _cartListItems = new List<SPGetCartDetailsByCustomerId_Result>();
         }
     }
-
-    [NotMapped]
     public class SPGetCartDetailsByCustomerId_Result
     {
         public int Id { get; set; }

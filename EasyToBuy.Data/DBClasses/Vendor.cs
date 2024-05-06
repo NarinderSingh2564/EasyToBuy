@@ -18,9 +18,11 @@ namespace EasyToBuy.Data.DBClasses
         [StringLength(50)]
         public string Email { get; set; }
 
-        [StringLength(10)]
+        [StringLength(20)]
         public string Password { get; set; }
-        public int Mobile { get; set; }
+
+        [StringLength(12)]
+        public string Mobile { get; set; }
 
         [StringLength(30)]
         public string DealingPerson { get; set; }
@@ -35,7 +37,7 @@ namespace EasyToBuy.Data.DBClasses
         [StringLength(30)]
         public string Country { get; set; }
 
-        [StringLength(100)]
+        [StringLength(200)]
         public string FullAddress { get; set; }
 
         [StringLength(15)]

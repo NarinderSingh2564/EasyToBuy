@@ -6,13 +6,94 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EasyToBuy.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AddDataBase : Migration
+    public partial class AddSP : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "dbo");
+
+            migrationBuilder.CreateTable(
+                name: "cartDetailsByCustomerId_Results",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductWeight = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductPrice = table.Column<int>(type: "int", nullable: false),
+                    ProductDiscount = table.Column<int>(type: "int", nullable: false),
+                    ProductDiscountPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ProductPriceAfterDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    TotalProductPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ShowProductWeight = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_cartDetailsByCustomerId_Results", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "productDetailsById_Results",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PackingMode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductWeight = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductPrice = table.Column<int>(type: "int", nullable: false),
+                    ProductDiscount = table.Column<int>(type: "int", nullable: false),
+                    ProductDiscountPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ProductPriceAfterDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ShowProductWeight = table.Column<bool>(type: "bit", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_productDetailsById_Results", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "productList_Results",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    VendorId = table.Column<int>(type: "int", nullable: false),
+                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductPrice = table.Column<int>(type: "int", nullable: false),
+                    ProductDiscount = table.Column<int>(type: "int", nullable: false),
+                    ProductDiscountPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ProductPriceAfterDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ProductImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    ProductWeightId = table.Column<int>(type: "int", nullable: false),
+                    ShowProductWeight = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    PackingMode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductWeight = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_productList_Results", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "tblAddressType",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -31,6 +112,7 @@ namespace EasyToBuy.Data.Migrations
 
             migrationBuilder.CreateTable(
                 name: "tblCategory",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -50,6 +132,7 @@ namespace EasyToBuy.Data.Migrations
 
             migrationBuilder.CreateTable(
                 name: "tblProductWeight",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -68,6 +151,7 @@ namespace EasyToBuy.Data.Migrations
 
             migrationBuilder.CreateTable(
                 name: "tblUser",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -89,6 +173,7 @@ namespace EasyToBuy.Data.Migrations
 
             migrationBuilder.CreateTable(
                 name: "tblVendor",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -120,6 +205,7 @@ namespace EasyToBuy.Data.Migrations
 
             migrationBuilder.CreateTable(
                 name: "tblAddress",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -144,12 +230,14 @@ namespace EasyToBuy.Data.Migrations
                     table.ForeignKey(
                         name: "FK_tblAddress_tblAddressType_AddressTypeId",
                         column: x => x.AddressTypeId,
+                        principalSchema: "dbo",
                         principalTable: "tblAddressType",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_tblAddress_tblUser_UserId",
                         column: x => x.UserId,
+                        principalSchema: "dbo",
                         principalTable: "tblUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -157,6 +245,7 @@ namespace EasyToBuy.Data.Migrations
 
             migrationBuilder.CreateTable(
                 name: "tblProduct",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -184,18 +273,21 @@ namespace EasyToBuy.Data.Migrations
                     table.ForeignKey(
                         name: "FK_tblProduct_tblCategory_CategoryId",
                         column: x => x.CategoryId,
+                        principalSchema: "dbo",
                         principalTable: "tblCategory",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_tblProduct_tblProductWeight_ProductWeightId",
                         column: x => x.ProductWeightId,
+                        principalSchema: "dbo",
                         principalTable: "tblProductWeight",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_tblProduct_tblVendor_VendorId",
                         column: x => x.VendorId,
+                        principalSchema: "dbo",
                         principalTable: "tblVendor",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -203,6 +295,7 @@ namespace EasyToBuy.Data.Migrations
 
             migrationBuilder.CreateTable(
                 name: "tblCart",
+                schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -218,12 +311,14 @@ namespace EasyToBuy.Data.Migrations
                     table.ForeignKey(
                         name: "FK_tblCart_tblProduct_ProductId",
                         column: x => x.ProductId,
+                        principalSchema: "dbo",
                         principalTable: "tblProduct",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_tblCart_tblUser_CustomerId",
                         column: x => x.CustomerId,
+                        principalSchema: "dbo",
                         principalTable: "tblUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -231,36 +326,43 @@ namespace EasyToBuy.Data.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblAddress_AddressTypeId",
+                schema: "dbo",
                 table: "tblAddress",
                 column: "AddressTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblAddress_UserId",
+                schema: "dbo",
                 table: "tblAddress",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblCart_CustomerId",
+                schema: "dbo",
                 table: "tblCart",
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblCart_ProductId",
+                schema: "dbo",
                 table: "tblCart",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblProduct_CategoryId",
+                schema: "dbo",
                 table: "tblProduct",
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblProduct_ProductWeightId",
+                schema: "dbo",
                 table: "tblProduct",
                 column: "ProductWeightId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblProduct_VendorId",
+                schema: "dbo",
                 table: "tblProduct",
                 column: "VendorId");
         }
@@ -269,28 +371,48 @@ namespace EasyToBuy.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "tblAddress");
+                name: "cartDetailsByCustomerId_Results",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "tblCart");
+                name: "productDetailsById_Results",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "tblAddressType");
+                name: "productList_Results",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "tblProduct");
+                name: "tblAddress",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "tblUser");
+                name: "tblCart",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "tblCategory");
+                name: "tblAddressType",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "tblProductWeight");
+                name: "tblProduct",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "tblVendor");
+                name: "tblUser",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "tblCategory",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "tblProductWeight",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "tblVendor",
+                schema: "dbo");
         }
     }
 }

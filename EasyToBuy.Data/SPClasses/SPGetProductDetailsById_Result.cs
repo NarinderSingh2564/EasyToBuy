@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace EasyToBuy.Data.SPClasses
 {
-    [NotMapped]
     public class SPGetProductDetailsById_Result
     {
         public int Id { get; set; }

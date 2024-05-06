@@ -36,7 +36,7 @@ namespace EasyToBuy.Repository.Concrete
                 return await vendorService.VendorStatusUpdate(vendorId,userId, status, statusRemarks);
             }
         }
-        public async Task<ApiResponseModel> VendorLogin(int mobile, string password)
+        public async Task<ApiResponseModel> VendorLogin(string mobile, string password)
         {
             using (VendorService vendorService = new VendorService())
             {
