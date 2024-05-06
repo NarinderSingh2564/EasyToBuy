@@ -6,7 +6,7 @@ namespace EasyToBuy.Repository.Abstract
 {
     public interface IAccountRepository
     {
-        Task<ApiResponseModel> CheckUser(string mobile, string password);
+        Task<ApiResponseModel> CheckUser(string mobile, string password,string role);
         Task<ApiResponseModel> UserRegistration(UserInputModel userInputModel);
         Task<IEnumerable<AddressModel>> GetAddressListByUserId(int userID);
         Task<IEnumerable<AddressTypeModel>> GetAddressTypeList();

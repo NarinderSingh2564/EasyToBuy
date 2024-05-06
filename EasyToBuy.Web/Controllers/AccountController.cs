@@ -1,4 +1,5 @@
-﻿using EasyToBuy.Models.CommonModel;
+﻿using System.Globalization;
+using EasyToBuy.Models.CommonModel;
 using EasyToBuy.Models.CommonModels;
 using EasyToBuy.Models.InputModels;
 using EasyToBuy.Models.Models;
@@ -24,7 +25,7 @@ namespace EasyToBuy.Web.Controllers
         [HttpPost("CheckUser")]
         public async Task<ApiResponseModel> CheckUser(LoginModel loginModel)
         {
-            var response = await _accountRepository.CheckUser(loginModel.Mobile, loginModel.Password);
+            var response = await _accountRepository.CheckUser(loginModel.Mobile, loginModel.Password,loginModel.Role);      
 
             return response;
         }
@@ -35,7 +36,7 @@ namespace EasyToBuy.Web.Controllers
             var userInputModel = new UserInputModel();
 
             userInputModel.Id = userUIModel.Id;
-            userInputModel.FullName = userUIModel.FullName;
+            userInputModel.Name = userUIModel.Name;
             userInputModel.Email = userUIModel.Email;
             userInputModel.Mobile = userUIModel.Mobile;
             userInputModel.Password = userUIModel.Password;

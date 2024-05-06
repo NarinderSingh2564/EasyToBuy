@@ -13,7 +13,7 @@ namespace EasyToBuy.Data.DBClasses
         public int Id { get; set; }
 
         [StringLength(30)]
-        public string FullName { get; set; }
+        public string Name { get; set; }
 
         [StringLength(15)]
         public string Mobile { get; set; }
