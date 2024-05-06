@@ -23,7 +23,7 @@ namespace EasyToBuy.Web.Controllers
         #endregion
 
         [HttpGet("GetProductList")]
-        public async Task<IEnumerable<SPGetProductList_Result>> GetProductList(int categoryId, string? searchText,int vendorId, string? role)
+        public async Task<IEnumerable<SPGetProductList_Result>> GetProductList(int categoryId, string? searchText,int vendorId, string role)
         {
             var response = await _productRepository.GetProductList(categoryId,searchText,vendorId, role);
 

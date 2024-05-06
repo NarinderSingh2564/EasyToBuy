@@ -4,6 +4,7 @@ using EasyToBuy.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyToBuy.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240503063332_Add-SP")]
+    partial class AddSP
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,8 +53,8 @@ namespace EasyToBuy.Data.Migrations
 
                     b.Property<string>("FullAddress")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -206,7 +209,7 @@ namespace EasyToBuy.Data.Migrations
 
                     b.Property<string>("ProductDescription")
                         .IsRequired()
-                        .HasColumnType("varchar(500)");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<int>("ProductDiscount")
                         .HasColumnType("int");
@@ -370,8 +373,8 @@ namespace EasyToBuy.Data.Migrations
 
                     b.Property<string>("FullAddress")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("IsLicensed")
                         .HasColumnType("bit");
@@ -382,10 +385,8 @@ namespace EasyToBuy.Data.Migrations
                     b.Property<DateTime?>("LicenseExpiredOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Mobile")
-                        .IsRequired()
-                        .HasMaxLength(12)
-                        .HasColumnType("nvarchar(12)");
+                    b.Property<int>("Mobile")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -394,8 +395,8 @@ namespace EasyToBuy.Data.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<int>("Pincode")
                         .HasColumnType("int");

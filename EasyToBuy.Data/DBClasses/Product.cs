@@ -24,7 +24,7 @@ namespace EasyToBuy.Data.DBClasses
         public decimal ProductDiscountPrice { get; set; }
         public decimal ProductPriceAfterDiscount { get; set; }        
 
-        [Column(TypeName = "varchar(200)")]
+        [Column(TypeName = "varchar(500)")]
         public string ProductDescription { get; set; }
 
         [Column(TypeName = "varchar(150)")]
