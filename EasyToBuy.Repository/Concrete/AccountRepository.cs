@@ -10,11 +10,11 @@ namespace EasyToBuy.Repository.Concrete
 {
     public class AccountRepository : IAccountRepository
     {
-        public async Task<ApiResponseModel> CheckUser(string mobile, string password)
+        public async Task<ApiResponseModel> CheckUser(string mobile, string password, string role)
         {
             using (AccountService accountService = new AccountService())
             {
-                return await accountService.CheckUser(mobile, password);
+                return await accountService.CheckUser(mobile, password,role);
             }
         }
         public async Task<ApiResponseModel> UserRegistration(UserInputModel userInputModel)

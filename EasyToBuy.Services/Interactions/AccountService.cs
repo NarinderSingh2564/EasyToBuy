@@ -59,13 +59,22 @@ namespace EasyToBuy.Services.Interactions
         }
 
         #endregion
-        public async Task<ApiResponseModel> CheckUser(string mobile, string password)
+        public async Task<ApiResponseModel> CheckUser(string mobile, string password,string role)
         {
             var apiResponseModel = new ApiResponseModel();
 
+            var dbUser = (dynamic)null;
+
             try
             {
-                var dbUser = await _dbContext.tblUser.Where(x => x.Mobile == mobile).FirstOrDefaultAsync();
+                if (role == "Vendor")
+                {
+                    dbUser = await _dbContext.tblVendor.Where(x => x.Mobile == mobile).FirstOrDefaultAsync();
+                }
+                if (role == "Customer")
+                {
+                    dbUser = await _dbContext.tblUser.Where(x => x.Mobile == mobile).FirstOrDefaultAsync();
+                }
 
                 if (dbUser == null)
                 {
@@ -77,24 +86,21 @@ namespace EasyToBuy.Services.Interactions
                     apiResponseModel.Status = false;
                     apiResponseModel.Message = "Incorrect password.";
                 }
-                else if (!dbUser.IsActive)
+                else if (role == "Vendor" && dbUser.Status != "Approved")
+                {
+                    apiResponseModel.Status = false;
+                    apiResponseModel.Message = "User is not active.";
+                }
+                else if (role == "Customer" && !dbUser.IsActive)
                 {
                     apiResponseModel.Status = false;
                     apiResponseModel.Message = "User is not active.";
                 }
                 else
                 {
-                    var userDetails = new UserModel
-                    {
-                        Id = dbUser.Id,
-                        FullName = dbUser.FullName,
-                        Mobile = dbUser.Mobile,
-                        Email = dbUser.Email,
-                    };
-
                     apiResponseModel.Status = true;
                     apiResponseModel.Message = "User logged in successfully.";
-                    apiResponseModel.Response = userDetails;
+                    apiResponseModel.Response = dbUser;
                 }
             }
             catch (Exception ex)
@@ -123,7 +129,7 @@ namespace EasyToBuy.Services.Interactions
                 {
                     var dbUser = new User();
 
-                    dbUser.FullName = userInputModel.FullName;
+                    dbUser.Name = userInputModel.Name;
                     dbUser.Email = userInputModel.Email;
                     dbUser.Mobile = userInputModel.Mobile;
                     dbUser.Password = userInputModel.Password;
