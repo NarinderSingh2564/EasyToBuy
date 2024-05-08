@@ -3,6 +3,7 @@ using System.Reflection;
 using EasyToBuy.Data;
 using EasyToBuy.Data.DBClasses;
 using EasyToBuy.Models.CommonModel;
+using EasyToBuy.Models.CommonModels;
 using EasyToBuy.Models.InputModels;
 using EasyToBuy.Models.Models;
 using EasyToBuy.Models.UIModels;
@@ -63,7 +64,7 @@ namespace EasyToBuy.Services.Interactions
         {
             var apiResponseModel = new ApiResponseModel();
 
-            var dbUser = (dynamic)null;
+            dynamic? dbUser = null;
 
             try
             {
@@ -76,31 +77,44 @@ namespace EasyToBuy.Services.Interactions
                     dbUser = await _dbContext.tblUser.Where(x => x.Mobile == mobile).FirstOrDefaultAsync();
                 }
 
-                if (dbUser == null)
+                if (dbUser != null)
                 {
-                    apiResponseModel.Status = false;
-                    apiResponseModel.Message = "User not found.";
-                }
-                else if (dbUser.Password != password)
-                {
-                    apiResponseModel.Status = false;
-                    apiResponseModel.Message = "Incorrect password.";
-                }
-                else if (role == "Vendor" && dbUser.Status != "Approved")
-                {
-                    apiResponseModel.Status = false;
-                    apiResponseModel.Message = "User is not active.";
-                }
-                else if (role == "Customer" && !dbUser.IsActive)
-                {
-                    apiResponseModel.Status = false;
-                    apiResponseModel.Message = "User is not active.";
+                    if (dbUser.Password != password)
+                    {
+                        apiResponseModel.Status = false;
+                        apiResponseModel.Message = "Incorrect password.";
+                    }
+                    else if (role == "Vendor" && dbUser.Status != "Approved")
+                    {
+                        apiResponseModel.Status = false;
+                        apiResponseModel.Message = "User is not active.";
+                    }
+                    else if (role == "Customer" && !dbUser.IsActive)
+                    {
+                        apiResponseModel.Status = false;
+                        apiResponseModel.Message = "User is not active.";
+                    }
+                    else
+                    {
+                        var userDetails = new UserDetailsModel()
+                        {
+                            Id = dbUser.Id,
+                            Name = dbUser.Name,
+                            Email = dbUser.Email,
+                            Mobile = dbUser.Mobile,
+                            Role = role,
+                        };
+
+                        apiResponseModel.Status = true;
+                        apiResponseModel.Message = "User logged in successfully.";
+                        apiResponseModel.Response = userDetails;
+
+                    }
                 }
                 else
                 {
-                    apiResponseModel.Status = true;
-                    apiResponseModel.Message = "User logged in successfully.";
-                    apiResponseModel.Response = dbUser;
+                    apiResponseModel.Status = false;
+                    apiResponseModel.Message = "User not found.";
                 }
             }
             catch (Exception ex)
