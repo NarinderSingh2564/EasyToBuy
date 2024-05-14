@@ -9,7 +9,6 @@ namespace EasyToBuy.Data.DBClasses
 {
     public class AddressType
     {
-
         [Key]
         public int Id { get; set; }
 

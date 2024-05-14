@@ -58,7 +58,6 @@ namespace EasyToBuy.Services.Interactions
         }
 
         #endregion
-
         public async Task<ApiResponseModel> AddToCart(CartInputModel cartInputModel)
         {
             var apiResponseModel = new ApiResponseModel();
@@ -66,7 +65,7 @@ namespace EasyToBuy.Services.Interactions
             {
                 if (cartInputModel.RequestFrom == "Cart")
                 {
-                    var isProductExists = await _dbContext.tblCart.Where(x => x.ProductId == cartInputModel.ProductId && x.CustomerId == cartInputModel.CustomerId).FirstOrDefaultAsync();
+                    var isProductExists = await _dbContext.tblCart.Where(x => x.ProductId == cartInputModel.ProductId && x.UserId == cartInputModel.UserId && x.IsPlaced == false).FirstOrDefaultAsync();
                     if (isProductExists != null)
                     {
                         isProductExists.Quantity = cartInputModel.Quantity;
@@ -83,7 +82,7 @@ namespace EasyToBuy.Services.Interactions
                 }
                 else
                 {
-                    var isProductExists = await _dbContext.tblCart.Where(x => x.ProductId == cartInputModel.ProductId && x.CustomerId == cartInputModel.CustomerId).FirstOrDefaultAsync();
+                    var isProductExists = await _dbContext.tblCart.Where(x => x.ProductId == cartInputModel.ProductId && x.UserId == cartInputModel.UserId && x.IsPlaced == false).FirstOrDefaultAsync();
                     if (isProductExists != null)
                     {
                         apiResponseModel.Status = false;
@@ -93,10 +92,11 @@ namespace EasyToBuy.Services.Interactions
                     {
                         var cartObj = new Cart();
 
-                        cartObj.CustomerId = cartInputModel.CustomerId;
+                        cartObj.UserId = cartInputModel.UserId;
                         cartObj.ProductId = cartInputModel.ProductId;
                         cartObj.Quantity = cartInputModel.Quantity;
                         cartObj.AddedDate = DateTime.Now;
+                        cartObj.IsPlaced = false;
 
                         await _dbContext.AddAsync(cartObj);
                         await _dbContext.SaveChangesAsync();
@@ -110,8 +110,6 @@ namespace EasyToBuy.Services.Interactions
             {
                 var msg = ex.Message;
                 apiResponseModel.Status = false;
-
-
             }
 
             return apiResponseModel;
@@ -129,8 +127,8 @@ namespace EasyToBuy.Services.Interactions
                 cartListByCustomerId._cartListItems = await _dbContext.cartDetailsByCustomerId_Results.FromSqlRaw(sqlQuery, parameter).ToListAsync();
 
 
-                cartListByCustomerId.priceDetails.TotalProductPrice = cartListByCustomerId._cartListItems.Sum(x => x.ProductPrice);
-                cartListByCustomerId.priceDetails.TotalDiscountPrice = cartListByCustomerId._cartListItems.Sum(x => x.ProductDiscountPrice);
+                cartListByCustomerId.priceDetails.TotalProductPrice = cartListByCustomerId._cartListItems.Sum(x => x.MRP);
+                cartListByCustomerId.priceDetails.TotalDiscountPrice = cartListByCustomerId._cartListItems.Sum(x => x.DiscountPrice);
                 cartListByCustomerId.priceDetails.TotalCartPrice = cartListByCustomerId._cartListItems.Sum(x => x.TotalProductPrice);
 
             }
@@ -161,17 +159,16 @@ namespace EasyToBuy.Services.Interactions
             }
             return apiResponseModel;
         }
-        public async Task<ApiResponseModel> CheckProductInCart(int productId, int customerId)
+        public async Task<ApiResponseModel> CheckProductInCart(int productId, int userId)
         {
             var apiResponseModel = new ApiResponseModel();
 
             try
             {
-                var isProductExist = await _dbContext.tblCart.Where(x => x.ProductId == productId && x.CustomerId == customerId).FirstOrDefaultAsync();
+                var isProductExist = await _dbContext.tblCart.Where(x => x.ProductId == productId && x.UserId == userId && x.IsPlaced == false).FirstOrDefaultAsync();
                 if (isProductExist != null)
                 {
                     apiResponseModel.Status = true;
-                 
                 }
                 else
                 {
@@ -182,6 +179,7 @@ namespace EasyToBuy.Services.Interactions
             {
                 var msg = ex.Message;
             }
+
             return apiResponseModel;
         }
     }

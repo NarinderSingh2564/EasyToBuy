@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EasyToBuy.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AddSP : Migration
+    public partial class AddDataClasses : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,14 +22,15 @@ namespace EasyToBuy.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductId = table.Column<int>(type: "int", nullable: false),
+                    VendorName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProductDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProductImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProductWeight = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProductPrice = table.Column<int>(type: "int", nullable: false),
-                    ProductDiscount = table.Column<int>(type: "int", nullable: false),
-                    ProductDiscountPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ProductPriceAfterDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MRP = table.Column<int>(type: "int", nullable: false),
+                    Discount = table.Column<int>(type: "int", nullable: false),
+                    DiscountPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PriceAfterDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     TotalProductPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ShowProductWeight = table.Column<bool>(type: "bit", nullable: false)
@@ -51,10 +52,10 @@ namespace EasyToBuy.Data.Migrations
                     ProductImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PackingMode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProductWeight = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProductPrice = table.Column<int>(type: "int", nullable: false),
-                    ProductDiscount = table.Column<int>(type: "int", nullable: false),
-                    ProductDiscountPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ProductPriceAfterDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MRP = table.Column<int>(type: "int", nullable: false),
+                    Discount = table.Column<int>(type: "int", nullable: false),
+                    DiscountPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PriceAfterDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ShowProductWeight = table.Column<bool>(type: "bit", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false)
                 },
@@ -72,10 +73,10 @@ namespace EasyToBuy.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     VendorId = table.Column<int>(type: "int", nullable: false),
                     ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProductPrice = table.Column<int>(type: "int", nullable: false),
-                    ProductDiscount = table.Column<int>(type: "int", nullable: false),
-                    ProductDiscountPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ProductPriceAfterDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MRP = table.Column<int>(type: "int", nullable: false),
+                    Discount = table.Column<int>(type: "int", nullable: false),
+                    DiscountPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PriceAfterDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ProductImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProductDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
@@ -131,6 +132,25 @@ namespace EasyToBuy.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "tblOrderStatus",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedBy = table.Column<int>(type: "int", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tblOrderStatus", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "tblProductWeight",
                 schema: "dbo",
                 columns: table => new
@@ -156,7 +176,7 @@ namespace EasyToBuy.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FullName = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Mobile = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
@@ -180,14 +200,14 @@ namespace EasyToBuy.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    Mobile = table.Column<int>(type: "int", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Mobile = table.Column<string>(type: "nvarchar(12)", maxLength: 12, nullable: false),
                     DealingPerson = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Pincode = table.Column<int>(type: "int", nullable: false),
                     City = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     State = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Country = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    FullAddress = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    FullAddress = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Status = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
                     StatusRemarks = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     IsLicensed = table.Column<bool>(type: "bit", nullable: false),
@@ -214,7 +234,7 @@ namespace EasyToBuy.Data.Migrations
                     City = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     State = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FullAddress = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    FullAddress = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     AddressTypeId = table.Column<int>(type: "int", nullable: false),
                     Pincode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     CreatedBy = table.Column<int>(type: "int", nullable: false),
@@ -252,11 +272,11 @@ namespace EasyToBuy.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     VendorId = table.Column<int>(type: "int", nullable: false),
                     ProductName = table.Column<string>(type: "varchar(200)", nullable: false),
-                    ProductPrice = table.Column<int>(type: "int", nullable: false),
-                    ProductDiscount = table.Column<int>(type: "int", nullable: false),
-                    ProductDiscountPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ProductPriceAfterDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ProductDescription = table.Column<string>(type: "varchar(200)", nullable: false),
+                    MRP = table.Column<int>(type: "int", nullable: false),
+                    Discount = table.Column<int>(type: "int", nullable: false),
+                    DiscountPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PriceAfterDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ProductDescription = table.Column<string>(type: "varchar(500)", nullable: false),
                     ProductImage = table.Column<string>(type: "varchar(150)", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     ProductWeightId = table.Column<int>(type: "int", nullable: false),
@@ -300,10 +320,11 @@ namespace EasyToBuy.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    AddedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    AddedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsPlaced = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -316,8 +337,54 @@ namespace EasyToBuy.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_tblCart_tblUser_CustomerId",
-                        column: x => x.CustomerId,
+                        name: "FK_tblCart_tblUser_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "dbo",
+                        principalTable: "tblUser",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tblCustomerOrder",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    OrderNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    StatusId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    MRP = table.Column<int>(type: "int", nullable: false),
+                    Discount = table.Column<int>(type: "int", nullable: false),
+                    DiscountPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    AmountToBePaid = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tblCustomerOrder", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_tblCustomerOrder_tblOrderStatus_StatusId",
+                        column: x => x.StatusId,
+                        principalSchema: "dbo",
+                        principalTable: "tblOrderStatus",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tblCustomerOrder_tblProduct_ProductId",
+                        column: x => x.ProductId,
+                        principalSchema: "dbo",
+                        principalTable: "tblProduct",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tblCustomerOrder_tblUser_UserId",
+                        column: x => x.UserId,
                         principalSchema: "dbo",
                         principalTable: "tblUser",
                         principalColumn: "Id",
@@ -337,16 +404,34 @@ namespace EasyToBuy.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tblCart_CustomerId",
-                schema: "dbo",
-                table: "tblCart",
-                column: "CustomerId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_tblCart_ProductId",
                 schema: "dbo",
                 table: "tblCart",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblCart_UserId",
+                schema: "dbo",
+                table: "tblCart",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblCustomerOrder_ProductId",
+                schema: "dbo",
+                table: "tblCustomerOrder",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblCustomerOrder_StatusId",
+                schema: "dbo",
+                table: "tblCustomerOrder",
+                column: "StatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblCustomerOrder_UserId",
+                schema: "dbo",
+                table: "tblCustomerOrder",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblProduct_CategoryId",
@@ -391,7 +476,15 @@ namespace EasyToBuy.Data.Migrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
+                name: "tblCustomerOrder",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
                 name: "tblAddressType",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "tblOrderStatus",
                 schema: "dbo");
 
             migrationBuilder.DropTable(

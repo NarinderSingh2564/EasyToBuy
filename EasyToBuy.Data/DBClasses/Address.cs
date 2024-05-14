@@ -11,7 +11,6 @@ namespace EasyToBuy.Data.DBClasses
 
         [ForeignKey("User")]
         public int UserId { get; set; }
-        public User User { get; set; }
         public string City { get; set; }
         public string State{ get; set; }
         public string Country{ get; set; }
@@ -21,7 +20,7 @@ namespace EasyToBuy.Data.DBClasses
 
         [ForeignKey("AddressType")]
         public int AddressTypeId { get; set; }
-        public AddressType AddressType { get; set; }
+        public virtual AddressType AddressType { get; set; }
 
         [StringLength(10)]
         public string Pincode { get; set; } = string.Empty;
@@ -31,6 +30,8 @@ namespace EasyToBuy.Data.DBClasses
         public DateTime? UpdatedOn { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeliveryAddress { get; set; }
+
+        public virtual User User { get; set; }
 
     }
 }

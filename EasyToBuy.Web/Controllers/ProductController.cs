@@ -38,10 +38,10 @@ namespace EasyToBuy.Web.Controllers
             productInputModel.Id = productUIModel.Id;
             productInputModel.VendorId = productUIModel.VendorId;
             productInputModel.ProductName = productUIModel.ProductName;
-            productInputModel.ProductPrice = productUIModel.ProductPrice;
-            productInputModel.ProductDiscount = productUIModel.ProductDiscount;
-            productInputModel.ProductDiscountPrice = productUIModel.ProductPrice * Decimal.Divide(productUIModel.ProductDiscount,100);
-            productInputModel.ProductPriceAfterDiscount = productUIModel.ProductPriceAfterDiscount;
+            productInputModel.MRP = productUIModel.MRP;
+            productInputModel.Discount = productUIModel.Discount;
+            productInputModel.DiscountPrice = productUIModel.MRP * Decimal.Divide(productUIModel.Discount,100);
+            productInputModel.PriceAfterDiscount = productUIModel.PriceAfterDiscount;
             productInputModel.ProductDescription = productUIModel.ProductDescription;
             productInputModel.ProductImage = productUIModel.ProductImage;
             productInputModel.CategoryId = productUIModel.CategoryId;

@@ -15,14 +15,14 @@ namespace EasyToBuy.Data.DBClasses
 
         [ForeignKey("Vendor")]
         public int VendorId { get; set; }
-        public Vendor Vendor { get; set; }
+        public virtual Vendor Vendor { get; set; }
 
         [Column(TypeName = "varchar(200)")]
         public string ProductName { get; set; }
-        public int ProductPrice { get; set; }
-        public int ProductDiscount { get; set; }
-        public decimal ProductDiscountPrice { get; set; }
-        public decimal ProductPriceAfterDiscount { get; set; }        
+        public int MRP { get; set; }
+        public int Discount { get; set; }
+        public decimal DiscountPrice { get; set; }
+        public decimal PriceAfterDiscount { get; set; }        
 
         [Column(TypeName = "varchar(500)")]
         public string ProductDescription { get; set; }
@@ -32,11 +32,11 @@ namespace EasyToBuy.Data.DBClasses
 
         [ForeignKey("Categorys")]
         public int CategoryId { get; set; }
-        public Category Categorys { get; set; }
+        public virtual Category Categorys { get; set; }
 
         [ForeignKey("ProductWeights")]
         public int ProductWeightId { get; set; }
-        public ProductWeights ProductWeights { get; set; }
+        public virtual ProductWeights ProductWeights { get; set; }
         public bool ShowProductWeight { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
