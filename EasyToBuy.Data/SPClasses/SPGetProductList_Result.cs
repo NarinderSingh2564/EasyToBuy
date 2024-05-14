@@ -7,10 +7,10 @@ namespace EasyToBuy.Data.SPClasses
         public int Id { get; set; }
         public int VendorId { get; set; }
         public string ProductName { get; set; } = string.Empty;
-        public int ProductPrice { get; set; }
-        public int ProductDiscount { get; set; }
-        public decimal ProductDiscountPrice { get; set; }
-        public decimal ProductPriceAfterDiscount { get; set; }
+        public int MRP { get; set; }
+        public int Discount { get; set; }
+        public decimal DiscountPrice { get; set; }
+        public decimal PriceAfterDiscount { get; set; }
         public string ProductImage { get; set; } = string.Empty;
         public string ProductDescription { get; set; } = string.Empty;
         public int CategoryId { get; set; }

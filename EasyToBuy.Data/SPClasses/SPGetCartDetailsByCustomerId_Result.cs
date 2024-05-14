@@ -17,14 +17,15 @@ namespace EasyToBuy.Data.SPClasses
     {
         public int Id { get; set; }
         public int ProductId { get; set; }
+        public string VendorName { get; set; } = string.Empty;
         public string ProductName { get; set; } = string.Empty;
         public string ProductDescription { get; set; } = string.Empty;
         public string ProductImage { get; set; } = string.Empty;
         public string ProductWeight { get; set; } = string.Empty;
-        public int ProductPrice { get; set; }
-        public int ProductDiscount { get; set; }
-        public decimal ProductDiscountPrice { get; set; }
-        public decimal ProductPriceAfterDiscount{ get; set; }
+        public int MRP { get; set; }
+        public int Discount { get; set; }
+        public decimal DiscountPrice { get; set; }
+        public decimal PriceAfterDiscount { get; set; }
         public int Quantity { get; set; }
         public decimal TotalProductPrice { get; set; }
         public bool ShowProductWeight { get; set; }

@@ -28,7 +28,7 @@ namespace EasyToBuy.Web.Controllers
 
             cartInputModel.Id = cartUIModel.Id;
             cartInputModel.ProductId = cartUIModel.ProductId;
-            cartInputModel.CustomerId = cartUIModel.CustomerId;
+            cartInputModel.UserId = cartUIModel.UserId;
             cartInputModel.Quantity = cartUIModel.Quantity;
             cartInputModel.RequestFrom = cartUIModel.RequestFrom;
 

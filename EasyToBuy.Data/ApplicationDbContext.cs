@@ -18,6 +18,8 @@ namespace EasyToBuy.Data
         public DbSet<Product> tblProduct { get; set; }
         public DbSet<ProductWeights> tblProductWeight { get; set; } 
         public DbSet<Cart> tblCart { get; set; }
+        public DbSet<OrderStatus> tblOrderStatus { get; set; }
+        public DbSet<Order> tblCustomerOrder { get; set; }     
         
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

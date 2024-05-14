@@ -5,10 +5,10 @@
         public int Id { get; set; }
         public int VendorId { get; set; }
         public string ProductName { get; set; }
-        public int ProductPrice { get; set; }
-        public int ProductDiscount { get; set; }
-        public decimal ProductDiscountPrice { get; set; }
-        public decimal ProductPriceAfterDiscount { get; set; }
+        public int MRP { get; set; }
+        public int Discount { get; set; }
+        public decimal DiscountPrice { get; set; }
+        public decimal PriceAfterDiscount { get; set; }
         public string ProductDescription { get; set; }
         public string ProductImage { get; set; }
         public int CategoryId { get; set; }

@@ -105,10 +105,10 @@ namespace EasyToBuy.Services.Interactions
                     if (dbProduct != null)
                     {
                         dbProduct.ProductName = productInputModel.ProductName;
-                        dbProduct.ProductPrice = productInputModel.ProductPrice;
-                        dbProduct.ProductDiscount = productInputModel.ProductDiscount;
-                        dbProduct.ProductDiscountPrice = productInputModel.ProductDiscountPrice;
-                        dbProduct.ProductPriceAfterDiscount = productInputModel.ProductPriceAfterDiscount;
+                        dbProduct.MRP = productInputModel.MRP;
+                        dbProduct.Discount = productInputModel.Discount;
+                        dbProduct.DiscountPrice = productInputModel.DiscountPrice;
+                        dbProduct.PriceAfterDiscount = productInputModel.PriceAfterDiscount;
                         dbProduct.ProductDescription = productInputModel.ProductDescription;
                         dbProduct.ProductImage = productInputModel.ProductImage;
                         dbProduct.CategoryId = productInputModel.CategoryId;
@@ -125,10 +125,10 @@ namespace EasyToBuy.Services.Interactions
 
                         productObj.VendorId = productInputModel.VendorId;
                         productObj.ProductName = productInputModel.ProductName;
-                        productObj.ProductPrice = productInputModel.ProductPrice;
-                        productObj.ProductDiscount = productInputModel.ProductDiscount;
-                        productObj.ProductDiscountPrice = productInputModel.ProductDiscountPrice;
-                        productObj.ProductPriceAfterDiscount = productInputModel.ProductPriceAfterDiscount;
+                        productObj.MRP = productInputModel.MRP;
+                        productObj.Discount = productInputModel.Discount;
+                        productObj.DiscountPrice = productInputModel.DiscountPrice;
+                        productObj.PriceAfterDiscount = productInputModel.PriceAfterDiscount;
                         productObj.ProductDescription = productInputModel.ProductDescription;
                         productObj.ProductImage = productInputModel.ProductImage;
                         productObj.CategoryId = productInputModel.CategoryId;
