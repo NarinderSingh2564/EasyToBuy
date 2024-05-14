@@ -68,69 +68,70 @@ namespace EasyToBuy.Services.Interactions
 
                 if (isUserExists != null)
                 {
-                    var orderList = (from c in _dbContext.tblCart
-                                     join p in _dbContext.tblProduct
-                                     on c.ProductId equals p.Id
-                                     where c.UserId == userId && c.IsPlaced == false
-
-                                 select new OrderModel()
-                                 {
-                                    UserId = userId,
-                                    ProductId = c.ProductId,
-                                    Quantity = c.Quantity,
-                                    MRP = p.MRP,
-                                    Discount = p.Discount,
-                                    DiscountPrice = p.DiscountPrice,
-                                    PriceAfterDiscount = p.PriceAfterDiscount,
-                                 }).ToList();
-
-                    if (orderList != null && orderList.Count > 0)
+                    var isDeliveryAddress = await _dbContext.tblAddress.Where(x => x.UserId == userId && x.IsDeliveryAddress == true).FirstOrDefaultAsync();
+                    
+                    if (isDeliveryAddress != null)
                     {
-                        var orderObj = new Order();
+                        var orderList = (from c in _dbContext.tblCart
+                                         join p in _dbContext.tblProduct
+                                         on c.ProductId equals p.Id
+                                         where c.UserId == userId && c.IsPlaced == false
 
-                        orderObj.UserId = userId;
-                        orderObj.OrderNumber = "ETB" + new Random().Next().ToString();
-                       
-                        orderObj.OrderDate = DateTime.Now;
-                        orderObj.StatusId = 1;
+                                         select new OrderModel()
+                                         {
+                                             ProductId = c.ProductId,
+                                             Quantity = c.Quantity,
+                                             MRP = p.MRP,
+                                             Discount = p.Discount,
+                                             DiscountPrice = p.DiscountPrice,
+                                             PriceAfterDiscount = p.PriceAfterDiscount,
+                                         }).ToList();
 
-                        await _dbContext.AddAsync(orderObj);
-
-
-                        foreach (var order in orderList)
+                        if (orderList != null && orderList.Count > 0)
                         {
-                            var orderDetailObj = new Order();
+                            foreach (var order in orderList)
+                            {
+                                var orderObj = new Order();
 
-                            orderDetailObj.OrderNumber = orderObj.OrderNumber;
-                            orderDetailObj.ProductId = order.ProductId;
-                            orderDetailObj.Quantity = order.Quantity;
-                            orderDetailObj.MRP = order.MRP;
-                            orderDetailObj.Discount = order.Discount;
-                            orderDetailObj.DiscountPrice = order.DiscountPrice;
-                            orderDetailObj.AmountToBePaid = order.Quantity * order.PriceAfterDiscount;
+                                orderObj.UserId = userId;
+                                orderObj.OrderNumber = "ETB" + new Random().Next().ToString();
+                                orderObj.OrderDate = DateTime.Now;
+                                orderObj.StatusId = 1;
+                                orderObj.ProductId = order.ProductId;
+                                orderObj.Quantity = order.Quantity;
+                                orderObj.MRP = order.MRP;
+                                orderObj.Discount = order.Discount;
+                                orderObj.DiscountPrice = order.DiscountPrice;
+                                orderObj.AmountToBePaid = order.Quantity * order.PriceAfterDiscount;
 
-                            await _dbContext.AddAsync(orderDetailObj);
+                                await _dbContext.AddAsync(orderObj);
 
+                            }
+
+                            await _dbContext.SaveChangesAsync();
+
+                            var objCart = await _dbContext.tblCart.Where(x => x.UserId == userId && x.IsPlaced == false).ToListAsync();
+
+                            foreach (var item in objCart)
+                            {
+                                item.IsPlaced = true;
+                            }
+
+                            await _dbContext.SaveChangesAsync();
+
+                            apiResponseModel.Status = true;
+                            apiResponseModel.Message = "Order placed successfully.";
                         }
-
-                        await _dbContext.SaveChangesAsync();
-
-                        var objCart = await _dbContext.tblCart.Where(x=>x.UserId == userId && x.IsPlaced == false).ToListAsync();
-
-                        foreach(var item in objCart)
+                        else
                         {
-                            item.IsPlaced = true;
+                            apiResponseModel.Status = false;
+                            apiResponseModel.Message = "Kindly add products to cart to place order.";
                         }
-
-                        await _dbContext.SaveChangesAsync();
-
-                        apiResponseModel.Status = true;
-                        apiResponseModel.Message = "Order placed successfully.";
                     }
                     else
                     {
                         apiResponseModel.Status = false;
-                        apiResponseModel.Message = "Kindly add products to cart to place order.";
+                        apiResponseModel.Message = "Kindly set your delivery address to place order.";
                     }
                 }
                 else

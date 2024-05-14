@@ -21,7 +21,6 @@ namespace EasyToBuy.Web.Controllers
         [HttpPost("PlaceOrder")]
         public async Task<ApiResponseModel> PlaceOrder(int userId)
         {
-
             var response =  await _orderRepository.PlaceOrder(userId);
             return response;
         }
