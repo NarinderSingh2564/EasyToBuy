@@ -23,7 +23,11 @@ namespace EasyToBuy.Data
         
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+
             optionsBuilder.UseSqlServer("Server=abcd;Database=EasyToBuyDb;User Id=abcd; Password=abcd;Trusted_Connection=False;TrustServerCertificate=true;Integrated Security=false;");
+
+            
+
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
