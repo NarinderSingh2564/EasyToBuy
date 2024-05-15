@@ -23,7 +23,11 @@ namespace EasyToBuy.Data
         
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=SG2NWPLS19SQL-v09.mssql.shr.prod.sin2.secureserver.net;Database=EasyToBuyDb;User Id=EasyToBuyAdmin; Password=Admin@2564;Trusted_Connection=False;TrustServerCertificate=true;Integrated Security=false;");
+
+            optionsBuilder.UseSqlServer("Server=abcd;Database=EasyToBuyDb;User Id=abcd; Password=abcd;Trusted_Connection=False;TrustServerCertificate=true;Integrated Security=false;");
+
+            
+
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,6 +36,7 @@ namespace EasyToBuy.Data
         public DbSet<SPGetCartDetailsByCustomerId_Result> cartDetailsByCustomerId_Results { get; set; }
         public DbSet<SPGetProductList_Result> productList_Results { get; set; }
         public DbSet<SPGetProductDetailsById_Result> productDetailsById_Results { get; set; }
+        public DbSet<SPGetVendorOrdersCountById_Result> vendorOrdersCountById_Results { get; set; }
 
     }
 }

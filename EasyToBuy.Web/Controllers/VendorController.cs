@@ -1,8 +1,10 @@
-﻿using EasyToBuy.Models.CommonModel;
+﻿using EasyToBuy.Data.SPClasses;
+using EasyToBuy.Models.CommonModel;
 using EasyToBuy.Models.InputModels;
 using EasyToBuy.Models.Models;
 using EasyToBuy.Models.UIModels;
 using EasyToBuy.Repository.Abstract;
+using EasyToBuy.Repository.Concrete;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -68,5 +70,15 @@ namespace EasyToBuy.Web.Controllers
 
             return response;
         }
+
+
+        [HttpGet("GetVendorOrdersCount")]
+        public async Task<IEnumerable<SPGetVendorOrdersCountById_Result>> GetVendorOrdersCount(int vendorId)
+        {
+            var response = await _vendorRepository.GetVendorOrdersCount(vendorId);
+
+            return response;
+        }
+
     }
 }
