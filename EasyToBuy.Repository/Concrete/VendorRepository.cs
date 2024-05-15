@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using EasyToBuy.Data.DBClasses;
+using EasyToBuy.Data.SPClasses;
 using EasyToBuy.Models.CommonModel;
 using EasyToBuy.Models.InputModels;
 using EasyToBuy.Models.Models;
@@ -43,5 +44,15 @@ namespace EasyToBuy.Repository.Concrete
                 return await vendorService.VendorLogin(mobile,password);
             }
         }
+
+        public async Task<IEnumerable<SPGetVendorOrdersCountById_Result>> GetVendorOrdersCount(int vendorId)
+        {
+            using (VendorService vendorService = new VendorService())
+            {
+                return await vendorService.GetVendorOrdersCount(vendorId);
+            }
+        }
+
+
     }
 }

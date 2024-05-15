@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EasyToBuy.Data;
 using EasyToBuy.Data.DBClasses;
+using EasyToBuy.Data.SPClasses;
 using EasyToBuy.Models.CommonModel;
 using EasyToBuy.Models.InputModels;
 using EasyToBuy.Models.Models;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyToBuy.Services.Interactions
@@ -247,5 +250,26 @@ namespace EasyToBuy.Services.Interactions
             return apiResponseModel;
         }
 
+        public async Task<IEnumerable<SPGetVendorOrdersCountById_Result>> GetVendorOrdersCount(int vendorId)
+        {
+            var VendorOrdersCount  = new List<SPGetVendorOrdersCountById_Result>();
+
+            try
+            {
+                var sqlQuery = "exec SPGetVendorOrdersCountById @VendorId";
+
+                SqlParameter parameter1 = new SqlParameter("@VendorId", (int) vendorId );
+
+
+                VendorOrdersCount = await _dbContext.vendorOrdersCountById_Results.FromSqlRaw(sqlQuery, parameter1).ToListAsync();
+
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return VendorOrdersCount;
+        }
     }
 }
