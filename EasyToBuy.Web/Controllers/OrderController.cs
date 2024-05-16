@@ -1,6 +1,8 @@
-﻿using EasyToBuy.Models.CommonModel;
+﻿using EasyToBuy.Data.SPClasses;
+using EasyToBuy.Models.CommonModel;
 using EasyToBuy.Models.Models;
 using EasyToBuy.Repository.Abstract;
+using EasyToBuy.Repository.Concrete;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,5 +26,15 @@ namespace EasyToBuy.Web.Controllers
             var response =  await _orderRepository.PlaceOrder(userId);
             return response;
         }
+
+        [HttpGet("GetOrdersList")]
+        public async Task<IEnumerable<SPGetOrderList_Result>> GetOrdersList(int vendorId, int customerId, string? searchText, string? statusId )
+        {
+            var response = await _orderRepository.GetOrdersList(vendorId, customerId, searchText, statusId);
+
+            return response;
+        }
+
+
     }
 }
