@@ -1,8 +1,12 @@
 ﻿using System.ComponentModel;
+using System.Data;
 using EasyToBuy.Data;
 using EasyToBuy.Data.DBClasses;
+using EasyToBuy.Data.Migrations;
+using EasyToBuy.Data.SPClasses;
 using EasyToBuy.Models.CommonModel;
 using EasyToBuy.Models.Models;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyToBuy.Services.Interactions
@@ -149,6 +153,29 @@ namespace EasyToBuy.Services.Interactions
             }
 
             return apiResponseModel;
+        }
+
+        public async Task<IEnumerable<SPGetOrderList_Result>> GetOrdersList(int vendorId, int customerId, string? searchText, string? statusId)
+        {
+            var orderList = new List<SPGetOrderList_Result>();
+           
+            try
+            {
+                var sqlQuery = "exec spGetOrderList @CustomerId,@VendorId,@SearchText,@StatusId";
+
+                SqlParameter parameter1 = new SqlParameter("@CustomerId", customerId <1 ?DBNull.Value : customerId);
+                SqlParameter parameter2 = new SqlParameter("@VendorId", vendorId <1 ? DBNull.Value : vendorId);
+                SqlParameter parameter3 = new SqlParameter("@SearchText", string.IsNullOrEmpty(searchText) ? DBNull.Value : searchText);
+                SqlParameter parameter4 = new SqlParameter("@StatusId", string.IsNullOrEmpty(statusId) ? DBNull.Value : statusId);
+
+                 orderList = await _dbContext.orderList_Results.FromSqlRaw(sqlQuery, parameter1, parameter2, parameter3, parameter4).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return orderList;
         }
     }
 }

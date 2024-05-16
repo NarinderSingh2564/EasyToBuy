@@ -70,11 +70,11 @@ namespace EasyToBuy.Services.Interactions
             {
                 if (role == "Vendor")
                 {
-                    dbUser = await _dbContext.tblVendor.Where(x => x.Mobile == mobile).FirstOrDefaultAsync();
+                    dbUser = await _dbContext.tblVendor.Where(x => x.Mobile == mobile || x.Email == mobile).FirstOrDefaultAsync();
                 }
                 if (role == "Customer")
                 {
-                    dbUser = await _dbContext.tblUser.Where(x => x.Mobile == mobile).FirstOrDefaultAsync();
+                    dbUser = await _dbContext.tblUser.Where(x => x.Mobile == mobile || x.Email == mobile).FirstOrDefaultAsync();
                 }
 
                 if (dbUser != null)
