@@ -1,4 +1,7 @@
-﻿namespace EasyToBuy.Models.UIModels
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
+
+namespace EasyToBuy.Models.UIModels
 {
     public class ProductUIModel
     {
@@ -10,7 +13,7 @@
         public decimal DiscountPrice { get; set; }
         public decimal PriceAfterDiscount { get; set; }
         public string ProductDescription { get; set; }
-        public string ProductImage { get; set; }
+        public IFormFile ProductImage { get; set; }
         public int CategoryId { get; set; }
         public int ProductWeightId { get; set; }
         public bool ShowProductWeight { get; set; }
