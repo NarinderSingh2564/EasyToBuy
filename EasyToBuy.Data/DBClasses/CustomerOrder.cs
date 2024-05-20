@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EasyToBuy.Data.DBClasses
 {
-    public class Order
+    public class CustomerOrder
     {
         [Key]
         public int Id { get; set; }

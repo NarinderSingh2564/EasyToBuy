@@ -11,6 +11,7 @@ namespace EasyToBuy.Data.SPClasses
     {
         [Key]
         public int Id { get; set; }
+        public int ProductId { get; set; }
         public int UserId { get; set; }
         public int VendorId { get; set; }
         public int StatusId { get; set; }
@@ -20,6 +21,7 @@ namespace EasyToBuy.Data.SPClasses
         public DateTime OrderDate { get; set; }
         public string Status { get; set; }
         public string ProductName { get; set; }
+        public string ProductImageUrl { get; set; }
         public string ProductWeight { get; set; }
         public int Quantity { get; set; }
         public int MRP { get; set; }            

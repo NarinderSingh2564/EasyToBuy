@@ -19,7 +19,8 @@ namespace EasyToBuy.Data
         public DbSet<ProductWeights> tblProductWeight { get; set; } 
         public DbSet<Cart> tblCart { get; set; }
         public DbSet<OrderStatus> tblOrderStatus { get; set; }
-        public DbSet<Order> tblCustomerOrder { get; set; }     
+        public DbSet<CustomerOrder> tblCustomerOrder { get; set; }     
+        public DbSet<CustomerOrderStatusLog> tblCustomerOrderStatusLog { get; set; }     
         
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
