@@ -76,7 +76,7 @@ namespace EasyToBuy.Services.Interactions
                 if (checkVendorDuplicacy != null)
                 {
                     apiResponseModel.Status = false;
-                    apiResponseModel.Message = "This mobile number and email is already registered.";
+                    apiResponseModel.Message = "This mobile number and email is already registered, please try with new.";
                 }
                 else
                 {
