@@ -28,9 +28,9 @@ namespace EasyToBuy.Web.Controllers
         }
 
         [HttpGet("GetOrdersList")]
-        public async Task<IEnumerable<SPGetOrderList_Result>> GetOrdersList(int vendorId, int customerId, string? searchText, string? statusId )
+        public async Task<IEnumerable<SPGetOrderList_Result>> GetOrdersList(int vendorId, int customerId, string? searchText, string? statusId, DateTime? firstDate, DateTime? secondDate)
         {
-            var response = await _orderRepository.GetOrdersList(vendorId, customerId, searchText, statusId);
+            var response = await _orderRepository.GetOrdersList(vendorId, customerId, searchText, statusId, firstDate, secondDate);
 
             return response;
         }

@@ -6,7 +6,7 @@ namespace EasyToBuy.Repository.Abstract
 {
     public interface IOrderRepository
     {
-        Task<IEnumerable<SPGetOrderList_Result>> GetOrdersList(int vendorId, int customerId, string? searchText, string? statusId);
+        Task<IEnumerable<SPGetOrderList_Result>> GetOrdersList(int vendorId, int customerId, string? searchText, string? statusId, DateTime? firstDate, DateTime? secondDate);
         Task<ApiResponseModel> PlaceOrder(int userId);
     }
 }
