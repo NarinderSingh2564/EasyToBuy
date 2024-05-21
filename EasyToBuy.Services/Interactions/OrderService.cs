@@ -95,7 +95,7 @@ namespace EasyToBuy.Services.Interactions
                         {
                             foreach (var order in orderList)
                             {
-                                var orderObj = new Order();
+                                var orderObj = new CustomerOrder();
 
                                 orderObj.UserId = userId;
                                 orderObj.OrderNumber = "ETB" + new Random().Next().ToString();

@@ -4,6 +4,7 @@ using EasyToBuy.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyToBuy.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240520074905_TblCustomerOrderStatusLog_Create")]
+    partial class TblCustomerOrderStatusLogCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -258,7 +261,13 @@ namespace EasyToBuy.Data.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("CustomerOrderId")
+                        .HasColumnType("int");
+
                     b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderStatusId")
                         .HasColumnType("int");
 
                     b.Property<int>("StatusId")
@@ -266,9 +275,9 @@ namespace EasyToBuy.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("CustomerOrderId");
 
-                    b.HasIndex("StatusId");
+                    b.HasIndex("OrderStatusId");
 
                     b.ToTable("tblCustomerOrderStatusLog", "dbo");
                 });
@@ -786,30 +795,6 @@ namespace EasyToBuy.Data.Migrations
                     b.ToTable("productList_Results", "dbo");
                 });
 
-            modelBuilder.Entity("EasyToBuy.Data.SPClasses.SPGetTrackingStatusListByOrderId_Result", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsPending")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StatusDate")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("getTrackingStatusListByOrderId_Results", "dbo");
-                });
-
             modelBuilder.Entity("EasyToBuy.Data.SPClasses.SPGetVendorOrdersCountById_Result", b =>
                 {
                     b.Property<int>("VendorId")
@@ -908,13 +893,13 @@ namespace EasyToBuy.Data.Migrations
                 {
                     b.HasOne("EasyToBuy.Data.DBClasses.CustomerOrder", "CustomerOrder")
                         .WithMany()
-                        .HasForeignKey("OrderId")
+                        .HasForeignKey("CustomerOrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("EasyToBuy.Data.DBClasses.OrderStatus", "OrderStatus")
                         .WithMany()
-                        .HasForeignKey("StatusId")
+                        .HasForeignKey("OrderStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
