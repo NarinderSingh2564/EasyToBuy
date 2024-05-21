@@ -21,7 +21,7 @@ namespace EasyToBuy.Data.SPClasses
         public DateTime OrderDate { get; set; }
         public string Status { get; set; }
         public string ProductName { get; set; }
-        public string ProductImageUrl { get; set; }
+        public string ProductImage { get; set; }
         public string ProductWeight { get; set; }
         public int Quantity { get; set; }
         public int MRP { get; set; }            
