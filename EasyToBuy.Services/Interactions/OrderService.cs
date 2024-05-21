@@ -8,6 +8,7 @@ using EasyToBuy.Models.CommonModel;
 using EasyToBuy.Models.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace EasyToBuy.Services.Interactions
 {
@@ -155,20 +156,22 @@ namespace EasyToBuy.Services.Interactions
             return apiResponseModel;
         }
 
-        public async Task<IEnumerable<SPGetOrderList_Result>> GetOrdersList(int vendorId, int customerId, string? searchText, string? statusId)
+        public async Task<IEnumerable<SPGetOrderList_Result>> GetOrdersList(int vendorId, int customerId, string? searchText, string? statusId, DateTime? firstDate, DateTime? secondDate)
         {
             var orderList = new List<SPGetOrderList_Result>();
            
             try
             {
-                var sqlQuery = "exec spGetOrderList @CustomerId,@VendorId,@SearchText,@StatusId";
+                var sqlQuery = "exec spGetOrderList @CustomerId,@VendorId,@SearchText,@StatusId,@FirstDate,@SecondDate";
 
                 SqlParameter parameter1 = new SqlParameter("@CustomerId", customerId <1 ?DBNull.Value : customerId);
                 SqlParameter parameter2 = new SqlParameter("@VendorId", vendorId <1 ? DBNull.Value : vendorId);
                 SqlParameter parameter3 = new SqlParameter("@SearchText", string.IsNullOrEmpty(searchText) ? DBNull.Value : searchText);
                 SqlParameter parameter4 = new SqlParameter("@StatusId", string.IsNullOrEmpty(statusId) ? DBNull.Value : statusId);
+                SqlParameter parameter5 = new SqlParameter("@FirstDate", firstDate == null ? DBNull.Value : firstDate);
+                SqlParameter parameter6 = new SqlParameter("@SecondDate", secondDate == null  ? DBNull.Value : secondDate);
 
-                 orderList = await _dbContext.orderList_Results.FromSqlRaw(sqlQuery, parameter1, parameter2, parameter3, parameter4).ToListAsync();
+                orderList = await _dbContext.orderList_Results.FromSqlRaw(sqlQuery, parameter1, parameter2, parameter3, parameter4, parameter5, parameter6).ToListAsync();
             }
             catch (Exception ex)
             {
