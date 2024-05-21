@@ -35,6 +35,7 @@ namespace EasyToBuy.Data
         public DbSet<SPGetProductDetailsById_Result> productDetailsById_Results { get; set; }
         public DbSet<SPGetVendorOrdersCountById_Result> vendorOrdersCountById_Results { get; set; }
         public DbSet<SPGetOrderList_Result> orderList_Results { get; set; }
+        public DbSet<SPGetTrackingStatusListByOrderId_Result> getTrackingStatusListByOrderId_Results { get; set; }
 
     }
 }
