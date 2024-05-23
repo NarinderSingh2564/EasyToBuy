@@ -1,4 +1,5 @@
-﻿using EasyToBuy.Data.SPClasses;
+﻿using EasyToBuy.Data.DBClasses;
+using EasyToBuy.Data.SPClasses;
 using EasyToBuy.Models.CommonModel;
 using EasyToBuy.Models.Models;
 using EasyToBuy.Repository.Abstract;
@@ -21,6 +22,13 @@ namespace EasyToBuy.Repository.Concrete
             using (OrderService orderService = new OrderService())
             {
                 return await orderService.GetOrdersList(vendorId, customerId, searchText, statusId, firstDate, secondDate);
+            }
+        }
+        public async Task<IEnumerable<SPGetTrackingStatusListByOrderId_Result>> GetOrderStatusTrackingList(int orderId)
+        {
+            using (OrderService orderService = new OrderService())
+            {
+                return await orderService.GetOrderStatusTrackingList(orderId);
             }
         }
     }

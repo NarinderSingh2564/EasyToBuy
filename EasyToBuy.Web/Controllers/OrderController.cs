@@ -35,6 +35,12 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
+        [HttpGet("GetOrderStatusTrackingList")]
+        public async Task<IEnumerable<SPGetTrackingStatusListByOrderId_Result>> GetOrderStatusTrackingList(int orderId)
+        {
+            var response = await _orderRepository.GetOrderStatusTrackingList(orderId);
 
+            return response;
+        }
     }
 }
