@@ -44,7 +44,7 @@ namespace EasyToBuy.Web.Controllers
 
             if (productUIModel.ProductImage != null)
             {
-                UploadProductImage("Products", productUIModel.ProductImage,out productImage);
+                UploadProductImage("Products", productUIModel.ProductImage, out productImage);
             }
 
             productInputModel.Id = productUIModel.Id;
