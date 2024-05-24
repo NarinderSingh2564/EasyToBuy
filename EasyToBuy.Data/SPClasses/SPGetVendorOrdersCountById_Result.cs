@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EasyToBuy.Data.DBClasses;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -11,10 +12,8 @@ namespace EasyToBuy.Data.SPClasses
     {
         [Key]
         public int VendorId { get; set; }
-        public string VendorName { get; set; } = string.Empty;
-        public int PendingOrder { get; set; } 
-        public int DeliveredOrder { get; set; } 
-        public int CancelOrder { get; set; } 
-        public int TotalOrder { get; set; } 
+        public int OrderStatusId { get; set; }
+        public string OrderStatus { get; set; }
+        public int OrderCount { get; set; }
     }
 }

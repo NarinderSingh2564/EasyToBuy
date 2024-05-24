@@ -68,9 +68,9 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
-       bool UploadProductImage(string folderName,IFormFile productImage, out string productImageName)
+        bool UploadProductImage(string folderName, IFormFile productImage, out string productImageName)
         {
-            var fileUploadStatus =false;
+            var fileUploadStatus = false;
 
             var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), "Images", folderName);
 
@@ -79,7 +79,7 @@ namespace EasyToBuy.Web.Controllers
                 System.IO.Directory.CreateDirectory(pathToSave);
             }
 
-            productImageName = "Product_" + productImage.FileName.Trim('"').Trim('%').Replace("'", "") + new Random().Next().ToString();
+            productImageName = "Product_" + new Random().Next().ToString() + productImage.FileName.Trim('"').Trim('%').Replace("'", "");
 
             var fullPath = Path.Combine(pathToSave, productImageName);
 
