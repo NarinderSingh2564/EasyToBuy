@@ -7,6 +7,7 @@ namespace EasyToBuy.Data.DBClasses
         [Key]
         public int Id { get; set; }
         public string Status { get; set; } = string.Empty;
+        public int StatusNo { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }

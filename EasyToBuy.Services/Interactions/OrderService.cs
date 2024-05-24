@@ -74,7 +74,7 @@ namespace EasyToBuy.Services.Interactions
                 if (isUserExists != null)
                 {
                     var isDeliveryAddress = await _dbContext.tblAddress.Where(x => x.UserId == userId && x.IsDeliveryAddress == true).FirstOrDefaultAsync();
-                    
+
                     if (isDeliveryAddress != null)
                     {
                         var orderList = (from c in _dbContext.tblCart
@@ -94,26 +94,37 @@ namespace EasyToBuy.Services.Interactions
 
                         if (orderList != null && orderList.Count > 0)
                         {
+
                             foreach (var order in orderList)
                             {
-                                var orderObj = new CustomerOrder();
+                            var customerOrderObj = new CustomerOrder();
 
-                                orderObj.UserId = userId;
-                                orderObj.OrderNumber = "ETB" + new Random().Next().ToString();
-                                orderObj.OrderDate = DateTime.Now;
-                                orderObj.StatusId = 1;
-                                orderObj.ProductId = order.ProductId;
-                                orderObj.Quantity = order.Quantity;
-                                orderObj.MRP = order.MRP;
-                                orderObj.Discount = order.Discount;
-                                orderObj.DiscountPrice = order.DiscountPrice;
-                                orderObj.AmountToBePaid = order.Quantity * order.PriceAfterDiscount;
+                                customerOrderObj.UserId = userId;
+                                customerOrderObj.OrderNumber = "ETB-" + new Random().Next().ToString();
+                                customerOrderObj.OrderDate = DateTime.Now;
+                                customerOrderObj.StatusId = 1;
+                                customerOrderObj.ProductId = order.ProductId;
+                                customerOrderObj.Quantity = order.Quantity;
+                                customerOrderObj.MRP = order.MRP;
+                                customerOrderObj.Discount = order.Discount;
+                                customerOrderObj.DiscountPrice = order.DiscountPrice;
+                                customerOrderObj.AmountToBePaid = order.Quantity * order.PriceAfterDiscount;
 
-                                await _dbContext.AddAsync(orderObj);
+                                await _dbContext.AddAsync(customerOrderObj);
+                                await _dbContext.SaveChangesAsync();
+
+                                var customerOrderStatusLog = new CustomerOrderStatusLog();
+
+                                customerOrderStatusLog.OrderId = customerOrderObj.Id;
+                                customerOrderStatusLog.StatusId = 1;
+                                customerOrderStatusLog.CreatedBy = userId;
+                                customerOrderStatusLog.CreatedOn = DateTime.Now;
+                                await _dbContext.AddAsync(customerOrderStatusLog);
+
+                                await _dbContext.SaveChangesAsync();
 
                             }
 
-                            await _dbContext.SaveChangesAsync();
 
                             var objCart = await _dbContext.tblCart.Where(x => x.UserId == userId && x.IsPlaced == false).ToListAsync();
 
@@ -123,6 +134,9 @@ namespace EasyToBuy.Services.Interactions
                             }
 
                             await _dbContext.SaveChangesAsync();
+
+
+
 
                             apiResponseModel.Status = true;
                             apiResponseModel.Message = "Order placed successfully.";
@@ -155,21 +169,20 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-
         public async Task<IEnumerable<SPGetOrderList_Result>> GetOrdersList(int vendorId, int customerId, string? searchText, string? statusId, DateTime? firstDate, DateTime? secondDate)
         {
             var orderList = new List<SPGetOrderList_Result>();
-           
+
             try
             {
                 var sqlQuery = "exec spGetOrderList @CustomerId,@VendorId,@SearchText,@StatusId,@FirstDate,@SecondDate";
 
-                SqlParameter parameter1 = new SqlParameter("@CustomerId", customerId <1 ?DBNull.Value : customerId);
-                SqlParameter parameter2 = new SqlParameter("@VendorId", vendorId <1 ? DBNull.Value : vendorId);
+                SqlParameter parameter1 = new SqlParameter("@CustomerId", customerId < 1 ? DBNull.Value : customerId);
+                SqlParameter parameter2 = new SqlParameter("@VendorId", vendorId < 1 ? DBNull.Value : vendorId);
                 SqlParameter parameter3 = new SqlParameter("@SearchText", string.IsNullOrEmpty(searchText) ? DBNull.Value : searchText);
                 SqlParameter parameter4 = new SqlParameter("@StatusId", string.IsNullOrEmpty(statusId) ? DBNull.Value : statusId);
                 SqlParameter parameter5 = new SqlParameter("@FirstDate", firstDate == null ? DBNull.Value : firstDate);
-                SqlParameter parameter6 = new SqlParameter("@SecondDate", secondDate == null  ? DBNull.Value : secondDate);
+                SqlParameter parameter6 = new SqlParameter("@SecondDate", secondDate == null ? DBNull.Value : secondDate);
 
                 orderList = await _dbContext.orderList_Results.FromSqlRaw(sqlQuery, parameter1, parameter2, parameter3, parameter4, parameter5, parameter6).ToListAsync();
             }
@@ -179,6 +192,26 @@ namespace EasyToBuy.Services.Interactions
             }
 
             return orderList;
+        }
+        public async Task<IEnumerable<SPGetTrackingStatusListByOrderId_Result>> GetOrderStatusTrackingList(int orderId)
+        {
+            var orderStatusTrackingList = new List<SPGetTrackingStatusListByOrderId_Result>();
+
+            try
+            {
+                var sqlQuery = "exec spGetTrackingStatusListByOrderId @OrderId";
+
+                SqlParameter parameter1 = new SqlParameter("@OrderId", orderId);
+
+                orderStatusTrackingList = await _dbContext.getTrackingStatusListByOrderId_Results.FromSqlRaw(sqlQuery, parameter1).ToListAsync();
+            }
+
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return orderStatusTrackingList;
         }
     }
 }
