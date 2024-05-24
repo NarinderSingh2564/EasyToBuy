@@ -11,6 +11,7 @@ namespace EasyToBuy.Data.SPClasses
     public class SPGetVendorOrdersCountById_Result
     {
         [Key]
+        public int Id { get; set; }
         public int VendorId { get; set; }
         public int OrderStatusId { get; set; }
         public string OrderStatus { get; set; }

@@ -79,7 +79,7 @@ namespace EasyToBuy.Web.Controllers
                 System.IO.Directory.CreateDirectory(pathToSave);
             }
 
-            productImageName = "Product_" + new Random().Next().ToString() + productImage.FileName.Trim('"').Trim('%').Replace("'", "");
+            productImageName = "https://localhost:7239/ProductImages/Product_" + new Random().Next().ToString() + productImage.FileName.Trim('"').Trim('%').Replace("'", "").Replace(" ","");
 
             var fullPath = Path.Combine(pathToSave, productImageName);
 
