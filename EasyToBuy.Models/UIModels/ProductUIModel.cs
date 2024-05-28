@@ -13,7 +13,8 @@ namespace EasyToBuy.Models.UIModels
         public decimal DiscountPrice { get; set; }
         public decimal PriceAfterDiscount { get; set; }
         public string ProductDescription { get; set; }
-        public IFormFile ProductImage { get; set; }
+        public IFormFile? ProductImage { get; set; }
+        public string ProductImageName { get; set; }
         public int CategoryId { get; set; }
         public int ProductWeightId { get; set; }
         public bool ShowProductWeight { get; set; }
