@@ -38,13 +38,13 @@ namespace EasyToBuy.Web.Controllers
         [HttpPost("ProductAddEdit")]
         public async Task<ApiResponseModel> ProductAddEdit([FromForm] ProductUIModel productUIModel)
         {
-            var productInputModel = new ProductInputModel();
+            var returnResponse = new ApiResponseModel();
 
-            var productImage = string.Empty;
+            var productInputModel = new ProductInputModel();
 
             if (productUIModel.ProductImage != null)
             {
-                UploadProductImage("Products", productUIModel.ProductImage, out productImage);
+                UploadProductImage(productUIModel);
             }
 
             productInputModel.Id = productUIModel.Id;
@@ -55,7 +55,7 @@ namespace EasyToBuy.Web.Controllers
             productInputModel.DiscountPrice = productUIModel.MRP * Decimal.Divide(productUIModel.Discount, 100);
             productInputModel.PriceAfterDiscount = productUIModel.PriceAfterDiscount;
             productInputModel.ProductDescription = productUIModel.ProductDescription;
-            productInputModel.ProductImage = productImage;
+            productInputModel.ProductImage = productUIModel.ProductImageName;
             productInputModel.CategoryId = productUIModel.CategoryId;
             productInputModel.ProductWeightId = productUIModel.ProductWeightId;
             productInputModel.ShowProductWeight = productUIModel.ShowProductWeight;
@@ -63,31 +63,37 @@ namespace EasyToBuy.Web.Controllers
             productInputModel.UpdatedBy = productUIModel.UpdatedBy;
             productInputModel.IsActive = productUIModel.IsActive;
 
-            var response = await _productRepository.ProductAddEdit(productInputModel);
+            returnResponse = await _productRepository.ProductAddEdit(productInputModel);
 
-            return response;
+            return returnResponse;
         }
 
-        bool UploadProductImage(string folderName, IFormFile productImage, out string productImageName)
+        bool UploadProductImage(ProductUIModel productUIModel)
         {
             var fileUploadStatus = false;
 
-            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), "Images", folderName);
+            var imageRoutePath = Path.Combine(Directory.GetCurrentDirectory(), "Images", "Products");
 
-            if (!System.IO.Directory.Exists(pathToSave))
+            if (!System.IO.Directory.Exists(imageRoutePath))
             {
-                System.IO.Directory.CreateDirectory(pathToSave);
+                System.IO.Directory.CreateDirectory(imageRoutePath);
             }
 
-            productImageName = "https://localhost:7239/ProductImages/Product_" + new Random().Next().ToString() + productImage.FileName.Trim('"').Trim('%').Replace("'", "").Replace(" ","");
+            var ImageName = new Random().Next().ToString() + productUIModel.ProductImage.FileName.Trim('"').Trim('%').Replace("'", "").Replace(" ", "");
 
-            var fullPath = Path.Combine(pathToSave, productImageName);
-
-            using (var stream = new FileStream(fullPath, FileMode.Create))
+            using (var stream = new FileStream(Path.Combine(imageRoutePath, ImageName), FileMode.Create))
             {
-                productImage.CopyTo(stream);
+                productUIModel.ProductImage.CopyTo(stream);
             }
 
+            var oldimage = Path.Combine(Directory.GetCurrentDirectory(), "Images", "Products", productUIModel.ProductImageName);
+
+            if (System.IO.File.Exists(oldimage))
+            {
+                System.IO.File.Delete(oldimage);
+            }
+
+            productUIModel.ProductImageName = ImageName;
             return fileUploadStatus;
         }
 

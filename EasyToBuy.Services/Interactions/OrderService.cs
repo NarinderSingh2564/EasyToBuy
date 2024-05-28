@@ -180,7 +180,7 @@ namespace EasyToBuy.Services.Interactions
                 SqlParameter parameter1 = new SqlParameter("@CustomerId", customerId < 1 ? DBNull.Value : customerId);
                 SqlParameter parameter2 = new SqlParameter("@VendorId", vendorId < 1 ? DBNull.Value : vendorId);
                 SqlParameter parameter3 = new SqlParameter("@SearchText", string.IsNullOrEmpty(searchText) ? DBNull.Value : searchText);
-                SqlParameter parameter4 = new SqlParameter("@StatusId", string.IsNullOrEmpty(statusId) ? DBNull.Value : statusId);
+                SqlParameter parameter4 = new SqlParameter("@StatusId", statusId == "0" ? DBNull.Value : statusId); 
                 SqlParameter parameter5 = new SqlParameter("@FirstDate", firstDate == null ? DBNull.Value : firstDate);
                 SqlParameter parameter6 = new SqlParameter("@SecondDate", secondDate == null ? DBNull.Value : secondDate);
 
