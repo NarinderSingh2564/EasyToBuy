@@ -50,15 +50,9 @@ namespace EasyToBuy.Web.Controllers
             productInputModel.Id = productUIModel.Id;
             productInputModel.VendorId = productUIModel.VendorId;
             productInputModel.ProductName = productUIModel.ProductName;
-            productInputModel.MRP = productUIModel.MRP;
-            productInputModel.Discount = productUIModel.Discount;
-            productInputModel.DiscountPrice = productUIModel.MRP * Decimal.Divide(productUIModel.Discount, 100);
-            productInputModel.PriceAfterDiscount = productUIModel.PriceAfterDiscount;
             productInputModel.ProductDescription = productUIModel.ProductDescription;
             productInputModel.ProductImage = productUIModel.ProductImageName;
             productInputModel.CategoryId = productUIModel.CategoryId;
-            productInputModel.ProductWeightId = productUIModel.ProductWeightId;
-            productInputModel.ShowProductWeight = productUIModel.ShowProductWeight;
             productInputModel.CreatedBy = productUIModel.CreatedBy;
             productInputModel.UpdatedBy = productUIModel.UpdatedBy;
             productInputModel.IsActive = productUIModel.IsActive;

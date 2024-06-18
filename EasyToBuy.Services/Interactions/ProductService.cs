@@ -105,15 +105,9 @@ namespace EasyToBuy.Services.Interactions
                     if (dbProduct != null)
                     {
                         dbProduct.ProductName = productInputModel.ProductName;
-                        //dbProduct.MRP = productInputModel.MRP;
-                        //dbProduct.Discount = productInputModel.Discount;
-                        //dbProduct.DiscountPrice = productInputModel.DiscountPrice;
-                        //dbProduct.PriceAfterDiscount = productInputModel.PriceAfterDiscount;
-                        //dbProduct.ProductDescription = productInputModel.ProductDescription;
-                        //dbProduct.ProductImage = productInputModel.ProductImage;
-                        //dbProduct.CategoryId = productInputModel.CategoryId;
-                        //dbProduct.ProductWeightId = productInputModel.ProductWeightId;
-                        //dbProduct.ShowProductWeight = productInputModel.ShowProductWeight;
+                        dbProduct.ProductDescription = productInputModel.ProductDescription;
+                        dbProduct.ProductImage = productInputModel.ProductImage;
+                        dbProduct.CategoryId = productInputModel.CategoryId;
                         dbProduct.UpdatedBy = productInputModel.UpdatedBy;
                         dbProduct.UpdatedOn = DateTime.Now;
                         dbProduct.IsActive = productInputModel.IsActive;
@@ -125,15 +119,9 @@ namespace EasyToBuy.Services.Interactions
 
                         productObj.VendorId = productInputModel.VendorId;
                         productObj.ProductName = productInputModel.ProductName;
-                        //productObj.MRP = productInputModel.MRP;
-                        //productObj.Discount = productInputModel.Discount;
-                        //productObj.DiscountPrice = productInputModel.DiscountPrice;
-                        //productObj.PriceAfterDiscount = productInputModel.PriceAfterDiscount;
-                        //productObj.ProductDescription = productInputModel.ProductDescription;
-                        //productObj.ProductImage = productInputModel.ProductImage;
-                        //productObj.CategoryId = productInputModel.CategoryId;
-                        //productObj.ProductWeightId = productInputModel.ProductWeightId;
-                        //productObj.ShowProductWeight = productInputModel.ShowProductWeight;
+                        productObj.ProductDescription = productInputModel.ProductDescription;
+                        productObj.ProductImage = productInputModel.ProductImage;
+                        productObj.CategoryId = productInputModel.CategoryId;
                         productObj.CreatedBy = productInputModel.CreatedBy;
                         productObj.CreatedOn = DateTime.Now;
                         productObj.IsActive = productInputModel.IsActive;
