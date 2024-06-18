@@ -30,16 +30,16 @@ namespace EasyToBuy.Data.DBClasses
         public int ProductWeightId { get; set; }
         public virtual ProductWeights ProductWeights { get; set; }
 
-        [DataType("Decimal(7,2)")]
+        [Column(TypeName = "Decimal(7,2)")]
         public decimal MRP { get; set; }
 
-        [DataType("Decimal(7,2)")]
+        [Column(TypeName = "Decimal(7,2)")]
         public decimal Discount { get; set; }
 
-        [DataType("Decimal(7,2)")]
+        [Column(TypeName = "Decimal(7,2)")]
         public decimal DiscountPrice { get; set; }
 
-        [DataType("Decimal(7,2)")]
+        [Column(TypeName = "Decimal(7,2)")]
         public decimal PriceAfterDiscount { get; set; }
         public int StockQuantity { get; set; }
         public int CreatedBy { get; set; }

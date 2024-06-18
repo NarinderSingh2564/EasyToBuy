@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EasyToBuy.Data.DBClasses
@@ -8,13 +9,15 @@ namespace EasyToBuy.Data.DBClasses
         [Key]
         public int Id { get; set; }
 
+
         [ForeignKey("User")]
         public int UserId { get; set; }
         public virtual User User { get; set; }
 
-        [ForeignKey("Product")]
-        public int ProductId { get; set; }
-        public virtual Product Product { get; set; }
+        [ForeignKey("ProductVariationAndRate")]
+        public int VariationId { get; set; }
+        public virtual ProductVariationAndRate ProductVariationAndRate { get; set; }
+
         public int Quantity {  get; set; }
         public DateTime AddedDate { get; set; }
         public bool IsPlaced { get; set; }
