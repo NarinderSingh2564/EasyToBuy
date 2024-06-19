@@ -92,6 +92,34 @@ namespace EasyToBuy.Web.Controllers
         }
 
 
+        [HttpPost("ProductVariationAndRateAddEdit")]
+
+        public async Task<ApiResponseModel> ProductVariationAndRateAddEdit(ProductVariationAndRateUIModel productVariationAndRateUIModel)
+        {
+            var productVariationAndRateInputModel = new ProductVariationAndRateInputModel();
+
+            productVariationAndRateInputModel.Id = productVariationAndRateUIModel.Id;
+            productVariationAndRateInputModel.ProductId = productVariationAndRateUIModel.ProductId;
+            productVariationAndRateInputModel.ProductPackingId = productVariationAndRateUIModel.ProductPackingId;
+            productVariationAndRateInputModel.Quantity = productVariationAndRateUIModel.Quantity;
+            productVariationAndRateInputModel.ProductWeightId = productVariationAndRateUIModel.ProductWeightId;
+            productVariationAndRateInputModel.MRP = productVariationAndRateUIModel.MRP;
+            productVariationAndRateInputModel.Discount = productVariationAndRateUIModel.Discount;
+            productVariationAndRateInputModel.DiscountPrice = productVariationAndRateUIModel.DiscountPrice;
+            productVariationAndRateInputModel.PriceAfterDiscount = productVariationAndRateUIModel.PriceAfterDiscount;
+            productVariationAndRateInputModel.StockQuantity = productVariationAndRateUIModel.StockQuantity;
+            productVariationAndRateInputModel.ShowProductWeight = productVariationAndRateUIModel.ShowProductWeight;
+            productVariationAndRateInputModel.CreatedBy = productVariationAndRateUIModel.CreatedBy;
+            productVariationAndRateInputModel.UpdatedBy = productVariationAndRateUIModel.UpdatedBy;
+            productVariationAndRateInputModel.SetAsDefault = productVariationAndRateUIModel.SetAsDefault;
+            productVariationAndRateInputModel.IsActive = productVariationAndRateUIModel.IsActive;
+
+            var response = await _productRepository.ProductVariationAndRateAddEdit(productVariationAndRateInputModel);
+
+            return response;
+        }
+
+
         [HttpGet("GetProductDetailsById")]
         public async Task<IEnumerable<SPGetProductDetailsById_Result>> GetProductDetailsById(int productId)
         {
