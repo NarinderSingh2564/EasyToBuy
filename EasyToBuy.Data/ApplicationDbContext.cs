@@ -36,7 +36,10 @@ namespace EasyToBuy.Data
         }
         public DbSet<SPGetCartDetailsByCustomerId_Result> cartDetailsByCustomerId_Results { get; set; }
         public DbSet<SPGetProductList_Result> productList_Results { get; set; }
-        public DbSet<SPGetProductDetailsById_Result> productDetailsById_Results { get; set; }
+        public DbSet<SPGetProductSpecificationById_Result> productSpecificationById_Results { get; set; }
+        public DbSet<SPGetProductVariationListById_Result> productVariationListById_Results { get; set; }
+        public DbSet<SPGetProductVariationImageById_Result> productVariationImageById_Results { get; set; }
+        public DbSet<SPGetProductDescriptionById_Result> productDescriptionById_Results { get; set; }
         public DbSet<SPGetVendorOrdersCountById_Result> vendorOrdersCountById_Results { get; set; }
         public DbSet<SPGetOrderList_Result> orderList_Results { get; set; }
         public DbSet<SPGetTrackingStatusListByOrderId_Result> getTrackingStatusListByOrderId_Results { get; set; }

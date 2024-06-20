@@ -24,18 +24,19 @@ namespace EasyToBuy.Repository.Concrete
             }
         }
 
-        public async Task<ApiResponseModel> ProductVariationAndRateAddEdit(ProductVariationAndRateInputModel productVariationAndRateInputModel)
+public async Task<ApiResponseModel> ProductVariationAndRateAddEdit(ProductVariationAndRateInputModel productVariationAndRateInputModel)
         {
             using (ProductService productService = new ProductService())
             {
                 return await productService.ProductVariationAndRateAddEdit(productVariationAndRateInputModel);
             }
         }
-        public async Task<IEnumerable<SPGetProductDetailsById_Result>> GetProductDetailsById(int productId)
+        
+        public async Task<IEnumerable<SPGetProductDescriptionById_Result>> GetProductDescriptionById(int productId)
         {
             using (ProductService productService = new ProductService())
             {
-                return await productService.GetProductDetailsById(productId);
+                return await productService.GetProductDescriptionById(productId);
             }
         }
         public async Task<IEnumerable<ProductWeightModel>> GetProductWeightList()
@@ -45,7 +46,35 @@ namespace EasyToBuy.Repository.Concrete
                 return await productService.GetProductWeightList();
             }
         }
-        
+        public async Task<IEnumerable<SPGetProductSpecificationById_Result>> GetProductSpecificationById(int productId)
+        {
+            using (ProductService productService = new ProductService())
+            {
+                return await productService.GetProductSpecificationById(productId);
+            }
+        }
+        public async Task<IEnumerable<SPGetProductVariationListById_Result>> GetProductVariationListById(int productId)
+        {
+            using (ProductService productService = new ProductService())
+            {
+                return await productService.GetProductVariationListById(productId);
+            }
+        }
+        public async Task<IEnumerable<SPGetProductVariationImageById_Result>> GetProductVariationImageById(int variationId)
+        {
+            using (ProductService productService = new ProductService())
+            {
+                return await productService.GetProductVariationImageById(variationId);
+            }
+        }
 
+        public async Task<ApiResponseModel> SetDefaultVariation(int productId, int variationId)
+        {
+            using (ProductService productService = new ProductService())
+            {
+                return await productService.SetDefaultVariation(productId, variationId);
+
+            }
+        }
     }
 }

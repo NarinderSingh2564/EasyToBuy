@@ -143,6 +143,7 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
+
         public async Task<ApiResponseModel> ProductVariationAndRateAddEdit(ProductVariationAndRateInputModel productVariationAndRateInputModel)
         {
             var apiResponseModel = new ApiResponseModel();
@@ -214,15 +215,16 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        public async Task<IEnumerable<SPGetProductDetailsById_Result>> GetProductDetailsById(int productId)
+                public async Task<IEnumerable<SPGetProductDescriptionById_Result>> GetProductDescriptionById(int productId)
+
         {
-            var productDescription = new List<SPGetProductDetailsById_Result>();
+            var productDescription = new List<SPGetProductDescriptionById_Result>();
 
             try
             {
-                var sqlQuery = "exec spGetProductDetailsById @ProductId";
+                var sqlQuery = "exec spGetProductDescriptionById @ProductId";
                 SqlParameter parameter1 = new SqlParameter("@ProductId", productId);
-                productDescription = await _dbContext.productDetailsById_Results.FromSqlRaw(sqlQuery, parameter1).ToListAsync();
+                productDescription = await _dbContext.productDescriptionById_Results.FromSqlRaw(sqlQuery, parameter1).ToListAsync();
 
             }
             catch (Exception ex)
@@ -256,6 +258,93 @@ namespace EasyToBuy.Services.Interactions
 
             return productWeightList;
         }
+        public async Task<IEnumerable<SPGetProductSpecificationById_Result>> GetProductSpecificationById(int productId)
+        {
+            var productSpecification = new List<SPGetProductSpecificationById_Result>();
 
+            try
+            {
+                var sqlQuery = "exec SPGetProductSpecificationById @ProductId";
+                SqlParameter parameter1 = new SqlParameter("@ProductId", productId);
+                productSpecification = await _dbContext.productSpecificationById_Results.FromSqlRaw(sqlQuery, parameter1).ToListAsync();
+
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return productSpecification;
+        }
+        public async Task<IEnumerable<SPGetProductVariationListById_Result>> GetProductVariationListById(int productId)
+        {
+            var productVariationList = new List<SPGetProductVariationListById_Result>();
+
+            try
+            {
+                var sqlQuery = "exec SPGetProductVariationListById @ProductId";
+                SqlParameter parameter1 = new SqlParameter("@ProductId", productId);
+                productVariationList = await _dbContext.productVariationListById_Results.FromSqlRaw(sqlQuery, parameter1).ToListAsync();
+
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return productVariationList;
+        }
+        public async Task<IEnumerable<SPGetProductVariationImageById_Result>> GetProductVariationImageById(int variationId)
+        {
+            var productVariationImage = new List<SPGetProductVariationImageById_Result>();
+
+            try
+            {
+                var sqlQuery = "exec SPGetProductVariationImageById @VariationId";
+                SqlParameter parameter1 = new SqlParameter("@VariationId", variationId);
+                productVariationImage = await _dbContext.productVariationImageById_Results.FromSqlRaw(sqlQuery, parameter1).ToListAsync();
+
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return productVariationImage;
+        }
+
+        public async Task<ApiResponseModel> SetDefaultVariation(int productId, int variationId)
+        {
+            var apiResponseModel = new ApiResponseModel();
+
+            //try
+            //{
+            //    var defaultVariation  = await _dbContext.tblProductVariationAndRate.Where(x => x.ProductId == productId).ToListAsync();
+
+            //    if (defaultVariation.Count > 0)
+            //    {
+            //        foreach (var item in defaultVariation)
+            //        {
+            //            item.SetAsDefault = false;
+            //        }
+            //    }
+
+            //    var deliveryAddress = await _dbContext.tblProductVariationAndRate.Where(x => x.VariationId == variationId).FirstOrDefaultAsync();
+            //    if (deliveryAddress != null)
+            //    {
+            //        deliveryAddress.IsDeliveryAddress = true;
+            //        apiResponseModel.Status = true;
+            //        apiResponseModel.Message = "Delivery address updated successfully";
+            //    }
+            //    await _dbContext.SaveChangesAsync();
+            //}
+
+            //catch (Exception ex)
+            //{
+            //    var msg = ex.Message;
+            //}
+
+            return apiResponseModel;
+        }
     }
 }
