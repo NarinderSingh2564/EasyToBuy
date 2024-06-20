@@ -97,11 +97,10 @@ namespace EasyToBuy.Web.Controllers
             return fileUploadStatus;
         }
 
-
-        [HttpGet("GetProductDetailsById")]
-        public async Task<IEnumerable<SPGetProductDetailsById_Result>> GetProductDetailsById(int productId)
+        [HttpGet("GetProductDescriptionById")]
+        public async Task<IEnumerable<SPGetProductDescriptionById_Result>> GetProductDescriptionById(int productId)
         {
-            var response = await _productRepository.GetProductDetailsById(productId);
+            var response = await _productRepository.GetProductDescriptionById(productId);
 
             return response;
         }
@@ -110,6 +109,38 @@ namespace EasyToBuy.Web.Controllers
         public async Task<IEnumerable<ProductWeightModel>> GetProductWeightList()
         {
             var response = await _productRepository.GetProductWeightList();
+
+            return response;
+        }
+
+        [HttpGet("GetProductSpecificationById")]
+        public async Task<IEnumerable<SPGetProductSpecificationById_Result>> GetProductSpecificationById(int productId)
+        {
+            var response = await _productRepository.GetProductSpecificationById(productId);
+
+            return response;
+        }
+
+        [HttpGet("GetProductVariationListById")]
+        public async Task<IEnumerable<SPGetProductVariationListById_Result>> GetProductVariationListById(int productId)
+        {
+            var response = await _productRepository.GetProductVariationListById(productId);
+
+            return response;
+        }
+
+        [HttpGet("GetProductVariationImageById")]
+        public async Task<IEnumerable<SPGetProductVariationImageById_Result>> GetProductVariationImageById(int variationId)
+        {
+            var response = await _productRepository.GetProductVariationImageById(variationId);
+
+            return response;
+        }
+
+        [HttpPost("SetDefaultVariation")]
+        public async Task<ApiResponseModel> SetDefaultVariation(int productId, int variationId)
+        {
+            var response = await _productRepository.SetDefaultVariation(productId, variationId);
 
             return response;
         }
