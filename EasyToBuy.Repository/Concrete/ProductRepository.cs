@@ -23,6 +23,15 @@ namespace EasyToBuy.Repository.Concrete
                 return await productService.ProductAddEdit(productInputModel);
             }
         }
+
+public async Task<ApiResponseModel> ProductVariationAndRateAddEdit(ProductVariationAndRateInputModel productVariationAndRateInputModel)
+        {
+            using (ProductService productService = new ProductService())
+            {
+                return await productService.ProductVariationAndRateAddEdit(productVariationAndRateInputModel);
+            }
+        }
+        
         public async Task<IEnumerable<SPGetProductDescriptionById_Result>> GetProductDescriptionById(int productId)
         {
             using (ProductService productService = new ProductService())

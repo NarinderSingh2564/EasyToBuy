@@ -61,7 +61,7 @@ namespace EasyToBuy.Services.Interactions
 
         #endregion
 
-        public async Task<IEnumerable<SPGetProductList_Result>> GetProductList(int categoryId, string? searchText, int vendorId,string role)
+        public async Task<IEnumerable<SPGetProductList_Result>> GetProductList(int categoryId, string? searchText, int vendorId, string role)
         {
             var productList = new List<SPGetProductList_Result>();
 
@@ -74,7 +74,7 @@ namespace EasyToBuy.Services.Interactions
                 SqlParameter parameter3 = new SqlParameter("@VendorId", vendorId < 1 ? DBNull.Value : vendorId);
                 SqlParameter parameter4 = new SqlParameter("@Role", string.IsNullOrEmpty(role) ? DBNull.Value : role);
 
-                productList = await _dbContext.productList_Results.FromSqlRaw(sqlQuery, parameter1, parameter2, parameter3,parameter4).ToListAsync();
+                productList = await _dbContext.productList_Results.FromSqlRaw(sqlQuery, parameter1, parameter2, parameter3, parameter4).ToListAsync();
 
             }
             catch (Exception ex)
@@ -105,35 +105,23 @@ namespace EasyToBuy.Services.Interactions
                     if (dbProduct != null)
                     {
                         dbProduct.ProductName = productInputModel.ProductName;
-                        dbProduct.MRP = productInputModel.MRP;
-                        dbProduct.Discount = productInputModel.Discount;
-                        dbProduct.DiscountPrice = productInputModel.DiscountPrice;
-                        dbProduct.PriceAfterDiscount = productInputModel.PriceAfterDiscount;
                         dbProduct.ProductDescription = productInputModel.ProductDescription;
                         dbProduct.ProductImage = productInputModel.ProductImage;
                         dbProduct.CategoryId = productInputModel.CategoryId;
-                        dbProduct.ProductWeightId = productInputModel.ProductWeightId;
-                        dbProduct.ShowProductWeight = productInputModel.ShowProductWeight;
                         dbProduct.UpdatedBy = productInputModel.UpdatedBy;
                         dbProduct.UpdatedOn = DateTime.Now;
                         dbProduct.IsActive = productInputModel.IsActive;
                     }
-                   
+
                     else
                     {
                         var productObj = new Product();
 
                         productObj.VendorId = productInputModel.VendorId;
                         productObj.ProductName = productInputModel.ProductName;
-                        productObj.MRP = productInputModel.MRP;
-                        productObj.Discount = productInputModel.Discount;
-                        productObj.DiscountPrice = productInputModel.DiscountPrice;
-                        productObj.PriceAfterDiscount = productInputModel.PriceAfterDiscount;
                         productObj.ProductDescription = productInputModel.ProductDescription;
                         productObj.ProductImage = productInputModel.ProductImage;
                         productObj.CategoryId = productInputModel.CategoryId;
-                        productObj.ProductWeightId = productInputModel.ProductWeightId;
-                        productObj.ShowProductWeight = productInputModel.ShowProductWeight;
                         productObj.CreatedBy = productInputModel.CreatedBy;
                         productObj.CreatedOn = DateTime.Now;
                         productObj.IsActive = productInputModel.IsActive;
@@ -155,7 +143,80 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        public async Task<IEnumerable<SPGetProductDescriptionById_Result>> GetProductDescriptionById(int productId)
+
+        public async Task<ApiResponseModel> ProductVariationAndRateAddEdit(ProductVariationAndRateInputModel productVariationAndRateInputModel)
+        {
+            var apiResponseModel = new ApiResponseModel();
+
+            try
+            {
+                var checkVariationDuplicacy = await _dbContext.tblProductVariationAndRate.Where(x => x.ProductId == productVariationAndRateInputModel.ProductId && x.ProductPackingId == productVariationAndRateInputModel.ProductPackingId && x.Quantity == productVariationAndRateInputModel.Quantity && x.ProductWeightId == productVariationAndRateInputModel.ProductWeightId && x.Id != productVariationAndRateInputModel.Id).FirstOrDefaultAsync();
+
+                if (checkVariationDuplicacy != null)
+                {
+                    apiResponseModel.Status = false;
+                    apiResponseModel.Message = "This product variation already exists.";
+                }
+
+                else
+                {
+                    var dbVariation = await _dbContext.tblProductVariationAndRate.Where(x => x.Id == productVariationAndRateInputModel.Id).FirstOrDefaultAsync();
+
+                    if (dbVariation != null)
+                    {
+                        dbVariation.ProductPackingId = productVariationAndRateInputModel.ProductPackingId;
+                        dbVariation.Quantity = productVariationAndRateInputModel.Quantity;
+                        dbVariation.ProductWeightId = productVariationAndRateInputModel.ProductWeightId;
+                        dbVariation.MRP = productVariationAndRateInputModel.MRP;
+                        dbVariation.Discount = productVariationAndRateInputModel.Discount;
+                        dbVariation.DiscountPrice = productVariationAndRateInputModel.DiscountPrice;
+                        dbVariation.PriceAfterDiscount = productVariationAndRateInputModel.PriceAfterDiscount;
+                        dbVariation.StockQuantity = productVariationAndRateInputModel.StockQuantity;
+                        dbVariation.ShowProductWeight = productVariationAndRateInputModel.ShowProductWeight;
+                        dbVariation.UpdatedBy = productVariationAndRateInputModel.UpdatedBy;
+                        dbVariation.UpdatedOn = DateTime.Now;
+                        dbVariation.SetAsDefault = productVariationAndRateInputModel.SetAsDefault;
+                        dbVariation.IsActive = productVariationAndRateInputModel.IsActive;
+                    }
+
+                    else
+                    {
+                        var objVariation = new ProductVariationAndRate();
+
+                        objVariation.ProductId = productVariationAndRateInputModel.ProductId;
+                        objVariation.ProductPackingId = productVariationAndRateInputModel.ProductPackingId;
+                        objVariation.Quantity = productVariationAndRateInputModel.Quantity;
+                        objVariation.ProductWeightId = productVariationAndRateInputModel.ProductWeightId;
+                        objVariation.MRP = productVariationAndRateInputModel.MRP;
+                        objVariation.Discount = productVariationAndRateInputModel.Discount;
+                        objVariation.DiscountPrice = productVariationAndRateInputModel.DiscountPrice;
+                        objVariation.PriceAfterDiscount = productVariationAndRateInputModel.PriceAfterDiscount;
+                        objVariation.StockQuantity = productVariationAndRateInputModel.StockQuantity;
+                        objVariation.ShowProductWeight = productVariationAndRateInputModel.ShowProductWeight;
+                        objVariation.CreatedBy = productVariationAndRateInputModel.CreatedBy;
+                        objVariation.CreatedOn = DateTime.Now;
+                        objVariation.SetAsDefault = productVariationAndRateInputModel.SetAsDefault;
+                        objVariation.IsActive = productVariationAndRateInputModel.IsActive;
+
+                        await _dbContext.tblProductVariationAndRate.AddAsync(objVariation);
+                    }
+
+                    await _dbContext.SaveChangesAsync();
+
+                    apiResponseModel.Status = true;
+                    apiResponseModel.Message = productVariationAndRateInputModel.Id > 0 ? "Product variation updated successfully." : "Product variation added successfully.";
+                }
+            }
+
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return apiResponseModel;
+        }
+                public async Task<IEnumerable<SPGetProductDescriptionById_Result>> GetProductDescriptionById(int productId)
+
         {
             var productDescription = new List<SPGetProductDescriptionById_Result>();
 

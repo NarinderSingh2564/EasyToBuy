@@ -21,7 +21,11 @@ namespace EasyToBuy.Data
         public DbSet<OrderStatus> tblOrderStatus { get; set; }
         public DbSet<CustomerOrder> tblCustomerOrder { get; set; }     
         public DbSet<CustomerOrderStatusLog> tblCustomerOrderStatusLog { get; set; }     
-        
+        public DbSet<ProductPacking> tblProductPacking { get; set; }
+        public DbSet<ProductVariationAndRate> tblProductVariationAndRate { get; set; }
+        public DbSet<ProductImages> tblProductImages { get; set; }
+        public DbSet<ProductSpecification> tblProductSpecification { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Server=SG2NWPLS19SQL-v09.mssql.shr.prod.sin2.secureserver.net;Database=EasyToBuyDb;User Id=EasyToBuyAdmin; Password=Admin@2564;Trusted_Connection=False;TrustServerCertificate=true;Integrated Security=false;");
