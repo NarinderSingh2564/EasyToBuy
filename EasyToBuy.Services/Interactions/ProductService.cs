@@ -317,32 +317,33 @@ namespace EasyToBuy.Services.Interactions
         {
             var apiResponseModel = new ApiResponseModel();
 
-            //try
-            //{
-            //    var defaultVariation  = await _dbContext.tblProductVariationAndRate.Where(x => x.ProductId == productId).ToListAsync();
+            try
+            {
+                var getDefaultVariation = await _dbContext.tblProductVariationAndRate.Where(x => x.ProductId == productId).ToListAsync();
 
-            //    if (defaultVariation.Count > 0)
-            //    {
-            //        foreach (var item in defaultVariation)
-            //        {
-            //            item.SetAsDefault = false;
-            //        }
-            //    }
+                if (getDefaultVariation.Count > 0)
+                {
+                    foreach (var item in getDefaultVariation)
+                    {
+                        item.SetAsDefault = false;
+                    }
+                }
 
-            //    var deliveryAddress = await _dbContext.tblProductVariationAndRate.Where(x => x.VariationId == variationId).FirstOrDefaultAsync();
-            //    if (deliveryAddress != null)
-            //    {
-            //        deliveryAddress.IsDeliveryAddress = true;
-            //        apiResponseModel.Status = true;
-            //        apiResponseModel.Message = "Delivery address updated successfully";
-            //    }
-            //    await _dbContext.SaveChangesAsync();
-            //}
+                var defaultVariation = await _dbContext.tblProductVariationAndRate.Where(x => x.Id == variationId).FirstOrDefaultAsync();
 
-            //catch (Exception ex)
-            //{
-            //    var msg = ex.Message;
-            //}
+                if (defaultVariation != null)
+                {
+                    defaultVariation.SetAsDefault = true;
+                    apiResponseModel.Status = true;
+                    apiResponseModel.Message = "Default variation updated successfully";
+                }
+                await _dbContext.SaveChangesAsync();
+            }
+
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
 
             return apiResponseModel;
         }
