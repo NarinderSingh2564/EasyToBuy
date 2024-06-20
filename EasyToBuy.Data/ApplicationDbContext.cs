@@ -24,6 +24,7 @@ namespace EasyToBuy.Data
         public DbSet<ProductPacking> tblProductPacking { get; set; }
         public DbSet<ProductVariationAndRate> tblProductVariationAndRate { get; set; }
         public DbSet<ProductImages> tblProductImages { get; set; }
+        public DbSet<ProductSpecification> tblProductSpecification { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

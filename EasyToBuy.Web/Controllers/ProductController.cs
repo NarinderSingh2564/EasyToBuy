@@ -50,15 +50,9 @@ namespace EasyToBuy.Web.Controllers
             productInputModel.Id = productUIModel.Id;
             productInputModel.VendorId = productUIModel.VendorId;
             productInputModel.ProductName = productUIModel.ProductName;
-            productInputModel.MRP = productUIModel.MRP;
-            productInputModel.Discount = productUIModel.Discount;
-            productInputModel.DiscountPrice = productUIModel.MRP * Decimal.Divide(productUIModel.Discount, 100);
-            productInputModel.PriceAfterDiscount = productUIModel.PriceAfterDiscount;
             productInputModel.ProductDescription = productUIModel.ProductDescription;
             productInputModel.ProductImage = productUIModel.ProductImageName;
             productInputModel.CategoryId = productUIModel.CategoryId;
-            productInputModel.ProductWeightId = productUIModel.ProductWeightId;
-            productInputModel.ShowProductWeight = productUIModel.ShowProductWeight;
             productInputModel.CreatedBy = productUIModel.CreatedBy;
             productInputModel.UpdatedBy = productUIModel.UpdatedBy;
             productInputModel.IsActive = productUIModel.IsActive;
@@ -95,6 +89,34 @@ namespace EasyToBuy.Web.Controllers
 
             productUIModel.ProductImageName = ImageName;
             return fileUploadStatus;
+        }
+
+
+        [HttpPost("ProductVariationAndRateAddEdit")]
+
+        public async Task<ApiResponseModel> ProductVariationAndRateAddEdit(ProductVariationAndRateUIModel productVariationAndRateUIModel)
+        {
+            var productVariationAndRateInputModel = new ProductVariationAndRateInputModel();
+
+            productVariationAndRateInputModel.Id = productVariationAndRateUIModel.Id;
+            productVariationAndRateInputModel.ProductId = productVariationAndRateUIModel.ProductId;
+            productVariationAndRateInputModel.ProductPackingId = productVariationAndRateUIModel.ProductPackingId;
+            productVariationAndRateInputModel.Quantity = productVariationAndRateUIModel.Quantity;
+            productVariationAndRateInputModel.ProductWeightId = productVariationAndRateUIModel.ProductWeightId;
+            productVariationAndRateInputModel.MRP = productVariationAndRateUIModel.MRP;
+            productVariationAndRateInputModel.Discount = productVariationAndRateUIModel.Discount;
+            productVariationAndRateInputModel.DiscountPrice = productVariationAndRateUIModel.DiscountPrice;
+            productVariationAndRateInputModel.PriceAfterDiscount = productVariationAndRateUIModel.PriceAfterDiscount;
+            productVariationAndRateInputModel.StockQuantity = productVariationAndRateUIModel.StockQuantity;
+            productVariationAndRateInputModel.ShowProductWeight = productVariationAndRateUIModel.ShowProductWeight;
+            productVariationAndRateInputModel.CreatedBy = productVariationAndRateUIModel.CreatedBy;
+            productVariationAndRateInputModel.UpdatedBy = productVariationAndRateUIModel.UpdatedBy;
+            productVariationAndRateInputModel.SetAsDefault = productVariationAndRateUIModel.SetAsDefault;
+            productVariationAndRateInputModel.IsActive = productVariationAndRateUIModel.IsActive;
+
+            var response = await _productRepository.ProductVariationAndRateAddEdit(productVariationAndRateInputModel);
+
+            return response;
         }
 
 
