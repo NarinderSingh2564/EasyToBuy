@@ -19,9 +19,8 @@ namespace EasyToBuy.Models.UIModels
         public decimal PriceAfterDiscount { get; set; }
         public int StockQuantity { get; set; }
         public bool ShowProductWeight { get; set; }
+        public bool IsActive { get; set; }
         public int CreatedBy { get; set; }
         public int? UpdatedBy { get; set; }
-        public bool SetAsDefault { get; set; }
-        public bool IsActive { get; set; }
     }
 }

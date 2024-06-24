@@ -258,6 +258,31 @@ namespace EasyToBuy.Services.Interactions
 
             return productWeightList;
         }
+
+        public async Task<IEnumerable<ProductPackingModel>> GetProductPackingList()
+        {
+            var productPackingList = new List<ProductPackingModel>();
+
+            try
+            {
+                var dbProductPackingList = await _dbContext.tblProductPacking.ToListAsync();
+                foreach (var packing in dbProductPackingList)
+                {
+                    productPackingList.Add(new ProductPackingModel()
+                    {
+                        Id = packing.Id,
+                        PackingType = packing.PackingType,
+                        IsActive = packing.IsActive,
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return productPackingList;
+        }
         public async Task<IEnumerable<SPGetProductSpecificationById_Result>> GetProductSpecificationById(int productId)
         {
             var productSpecification = new List<SPGetProductSpecificationById_Result>();

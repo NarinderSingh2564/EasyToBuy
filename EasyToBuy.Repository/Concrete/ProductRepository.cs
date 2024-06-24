@@ -7,13 +7,13 @@ using EasyToBuy.Services.Interactions;
 
 namespace EasyToBuy.Repository.Concrete
 {
-    public class ProductRepository :  IProductRepository
+    public class ProductRepository : IProductRepository
     {
         public async Task<IEnumerable<SPGetProductList_Result>> GetProductList(int categoryId, string? searchText, int vendorId, string role)
         {
             using (ProductService productService = new ProductService())
             {
-                return await productService.GetProductList(categoryId,searchText,vendorId,role);
+                return await productService.GetProductList(categoryId, searchText, vendorId, role);
             }
         }
         public async Task<ApiResponseModel> ProductAddEdit(ProductInputModel productInputModel)
@@ -24,14 +24,14 @@ namespace EasyToBuy.Repository.Concrete
             }
         }
 
-public async Task<ApiResponseModel> ProductVariationAndRateAddEdit(ProductVariationAndRateInputModel productVariationAndRateInputModel)
+        public async Task<ApiResponseModel> ProductVariationAndRateAddEdit(ProductVariationAndRateInputModel productVariationAndRateInputModel)
         {
             using (ProductService productService = new ProductService())
             {
                 return await productService.ProductVariationAndRateAddEdit(productVariationAndRateInputModel);
             }
         }
-        
+
         public async Task<IEnumerable<SPGetProductDescriptionById_Result>> GetProductDescriptionById(int productId)
         {
             using (ProductService productService = new ProductService())
@@ -44,6 +44,13 @@ public async Task<ApiResponseModel> ProductVariationAndRateAddEdit(ProductVariat
             using (ProductService productService = new ProductService())
             {
                 return await productService.GetProductWeightList();
+            }
+        }
+        public async Task<IEnumerable<ProductPackingModel>> GetProductPackingList()
+        {
+            using (ProductService productService = new ProductService())
+            {
+                return await productService.GetProductPackingList();
             }
         }
         public async Task<IEnumerable<SPGetProductSpecificationById_Result>> GetProductSpecificationById(int productId)

@@ -112,7 +112,6 @@ namespace EasyToBuy.Web.Controllers
             productVariationAndRateInputModel.ShowProductWeight = productVariationAndRateUIModel.ShowProductWeight;
             productVariationAndRateInputModel.CreatedBy = productVariationAndRateUIModel.CreatedBy;
             productVariationAndRateInputModel.UpdatedBy = productVariationAndRateUIModel.UpdatedBy;
-            productVariationAndRateInputModel.SetAsDefault = productVariationAndRateUIModel.SetAsDefault;
             productVariationAndRateInputModel.IsActive = productVariationAndRateUIModel.IsActive;
 
             var response = await _productRepository.ProductVariationAndRateAddEdit(productVariationAndRateInputModel);
@@ -134,6 +133,14 @@ namespace EasyToBuy.Web.Controllers
         public async Task<IEnumerable<ProductWeightModel>> GetProductWeightList()
         {
             var response = await _productRepository.GetProductWeightList();
+
+            return response;
+        }
+
+        [HttpGet("GetProductPackingList")]
+        public async Task<IEnumerable<ProductPackingModel>> GetProductPackingList()
+        {
+            var response = await _productRepository.GetProductPackingList();
 
             return response;
         }
