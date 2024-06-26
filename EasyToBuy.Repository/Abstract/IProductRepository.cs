@@ -16,6 +16,6 @@ namespace EasyToBuy.Repository.Abstract
         Task<IEnumerable<SPGetProductSpecificationById_Result>> GetProductSpecificationById(int productId);
         Task<IEnumerable<SPGetProductVariationListById_Result>> GetProductVariationListById(int productId);
         Task<IEnumerable<SPGetProductVariationImageById_Result>> GetProductVariationImageById(int variationId);
-        Task<ApiResponseModel> SetDefaultVariation(int productId, int variationId);
+        Task<ApiResponseModel> GetDefaultVariation(int productId, int variationId);
     }
 }

@@ -91,10 +91,7 @@ namespace EasyToBuy.Web.Controllers
             return fileUploadStatus;
         }
 
-
-
         [HttpPost("ProductVariationAndRateAddEdit")]
-
         public async Task<ApiResponseModel> ProductVariationAndRateAddEdit(ProductVariationAndRateUIModel productVariationAndRateUIModel)
         {
             var productVariationAndRateInputModel = new ProductVariationAndRateInputModel();
@@ -118,8 +115,6 @@ namespace EasyToBuy.Web.Controllers
 
             return response;
         }
-
-
       
         [HttpGet("GetProductDescriptionById")]
         public async Task<IEnumerable<SPGetProductDescriptionById_Result>> GetProductDescriptionById(int productId)
@@ -169,10 +164,10 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
-        [HttpPost("SetDefaultVariation")]
-        public async Task<ApiResponseModel> SetDefaultVariation(int productId, int variationId)
+        [HttpPost("GetDefaultVariation")]
+        public async Task<ApiResponseModel> GetDefaultVariation(int productId, int variationId)
         {
-            var response = await _productRepository.SetDefaultVariation(productId, variationId);
+            var response = await _productRepository.GetDefaultVariation(productId, variationId);
 
             return response;
         }

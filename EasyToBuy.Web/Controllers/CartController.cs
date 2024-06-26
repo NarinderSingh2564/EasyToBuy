@@ -30,6 +30,7 @@ namespace EasyToBuy.Web.Controllers
             cartInputModel.ProductId = cartUIModel.ProductId;
             cartInputModel.UserId = cartUIModel.UserId;
             cartInputModel.Quantity = cartUIModel.Quantity;
+            cartInputModel.VariationId = cartUIModel.VariationId;
             cartInputModel.RequestFrom = cartUIModel.RequestFrom;
 
             var response = await _cartRepository.AddToCart(cartInputModel);
@@ -39,15 +40,15 @@ namespace EasyToBuy.Web.Controllers
 
 
         [HttpGet("CheckProductInCart")]
-        public async Task<ApiResponseModel> CheckProductInCart(int ProductId, int CustomerId)
+        public async Task<ApiResponseModel> CheckProductInCart(int variationId, int CustomerId)
         {
-            return await _cartRepository.CheckProductInCart(ProductId, CustomerId);
+            return await _cartRepository.CheckProductInCart(variationId, CustomerId);
         }
 
 
         [HttpGet("GetCartDetailsByCustomerId")]
         public async Task<GetCartDetailsByCustomerId> GetCartDetailsByCustomerId(int customerId)
-            {
+        {
             return await _cartRepository.GetCartDetailsByCustomerId(customerId);
         }
 
