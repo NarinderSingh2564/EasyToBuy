@@ -9,10 +9,8 @@ namespace EasyToBuy.Data.SPClasses
     public class SPGetProductVariationListById_Result
     {
         public int Id { get; set; }
-        public int ProductPackingId { get; set; }
         public string PackingType { get; set; } = string.Empty;
         public int Quantity { get; set; } 
-        public int ProductWeightId { get; set; } 
         public string ProductWeight { get; set; } = string.Empty;
         public decimal MRP { get; set; }
         public decimal Discount { get; set; }
@@ -21,6 +19,5 @@ namespace EasyToBuy.Data.SPClasses
         public int StockQuantity { get; set; }
         public bool ShowProductWeight { get; set; }
         public bool SetAsDefault { get; set; }
-        public bool IsActive { get; set; }
     }
 }
