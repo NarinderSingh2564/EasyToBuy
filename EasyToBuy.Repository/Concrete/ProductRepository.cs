@@ -68,11 +68,11 @@ public async Task<ApiResponseModel> ProductVariationAndRateAddEdit(ProductVariat
             }
         }
 
-        public async Task<ApiResponseModel> SetDefaultVariation(int productId, int variationId)
+        public async Task<ApiResponseModel> GetDefaultVariation(int productId, int variationId)
         {
             using (ProductService productService = new ProductService())
             {
-                return await productService.SetDefaultVariation(productId, variationId);
+                return await productService.GetDefaultVariation(productId, variationId);
 
             }
         }

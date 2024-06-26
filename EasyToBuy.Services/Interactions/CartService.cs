@@ -61,56 +61,56 @@ namespace EasyToBuy.Services.Interactions
         public async Task<ApiResponseModel> AddToCart(CartInputModel cartInputModel)
         {
             var apiResponseModel = new ApiResponseModel();
-            //try
-            //{
-            //    if (cartInputModel.RequestFrom == "Cart")
-            //    {
-            //        var isProductExists = await _dbContext.tblCart.Where(x => x.ProductId == cartInputModel.ProductId && x.UserId == cartInputModel.UserId && x.IsPlaced == false).FirstOrDefaultAsync();
-            //        if (isProductExists != null)
-            //        {
-            //            isProductExists.Quantity = cartInputModel.Quantity;
+            try
+            {
+                if (cartInputModel.RequestFrom == "Cart")
+                {
+                    var isProductExists = await _dbContext.tblCart.Where(x => x.VariationId == cartInputModel.VariationId && x.UserId == cartInputModel.UserId && x.IsPlaced == false).FirstOrDefaultAsync();
+                    if (isProductExists != null)
+                    {
+                        isProductExists.Quantity = cartInputModel.Quantity;
 
-            //            await _dbContext.SaveChangesAsync();
-            //            apiResponseModel.Status = true;
-            //            apiResponseModel.Message = "Quantity is successfully updated";
-            //        }
-            //        else
-            //        {
-            //            apiResponseModel.Status = false;
-            //            apiResponseModel.Message = " This Product is not exist in cart List";
-            //        }
-            //    }
-            //    else
-            //    {
-            //        var isProductExists = await _dbContext.tblCart.Where(x => x.ProductId == cartInputModel.ProductId && x.UserId == cartInputModel.UserId && x.IsPlaced == false).FirstOrDefaultAsync();
-            //        if (isProductExists != null)
-            //        {
-            //            apiResponseModel.Status = false;
-            //            apiResponseModel.Message = "This Product is already exist in your cart.";
-            //        }
-            //        else
-            //        {
-            //            var cartObj = new Cart();
+                        await _dbContext.SaveChangesAsync();
+                        apiResponseModel.Status = true;
+                        apiResponseModel.Message = "Quantity is successfully updated";
+                    }
+                    else
+                    {
+                        apiResponseModel.Status = false;
+                        apiResponseModel.Message = " This Product is not exist in cart List";
+                    }
+                }
+                else
+                {
+                    var isProductExists = await _dbContext.tblCart.Where(x => x.VariationId == cartInputModel.VariationId && x.UserId == cartInputModel.UserId && x.IsPlaced == false).FirstOrDefaultAsync();
+                    if (isProductExists != null)
+                    {
+                        apiResponseModel.Status = false;
+                        apiResponseModel.Message = "This Product is already exist in your cart.";
+                    }
+                    else
+                    {
+                        var cartObj = new Cart();
 
-            //            cartObj.UserId = cartInputModel.UserId;
-            //            cartObj.ProductId = cartInputModel.ProductId;
-            //            cartObj.Quantity = cartInputModel.Quantity;
-            //            cartObj.AddedDate = DateTime.Now;
-            //            cartObj.IsPlaced = false;
+                        cartObj.UserId = cartInputModel.UserId;
+                        cartObj.VariationId = cartInputModel.VariationId;
+                        cartObj.Quantity = cartInputModel.Quantity;
+                        cartObj.AddedDate = DateTime.Now;
+                        cartObj.IsPlaced = false;
 
-            //            await _dbContext.AddAsync(cartObj);
-            //            await _dbContext.SaveChangesAsync();
+                        await _dbContext.AddAsync(cartObj);
+                        await _dbContext.SaveChangesAsync();
 
-            //            apiResponseModel.Status = true;
-            //            apiResponseModel.Message = "Product added to cart successfully.";
-            //        }
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    var msg = ex.Message;
-            //    apiResponseModel.Status = false;
-            //}
+                        apiResponseModel.Status = true;
+                        apiResponseModel.Message = "Product added to cart successfully.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+                apiResponseModel.Status = false;
+            }
 
             return apiResponseModel;
         }
@@ -125,7 +125,6 @@ namespace EasyToBuy.Services.Interactions
                 SqlParameter parameter = new SqlParameter("@CustomerId", customerId);
 
                 cartListByCustomerId._cartListItems = await _dbContext.cartDetailsByCustomerId_Results.FromSqlRaw(sqlQuery, parameter).ToListAsync();
-
 
                 cartListByCustomerId.priceDetails.TotalProductPrice = cartListByCustomerId._cartListItems.Sum(x => x.MRP);
                 cartListByCustomerId.priceDetails.TotalDiscountPrice = cartListByCustomerId._cartListItems.Sum(x => x.DiscountPrice);
@@ -159,26 +158,26 @@ namespace EasyToBuy.Services.Interactions
             }
             return apiResponseModel;
         }
-        public async Task<ApiResponseModel> CheckProductInCart(int productId, int userId)
+        public async Task<ApiResponseModel> CheckProductInCart(int variationId, int userId)
         {
             var apiResponseModel = new ApiResponseModel();
 
-            //try
-            //{
-            //    var isProductExist = await _dbContext.tblCart.Where(x => x.ProductId == productId && x.UserId == userId && x.IsPlaced == false).FirstOrDefaultAsync();
-            //    if (isProductExist != null)
-            //    {
-            //        apiResponseModel.Status = true;
-            //    }
-            //    else
-            //    {
-            //        apiResponseModel.Status = false;
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    var msg = ex.Message;
-            //}
+            try
+            {
+                var isProductExist = await _dbContext.tblCart.Where(x => x.VariationId == variationId && x.UserId == userId && x.IsPlaced == false).FirstOrDefaultAsync();
+                if (isProductExist != null)
+                {
+                    apiResponseModel.Status = true;
+                }
+                else
+                {
+                    apiResponseModel.Status = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
 
             return apiResponseModel;
         }

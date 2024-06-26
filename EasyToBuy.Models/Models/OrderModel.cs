@@ -20,10 +20,10 @@ namespace EasyToBuy.Models.Models
         public int StatusId { get; set; }
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public int ProductId { get; set; }
+        public int VariationId { get; set; }
         public int Quantity { get; set; }
-        public int MRP { get; set; }
-        public int Discount { get; set; }
+        public decimal MRP { get; set; }
+        public decimal Discount { get; set; }
         public decimal DiscountPrice { get; set; }
         public decimal PriceAfterDiscount { get; set; }
     }

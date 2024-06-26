@@ -67,105 +67,105 @@ namespace EasyToBuy.Services.Interactions
         {
             var apiResponseModel = new ApiResponseModel();
 
-            //try
-            //{
-            //    var isUserExists = await _dbContext.tblUser.Where(x => x.Id == userId && x.IsActive == true).FirstOrDefaultAsync();
+            try
+            {
+                var isUserExists = await _dbContext.tblUser.Where(x => x.Id == userId && x.IsActive == true).FirstOrDefaultAsync();
 
-            //    if (isUserExists != null)
-            //    {
-            //        var isDeliveryAddress = await _dbContext.tblAddress.Where(x => x.UserId == userId && x.IsDeliveryAddress == true).FirstOrDefaultAsync();
+                if (isUserExists != null)
+                {
+                    var isDeliveryAddress = await _dbContext.tblAddress.Where(x => x.UserId == userId && x.IsDeliveryAddress == true).FirstOrDefaultAsync();
 
-            //        if (isDeliveryAddress != null)
-            //        {
-            //            var orderList = (from c in _dbContext.tblCart
-            //                             join p in _dbContext.tblProduct
-            //                             on c.ProductId equals p.Id
-            //                             where c.UserId == userId && c.IsPlaced == false
+                    if (isDeliveryAddress != null)
+                    {
+                        var orderList = (from c in _dbContext.tblCart
+                                         join tpv in _dbContext.tblProductVariationAndRate
+                                         on c.VariationId equals tpv.Id
+                                         where c.UserId == userId && c.IsPlaced == false
 
-            //                             select new OrderModel()
-            //                             {
-            //                                 ProductId = c.ProductId,
-            //                                 Quantity = c.Quantity,
-            //                                 MRP = p.MRP,
-            //                                 Discount = p.Discount,
-            //                                 DiscountPrice = p.DiscountPrice,
-            //                                 PriceAfterDiscount = p.PriceAfterDiscount,
-            //                             }).ToList();
+                                         select new OrderModel()
+                                         {
+                                             VariationId = c.VariationId,
+                                             Quantity = c.Quantity,
+                                             MRP = tpv.MRP,
+                                             Discount = tpv.Discount,
+                                             DiscountPrice = tpv.DiscountPrice,
+                                             PriceAfterDiscount = tpv.PriceAfterDiscount,
+                                         }).ToList();
 
-            //            if (orderList != null && orderList.Count > 0)
-            //            {
+                        if (orderList != null && orderList.Count > 0)
+                        {
 
-            //                foreach (var order in orderList)
-            //                {
-            //                var customerOrderObj = new CustomerOrder();
+                            foreach (var order in orderList)
+                            {
+                                var customerOrderObj = new CustomerOrder();
 
-            //                    customerOrderObj.UserId = userId;
-            //                    customerOrderObj.OrderNumber = "ETB-" + new Random().Next().ToString();
-            //                    customerOrderObj.OrderDate = DateTime.Now;
-            //                    customerOrderObj.StatusId = 1;
-            //                    customerOrderObj.ProductId = order.ProductId;
-            //                    customerOrderObj.Quantity = order.Quantity;
-            //                    customerOrderObj.MRP = order.MRP;
-            //                    customerOrderObj.Discount = order.Discount;
-            //                    customerOrderObj.DiscountPrice = order.DiscountPrice;
-            //                    customerOrderObj.AmountToBePaid = order.Quantity * order.PriceAfterDiscount;
+                                customerOrderObj.UserId = userId;
+                                customerOrderObj.OrderNumber = "ETB-" + new Random().Next().ToString();
+                                customerOrderObj.OrderDate = DateTime.Now;
+                                customerOrderObj.StatusId = 1;
+                                customerOrderObj.VariationId = order.VariationId;
+                                customerOrderObj.Quantity = order.Quantity;
+                                customerOrderObj.MRP = order.MRP;
+                                customerOrderObj.Discount = order.Discount;
+                                customerOrderObj.DiscountPrice = order.DiscountPrice;
+                                customerOrderObj.AmountToBePaid = order.Quantity * order.PriceAfterDiscount;
 
-            //                    await _dbContext.AddAsync(customerOrderObj);
-            //                    await _dbContext.SaveChangesAsync();
+                                await _dbContext.AddAsync(customerOrderObj);
+                                await _dbContext.SaveChangesAsync();
 
-            //                    var customerOrderStatusLog = new CustomerOrderStatusLog();
+                                var customerOrderStatusLog = new CustomerOrderStatusLog();
 
-            //                    customerOrderStatusLog.OrderId = customerOrderObj.Id;
-            //                    customerOrderStatusLog.StatusId = 1;
-            //                    customerOrderStatusLog.CreatedBy = userId;
-            //                    customerOrderStatusLog.CreatedOn = DateTime.Now;
-            //                    await _dbContext.AddAsync(customerOrderStatusLog);
+                                customerOrderStatusLog.OrderId = customerOrderObj.Id;
+                                customerOrderStatusLog.StatusId = 1;
+                                customerOrderStatusLog.CreatedBy = userId;
+                                customerOrderStatusLog.CreatedOn = DateTime.Now;
+                                await _dbContext.AddAsync(customerOrderStatusLog);
 
-            //                    await _dbContext.SaveChangesAsync();
+                                await _dbContext.SaveChangesAsync();
 
-            //                }
-
-
-            //                var objCart = await _dbContext.tblCart.Where(x => x.UserId == userId && x.IsPlaced == false).ToListAsync();
-
-            //                foreach (var item in objCart)
-            //                {
-            //                    item.IsPlaced = true;
-            //                }
-
-            //                await _dbContext.SaveChangesAsync();
+                            }
 
 
+                            var objCart = await _dbContext.tblCart.Where(x => x.UserId == userId && x.IsPlaced == false).ToListAsync();
+
+                            foreach (var item in objCart)
+                            {
+                                item.IsPlaced = true;
+                            }
+
+                            await _dbContext.SaveChangesAsync();
 
 
-            //                apiResponseModel.Status = true;
-            //                apiResponseModel.Message = "Order placed successfully.";
-            //            }
-            //            else
-            //            {
-            //                apiResponseModel.Status = false;
-            //                apiResponseModel.Message = "Kindly add products to cart to place order.";
-            //            }
-            //        }
-            //        else
-            //        {
-            //            apiResponseModel.Status = false;
-            //            apiResponseModel.Message = "Kindly set your delivery address to place order.";
-            //        }
-            //    }
-            //    else
-            //    {
-            //        apiResponseModel.Status = false;
-            //        apiResponseModel.Message = "User does not exists.";
-            //    }
 
 
-            //}
+                            apiResponseModel.Status = true;
+                            apiResponseModel.Message = "Order placed successfully.";
+                        }
+                        else
+                        {
+                            apiResponseModel.Status = false;
+                            apiResponseModel.Message = "Kindly add products to cart to place order.";
+                        }
+                    }
+                    else
+                    {
+                        apiResponseModel.Status = false;
+                        apiResponseModel.Message = "Kindly set your delivery address to place order.";
+                    }
+                }
+                else
+                {
+                    apiResponseModel.Status = false;
+                    apiResponseModel.Message = "User does not exists.";
+                }
 
-            //catch (Exception ex)
-            //{
-            //    var msg = ex.Message;
-            //}
+
+            }
+
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
 
             return apiResponseModel;
         }

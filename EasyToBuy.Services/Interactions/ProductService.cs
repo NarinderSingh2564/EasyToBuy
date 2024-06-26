@@ -313,7 +313,7 @@ namespace EasyToBuy.Services.Interactions
             return productVariationImage;
         }
 
-        public async Task<ApiResponseModel> SetDefaultVariation(int productId, int variationId)
+        public async Task<ApiResponseModel> GetDefaultVariation(int productId, int variationId)
         {
             var apiResponseModel = new ApiResponseModel();
 

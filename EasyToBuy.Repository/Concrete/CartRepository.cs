@@ -16,11 +16,11 @@ namespace EasyToBuy.Repository.Concrete
             }
         }
 
-        public async Task<ApiResponseModel> CheckProductInCart(int ProductId, int CustomerId)
+        public async Task<ApiResponseModel> CheckProductInCart(int variationId, int CustomerId)
         {
             using (CartService cartService = new CartService())
             {
-                return await cartService.CheckProductInCart(ProductId, CustomerId);
+                return await cartService.CheckProductInCart(variationId, CustomerId);
             }
         }
 
