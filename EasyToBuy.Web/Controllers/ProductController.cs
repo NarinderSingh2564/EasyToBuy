@@ -27,10 +27,18 @@ namespace EasyToBuy.Web.Controllers
         }
         #endregion
 
-        [HttpGet("GetProductList")]
-        public async Task<IEnumerable<SPGetProductList_Result>> GetProductList(int categoryId, string? searchText, int vendorId, string role)
+        [HttpGet("GetProductWeightList")]
+        public async Task<IEnumerable<ProductWeightModel>> GetProductWeightList()
         {
-            var response = await _productRepository.GetProductList(categoryId, searchText, vendorId, role);
+            var response = await _productRepository.GetProductWeightList();
+
+            return response;
+        }
+
+        [HttpGet("GetProductPackingList")]
+        public async Task<IEnumerable<ProductPackingModel>> GetProductPackingList()
+        {
+            var response = await _productRepository.GetProductPackingList();
 
             return response;
         }
@@ -61,7 +69,6 @@ namespace EasyToBuy.Web.Controllers
 
             return returnResponse;
         }
-
         bool UploadProductImage(ProductUIModel productUIModel)
         {
             var fileUploadStatus = false;
@@ -91,6 +98,22 @@ namespace EasyToBuy.Web.Controllers
             return fileUploadStatus;
         }
 
+        [HttpGet("GetProductList")]
+        public async Task<IEnumerable<SPGetProductList_Result>> GetProductList(int categoryId, string? searchText, int vendorId, string role)
+        {
+            var response = await _productRepository.GetProductList(categoryId, searchText, vendorId, role);
+
+            return response;
+        }
+      
+        [HttpGet("GetProductDescriptionById")]
+        public async Task<IEnumerable<SPGetProductDescriptionById_Result>> GetProductDescriptionById(int productId)
+        {
+            var response = await _productRepository.GetProductDescriptionById(productId);
+
+            return response;
+        }
+
         [HttpPost("ProductVariationAndRateAddEdit")]
         public async Task<ApiResponseModel> ProductVariationAndRateAddEdit(ProductVariationAndRateUIModel productVariationAndRateUIModel)
         {
@@ -112,38 +135,6 @@ namespace EasyToBuy.Web.Controllers
             productVariationAndRateInputModel.IsActive = productVariationAndRateUIModel.IsActive;
 
             var response = await _productRepository.ProductVariationAndRateAddEdit(productVariationAndRateInputModel);
-
-            return response;
-        }
-      
-        [HttpGet("GetProductDescriptionById")]
-        public async Task<IEnumerable<SPGetProductDescriptionById_Result>> GetProductDescriptionById(int productId)
-        {
-            var response = await _productRepository.GetProductDescriptionById(productId);
-
-            return response;
-        }
-
-        [HttpGet("GetProductWeightList")]
-        public async Task<IEnumerable<ProductWeightModel>> GetProductWeightList()
-        {
-            var response = await _productRepository.GetProductWeightList();
-
-            return response;
-        }
-
-        [HttpGet("GetProductPackingList")]
-        public async Task<IEnumerable<ProductPackingModel>> GetProductPackingList()
-        {
-            var response = await _productRepository.GetProductPackingList();
-
-            return response;
-        }
-
-        [HttpGet("GetProductSpecificationById")]
-        public async Task<IEnumerable<SPGetProductSpecificationById_Result>> GetProductSpecificationById(int productId)
-        {
-            var response = await _productRepository.GetProductSpecificationById(productId);
 
             return response;
         }
@@ -172,5 +163,34 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
+        [HttpPost("ProductSpecificationAddEdit")]
+        public async Task<ApiResponseModel> ProductSpecificationAddEdit(ProductSpecificationUIModel productSpecificationUIModel)
+        {
+            var productSpecificationInputModel = new ProductSpecificationInputModel();
+
+            productSpecificationInputModel.Id = productSpecificationUIModel.Id;
+            productSpecificationInputModel.ProductId = productSpecificationUIModel.ProductId;
+            productSpecificationInputModel.Speciality = productSpecificationUIModel.Speciality;
+            productSpecificationInputModel.Manufacturer = productSpecificationUIModel.Manufacturer;
+            productSpecificationInputModel.IngredientType = productSpecificationUIModel.IngredientType;
+            productSpecificationInputModel.Ingredients = productSpecificationUIModel.Ingredients;
+            productSpecificationInputModel.ShelfLife = productSpecificationUIModel.ShelfLife;
+            productSpecificationInputModel.Benefits = productSpecificationUIModel.Benefits;
+            productSpecificationInputModel.CreatedBy = productSpecificationUIModel.CreatedBy;
+            productSpecificationInputModel.UpdatedBy = productSpecificationUIModel.UpdatedBy;
+            productSpecificationInputModel.IsActive = productSpecificationUIModel.IsActive;
+
+            var response = await _productRepository.ProductSpecificationAddEdit(productSpecificationInputModel);
+          
+            return response;
+        }
+
+        [HttpGet("GetProductSpecificationById")]
+        public async Task<IEnumerable<SPGetProductSpecificationById_Result>> GetProductSpecificationById(int productId)
+        {
+            var response = await _productRepository.GetProductSpecificationById(productId);
+
+            return response;
+        }
     }
 }
