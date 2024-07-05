@@ -168,7 +168,6 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-
         public async Task<IEnumerable<SPGetProductList_Result>> GetProductList(int categoryId, string? searchText, int vendorId, string role)
         {
             var productList = new List<SPGetProductList_Result>();
@@ -192,26 +191,6 @@ namespace EasyToBuy.Services.Interactions
 
             return productList;
         }
-        public async Task<IEnumerable<SPGetProductDescriptionById_Result>> GetProductDescriptionById(int productId)
-
-        {
-            var productDescription = new List<SPGetProductDescriptionById_Result>();
-
-            try
-            {
-                var sqlQuery = "exec spGetProductDescriptionById @ProductId";
-                SqlParameter parameter1 = new SqlParameter("@ProductId", productId);
-                productDescription = await _dbContext.productDescriptionById_Results.FromSqlRaw(sqlQuery, parameter1).ToListAsync();
-
-            }
-            catch (Exception ex)
-            {
-                var msg = ex.Message;
-            }
-
-            return productDescription;
-        }
-
         public async Task<ApiResponseModel> ProductVariationAndRateAddEdit(ProductVariationAndRateInputModel productVariationAndRateInputModel)
         {
             var apiResponseModel = new ApiResponseModel();
@@ -283,7 +262,6 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        
         public async Task<IEnumerable<SPGetProductVariationListById_Result>> GetProductVariationListById(int productId)
         {
             var productVariationList = new List<SPGetProductVariationListById_Result>();
@@ -320,7 +298,7 @@ namespace EasyToBuy.Services.Interactions
 
             return productVariationImage;
         }
-        public async Task<ApiResponseModel> GetDefaultVariation(int productId, int variationId)
+        public async Task<ApiResponseModel> SetDefaultVariation(int productId, int variationId)
         {
             var apiResponseModel = new ApiResponseModel();
 
@@ -354,9 +332,6 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-
-     
-
         public async Task<ApiResponseModel> ProductSpecificationAddEdit(ProductSpecificationInputModel productSpecificationInputModel)
 
         {
@@ -450,11 +425,6 @@ namespace EasyToBuy.Services.Interactions
             var productVariationList = new List<ProductVariationModel>();
             try
             {
-
-                var sqlQuery = "exec SPGetProductVariationListById @ProductId";
-                SqlParameter parameter1 = new SqlParameter("@ProductId", productId);
-                productVariationList = await  _dbContext.productVariationListById_Results.FromSqlRaw(sqlQuery, parameter1).ToListAsync();
-
                 var query = (from tpv in _dbContext.tblProductVariationAndRate
                              join tp in _dbContext.tblProduct on tpv.ProductId equals tp.Id
                              join tpp in _dbContext.tblProductPacking on tpv.ProductPackingId equals tpp.Id
@@ -463,7 +433,8 @@ namespace EasyToBuy.Services.Interactions
                              select new ProductVariationModel
                              {
                                  VariationId = tpv.Id,
-                                 Variation = tp.ProductName + " (" + tpw.ProductWeight + " " + tpp.PackingType + ")"
+                                 Variation = tp.ProductName + " (" + tpw.ProductWeight + " " + tpp.PackingType + ")",
+                                 IsActive = tpv.IsActive
                              }).ToListAsync();
                              
                 productVariationList = await query.ConfigureAwait(false);
@@ -496,9 +467,6 @@ namespace EasyToBuy.Services.Interactions
             }
 
         }
-
-  
-
         public async Task<IEnumerable<ProductVariationImagesModel>> GetVariationImagesListByProductId(int productId)
         {
             var variationImagesList = new List<ProductVariationImagesModel>();

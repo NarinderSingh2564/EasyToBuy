@@ -14,8 +14,6 @@ namespace EasyToBuy.Data.SPClasses
         public string PackingType { get; set; }
         public int Quantity { get; set; }
         public int ProductPackingId { get; set; }
-        public string PackingType { get; set; }
-        public int Quantity { get; set; }
         public int ProductWeightId { get; set; }
         public string ProductWeight { get; set; }
         public decimal MRP { get; set; }

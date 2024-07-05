@@ -10,5 +10,6 @@ namespace EasyToBuy.Models.Models
     {
         public int VariationId { get; set; }
         public string Variation { get; set; } = string.Empty;
+        public bool IsActive { get; set; }
     }
 }
