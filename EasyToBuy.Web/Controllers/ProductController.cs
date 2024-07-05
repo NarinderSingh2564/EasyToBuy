@@ -65,6 +65,7 @@ namespace EasyToBuy.Web.Controllers
             return returnResponse;
         }
         bool UploadProductImage(IFormFile productImage, out string imageName, string folderName,string oldImageName)
+
         {
             var fileUploadStatus = false;
 
@@ -136,7 +137,6 @@ namespace EasyToBuy.Web.Controllers
 
             return response;
         }
-
         [HttpGet("GetProductVariationListById")]
         public async Task<IEnumerable<SPGetProductVariationListById_Result>> GetProductVariationListById(int productId)
         {
@@ -144,6 +144,7 @@ namespace EasyToBuy.Web.Controllers
 
             return response;
         }
+
 
         [HttpGet("GetProductVariationImageById")]
         public async Task<IEnumerable<SPGetProductVariationImageById_Result>> GetProductVariationImageById(int variationId)
@@ -183,12 +184,16 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
-        [HttpGet("GetProductSpecificationById")]
-        public async Task<IEnumerable<SPGetProductSpecificationById_Result>> GetProductSpecificationById(int productId)
+        [HttpGet("GetProductDescriptionById")]
+        public async Task<SPGetProductDescriptionById_Result> GetProductDescriptionById(int productId)
         {
-            var response = await _productRepository.GetProductSpecificationById(productId);
+            return await _productRepository.GetProductDescriptionById(productId);
+        }
 
-            return response;
+        [HttpGet("GetProductSpecificationById")]
+        public async Task<SPGetProductSpecificationById_Result> GetProductSpecificationById(int productId)
+        {
+            return await _productRepository.GetProductSpecificationById(productId);
         }
 
         [HttpGet("GetProductVariationListByProductId")]
