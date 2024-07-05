@@ -61,28 +61,53 @@ namespace EasyToBuy.Services.Interactions
 
         #endregion
 
-        public async Task<IEnumerable<SPGetProductList_Result>> GetProductList(int categoryId, string? searchText, int vendorId, string role)
+        public async Task<IEnumerable<ProductWeightModel>> GetProductWeightList()
         {
-            var productList = new List<SPGetProductList_Result>();
+            var productWeightList = new List<ProductWeightModel>();
 
             try
             {
-                var sqlQuery = "exec spGetProductList @CategoryId,@SearchText,@VendorId,@Role";
-
-                SqlParameter parameter1 = new SqlParameter("@CategoryId", categoryId != 0 ? categoryId : "0");
-                SqlParameter parameter2 = new SqlParameter("@SearchText", string.IsNullOrEmpty(searchText) ? DBNull.Value : searchText);
-                SqlParameter parameter3 = new SqlParameter("@VendorId", vendorId < 1 ? DBNull.Value : vendorId);
-                SqlParameter parameter4 = new SqlParameter("@Role", string.IsNullOrEmpty(role) ? DBNull.Value : role);
-
-                productList = await _dbContext.productList_Results.FromSqlRaw(sqlQuery, parameter1, parameter2, parameter3, parameter4).ToListAsync();
-
+                var dbProductWeightList = await _dbContext.tblProductWeight.ToListAsync();
+                foreach (var weight in dbProductWeightList)
+                {
+                    productWeightList.Add(new ProductWeightModel()
+                    {
+                        Id = weight.Id,
+                        ProductWeight = weight.ProductWeight,
+                        IsActive = weight.IsActive,
+                    });
+                }
             }
             catch (Exception ex)
             {
                 var msg = ex.Message;
             }
 
-            return productList;
+            return productWeightList;
+        }
+        public async Task<IEnumerable<ProductPackingModel>> GetProductPackingList()
+        {
+            var productPackingList = new List<ProductPackingModel>();
+
+            try
+            {
+                var dbProductPackingList = await _dbContext.tblProductPacking.ToListAsync();
+                foreach (var packing in dbProductPackingList)
+                {
+                    productPackingList.Add(new ProductPackingModel()
+                    {
+                        Id = packing.Id,
+                        PackingType = packing.PackingType,
+                        IsActive = packing.IsActive,
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return productPackingList;
         }
         public async Task<ApiResponseModel> ProductAddEdit(ProductInputModel productInputModel)
         {
@@ -143,6 +168,50 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
+
+        public async Task<IEnumerable<SPGetProductList_Result>> GetProductList(int categoryId, string? searchText, int vendorId, string role)
+        {
+            var productList = new List<SPGetProductList_Result>();
+
+            try
+            {
+                var sqlQuery = "exec spGetProductList @CategoryId,@SearchText,@VendorId,@Role";
+
+                SqlParameter parameter1 = new SqlParameter("@CategoryId", categoryId != 0 ? categoryId : "0");
+                SqlParameter parameter2 = new SqlParameter("@SearchText", string.IsNullOrEmpty(searchText) ? DBNull.Value : searchText);
+                SqlParameter parameter3 = new SqlParameter("@VendorId", vendorId < 1 ? DBNull.Value : vendorId);
+                SqlParameter parameter4 = new SqlParameter("@Role", string.IsNullOrEmpty(role) ? DBNull.Value : role);
+
+                productList = await _dbContext.productList_Results.FromSqlRaw(sqlQuery, parameter1, parameter2, parameter3, parameter4).ToListAsync();
+
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return productList;
+        }
+        public async Task<IEnumerable<SPGetProductDescriptionById_Result>> GetProductDescriptionById(int productId)
+
+        {
+            var productDescription = new List<SPGetProductDescriptionById_Result>();
+
+            try
+            {
+                var sqlQuery = "exec spGetProductDescriptionById @ProductId";
+                SqlParameter parameter1 = new SqlParameter("@ProductId", productId);
+                productDescription = await _dbContext.productDescriptionById_Results.FromSqlRaw(sqlQuery, parameter1).ToListAsync();
+
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return productDescription;
+        }
+
         public async Task<ApiResponseModel> ProductVariationAndRateAddEdit(ProductVariationAndRateInputModel productVariationAndRateInputModel)
         {
             var apiResponseModel = new ApiResponseModel();
@@ -214,89 +283,7 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        public async Task<IEnumerable<ProductWeightModel>> GetProductWeightList()
-        {
-            var productWeightList = new List<ProductWeightModel>();
-
-            try
-            {
-                var dbProductWeightList = await _dbContext.tblProductWeight.ToListAsync();
-                foreach (var weight in dbProductWeightList)
-                {
-                    productWeightList.Add(new ProductWeightModel()
-                    {
-                        Id = weight.Id,
-                        ProductWeight = weight.ProductWeight,
-                        IsActive = weight.IsActive,
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                var msg = ex.Message;
-            }
-
-            return productWeightList;
-        }
-        public async Task<IEnumerable<ProductPackingModel>> GetProductPackingList()
-        {
-            var productPackingList = new List<ProductPackingModel>();
-
-            try
-            {
-                var dbProductPackingList = await _dbContext.tblProductPacking.ToListAsync();
-                foreach (var packing in dbProductPackingList)
-                {
-                    productPackingList.Add(new ProductPackingModel()
-                    {
-                        Id = packing.Id,
-                        PackingType = packing.PackingType,
-                        IsActive = packing.IsActive,
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                var msg = ex.Message;
-            }
-
-            return productPackingList;
-        }
-        public async Task<SPGetProductDescriptionById_Result> GetProductDescriptionById(int productId)
-        {
-            var productDescription = new SPGetProductDescriptionById_Result();
-
-            try
-            {
-                var sqlQuery = "exec spGetProductDescriptionById @ProductId";
-                SqlParameter parameter = new SqlParameter("@ProductId", productId);
-                productDescription =  _dbContext.productDescriptionById_Results.FromSqlRaw(sqlQuery, parameter).ToList().FirstOrDefault();
-            }
-            catch (Exception ex)
-            {
-                var msg = ex.Message;
-            }
-
-            return productDescription;
-        }
-        public async Task<SPGetProductSpecificationById_Result> GetProductSpecificationById(int productId)
-        {
-            var productSpecification = new SPGetProductSpecificationById_Result();
-
-            try
-            {
-                var sqlQuery = "exec SPGetProductSpecificationById @ProductId";
-                SqlParameter parameter1 = new SqlParameter("@ProductId", productId);
-                productSpecification =  _dbContext.productSpecificationById_Results.FromSqlRaw(sqlQuery, parameter1).ToList().FirstOrDefault();
-
-            }
-            catch (Exception ex)
-            {
-                var msg = ex.Message;
-            }
-
-            return productSpecification;
-        }
+        
         public async Task<IEnumerable<SPGetProductVariationListById_Result>> GetProductVariationListById(int productId)
         {
             var productVariationList = new List<SPGetProductVariationListById_Result>();
@@ -305,7 +292,7 @@ namespace EasyToBuy.Services.Interactions
             {
                 var sqlQuery = "exec SPGetProductVariationListById @ProductId";
                 SqlParameter parameter1 = new SqlParameter("@ProductId", productId);
-                productVariationList = await  _dbContext.productVariationListById_Results.FromSqlRaw(sqlQuery, parameter1).ToListAsync();
+                productVariationList = await _dbContext.productVariationListById_Results.FromSqlRaw(sqlQuery, parameter1).ToListAsync();
 
             }
             catch (Exception ex)
@@ -366,6 +353,178 @@ namespace EasyToBuy.Services.Interactions
             }
 
             return apiResponseModel;
+        }
+
+     
+
+        public async Task<ApiResponseModel> ProductSpecificationAddEdit(ProductSpecificationInputModel productSpecificationInputModel)
+
+        {
+            var apiResponseModel = new ApiResponseModel();
+
+            try
+            {
+                var dbProductSpecification = await _dbContext.tblProductSpecification.Where(x => x.Id == productSpecificationInputModel.Id).FirstOrDefaultAsync();
+
+                if (dbProductSpecification != null)
+                {
+                    dbProductSpecification.ProductId = productSpecificationInputModel.ProductId;
+                    dbProductSpecification.Speciality = productSpecificationInputModel.Speciality;
+                    dbProductSpecification.Manufacturer = productSpecificationInputModel.Manufacturer;
+                    dbProductSpecification.IngredientType = productSpecificationInputModel.IngredientType;
+                    dbProductSpecification.Ingredients = productSpecificationInputModel.Ingredients;
+                    dbProductSpecification.ShelfLife = productSpecificationInputModel.ShelfLife;
+                    dbProductSpecification.Benefits = productSpecificationInputModel.Benefits;
+                    dbProductSpecification.UpdatedBy = productSpecificationInputModel.UpdatedBy;
+                    dbProductSpecification.UpdatedOn = DateTime.Now;
+                    dbProductSpecification.IsActive = productSpecificationInputModel.IsActive;
+                }
+                else
+                {
+                    var objProductSpecification = new ProductSpecification();
+
+                    objProductSpecification.ProductId = productSpecificationInputModel.ProductId;
+                    objProductSpecification.Speciality = productSpecificationInputModel.Speciality;
+                    objProductSpecification.Manufacturer = productSpecificationInputModel.Manufacturer;
+                    objProductSpecification.IngredientType = productSpecificationInputModel.IngredientType;
+                    objProductSpecification.Ingredients = productSpecificationInputModel.Ingredients;
+                    objProductSpecification.ShelfLife = productSpecificationInputModel.ShelfLife;
+                    objProductSpecification.Benefits = productSpecificationInputModel.Benefits;
+                    objProductSpecification.CreatedBy = productSpecificationInputModel.CreatedBy;
+                    objProductSpecification.CreatedOn = DateTime.Now;
+                    objProductSpecification.IsActive = productSpecificationInputModel.IsActive;
+
+                    await _dbContext.tblProductSpecification.AddAsync(objProductSpecification);
+                }
+                await _dbContext.SaveChangesAsync();
+
+                apiResponseModel.Status = true;
+                apiResponseModel.Message = productSpecificationInputModel.Id > 0 ? "Product specification updated successfully." : "Product specification added successfully.";
+
+            }
+
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return apiResponseModel;
+        }
+        public async Task<SPGetProductDescriptionById_Result> GetProductDescriptionById(int productId)
+        {
+            var productDescription = new SPGetProductDescriptionById_Result();
+
+            try
+            {
+                var sqlQuery = "exec spGetProductDescriptionById @ProductId";
+                SqlParameter parameter = new SqlParameter("@ProductId", productId);
+                productDescription =  _dbContext.productDescriptionById_Results.FromSqlRaw(sqlQuery, parameter).ToList().FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return productDescription;
+        }
+        public async Task<SPGetProductSpecificationById_Result> GetProductSpecificationById(int productId)
+        {
+            var productSpecification = new SPGetProductSpecificationById_Result();
+
+            try
+            {
+                var sqlQuery = "exec SPGetProductSpecificationById @ProductId";
+                SqlParameter parameter1 = new SqlParameter("@ProductId", productId);
+                productSpecification =  _dbContext.productSpecificationById_Results.FromSqlRaw(sqlQuery, parameter1).ToList().FirstOrDefault();
+
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return productSpecification;
+        }
+        public async Task<IEnumerable<ProductVariationModel>> GetProductVariationListByProductId(int productId)
+        {
+            var productVariationList = new List<ProductVariationModel>();
+            try
+            {
+
+                var sqlQuery = "exec SPGetProductVariationListById @ProductId";
+                SqlParameter parameter1 = new SqlParameter("@ProductId", productId);
+                productVariationList = await  _dbContext.productVariationListById_Results.FromSqlRaw(sqlQuery, parameter1).ToListAsync();
+
+                var query = (from tpv in _dbContext.tblProductVariationAndRate
+                             join tp in _dbContext.tblProduct on tpv.ProductId equals tp.Id
+                             join tpp in _dbContext.tblProductPacking on tpv.ProductPackingId equals tpp.Id
+                             join tpw in _dbContext.tblProductWeight on tpv.ProductWeightId equals tpw.Id
+                             where tpv.ProductId == productId
+                             select new ProductVariationModel
+                             {
+                                 VariationId = tpv.Id,
+                                 Variation = tp.ProductName + " (" + tpw.ProductWeight + " " + tpp.PackingType + ")"
+                             }).ToListAsync();
+                             
+                productVariationList = await query.ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+            return productVariationList;
+        }
+        public void ProductVariationImagesAdd(ProductVariationImagesInputModel productVariationImagesInputModel)
+        {
+            try
+            {
+                var variationImagesObj = new ProductImages();
+
+                variationImagesObj.VariationId = productVariationImagesInputModel.VariationId;
+                variationImagesObj.Image = productVariationImagesInputModel.Image;
+                variationImagesObj.CreatedBy = productVariationImagesInputModel.CreatedBy;
+                variationImagesObj.CreatedOn = DateTime.Now;
+                variationImagesObj.IsActive = true;
+
+                _dbContext.tblProductImages.Add(variationImagesObj);
+                _dbContext.SaveChanges();
+            }
+
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+        }
+
+  
+
+        public async Task<IEnumerable<ProductVariationImagesModel>> GetVariationImagesListByProductId(int productId)
+        {
+            var variationImagesList = new List<ProductVariationImagesModel>();
+            try
+            {
+                var query = (from tpi in _dbContext.tblProductImages
+                             join tpv in _dbContext.tblProductVariationAndRate on tpi.VariationId equals tpv.Id
+                             join tp in _dbContext.tblProduct on tpv.ProductId equals tp.Id
+                             join tpp in _dbContext.tblProductPacking on tpv.ProductPackingId equals tpp.Id
+                             join tpw in _dbContext.tblProductWeight on tpv.ProductWeightId equals tpw.Id
+                             where tpv.ProductId == productId orderby tpw.Id
+                             select new ProductVariationImagesModel
+                             {
+                                 Id = tpi.Id,
+                                 VariationId = tpv.Id,
+                                 Variation = tp.ProductName + " (" + tpw.ProductWeight + " " + tpp.PackingType + ")",
+                                 Image = tpi.Image,
+                             }).ToListAsync();
+
+                variationImagesList = await query.ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+            return variationImagesList;
         }
        
     }
