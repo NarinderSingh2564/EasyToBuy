@@ -11,10 +11,6 @@ namespace EasyToBuy.Repository.Abstract
         Task<IEnumerable<ProductPackingModel>> GetProductPackingList();
         Task<ApiResponseModel> ProductAddEdit(ProductInputModel productInputModel);
         Task<ApiResponseModel> ProductVariationAndRateAddEdit(ProductVariationAndRateInputModel productVariationAndRateInputModel);
-        Task<IEnumerable<ProductWeightModel>> GetProductWeightList();
-        Task<IEnumerable<ProductPackingModel>> GetProductPackingList();
-        Task<SPGetProductDescriptionById_Result> GetProductDescriptionById(int productId);
-        Task<SPGetProductSpecificationById_Result> GetProductSpecificationById(int productId);
         Task<IEnumerable<SPGetProductList_Result>> GetProductList(int categoryId, string? searchText,int vendorId,string role);
         Task<IEnumerable<SPGetProductDescriptionById_Result>> GetProductDescriptionById(int productId);
         Task<ApiResponseModel> ProductVariationAndRateAddEdit(ProductVariationAndRateInputModel productVariationAndRateInputModel);

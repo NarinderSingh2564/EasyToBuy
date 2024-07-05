@@ -31,7 +31,6 @@ namespace EasyToBuy.Repository.Concrete
                 return await productService.ProductAddEdit(productInputModel);
             }
         }
-
         public async Task<IEnumerable<SPGetProductList_Result>> GetProductList(int categoryId, string? searchText, int vendorId, string role)
         {
             using (ProductService productService = new ProductService())
@@ -39,7 +38,6 @@ namespace EasyToBuy.Repository.Concrete
                 return await productService.GetProductList(categoryId, searchText, vendorId, role);
             }
         }
-
         public async Task<ApiResponseModel> ProductVariationAndRateAddEdit(ProductVariationAndRateInputModel productVariationAndRateInputModel)
         {
             using (ProductService productService = new ProductService())
@@ -47,31 +45,13 @@ namespace EasyToBuy.Repository.Concrete
                 return await productService.ProductVariationAndRateAddEdit(productVariationAndRateInputModel);
             }
         }
-
-        public async Task<IEnumerable<ProductWeightModel>> GetProductWeightList()
-        {
-            using (ProductService productService = new ProductService())
-            {
-                return await productService.GetProductWeightList();
-            }
-        }
-
-        public async Task<IEnumerable<ProductPackingModel>> GetProductPackingList()
-        {
-            using (ProductService productService = new ProductService())
-            {
-                return await productService.GetProductPackingList();
-            }
-        }
-        
-        public async Task<SPGetProductDescriptionById_Result> GetProductDescriptionById(int productId)
+        public async Task<IEnumerable<SPGetProductDescriptionById_Result>> GetProductDescriptionById(int productId)
         {
             using (ProductService productService = new ProductService())
             {
                 return await productService.GetProductDescriptionById(productId);
             }
          }
-
         public async Task<IEnumerable<SPGetProductVariationListById_Result>> GetProductVariationListById(int productId)
         {
             using (ProductService productService = new ProductService())
@@ -94,7 +74,6 @@ namespace EasyToBuy.Repository.Concrete
 
             }
         }
-        
         public async Task<ApiResponseModel> ProductSpecificationAddEdit(ProductSpecificationInputModel productSpecificationInputModel)
         {
             using (ProductService productService = new ProductService())
@@ -102,7 +81,6 @@ namespace EasyToBuy.Repository.Concrete
                 return await productService.ProductSpecificationAddEdit(productSpecificationInputModel);
             }
         }
-        
         public async Task<SPGetProductSpecificationById_Result> GetProductSpecificationById(int productId)
         {
             using (ProductService productService = new ProductService())
@@ -110,7 +88,6 @@ namespace EasyToBuy.Repository.Concrete
                 return await productService.GetProductSpecificationById(productId);
             }
         }
-        
         public async Task<IEnumerable<ProductVariationModel>> GetProductVariationListByProductId(int productId)
         {
             using (ProductService productService = new ProductService())
@@ -125,7 +102,6 @@ namespace EasyToBuy.Repository.Concrete
                   productService.ProductVariationImagesAdd(productVariationImagesInputModel);
             }
         }
-   
         public async Task<IEnumerable<ProductVariationImagesModel>> GetVariationImagesListByProductId(int productId)
         {
             using (ProductService productService = new ProductService())

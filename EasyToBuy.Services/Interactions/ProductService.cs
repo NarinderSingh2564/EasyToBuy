@@ -168,7 +168,6 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-
         public async Task<IEnumerable<SPGetProductList_Result>> GetProductList(int categoryId, string? searchText, int vendorId, string role)
         {
             var productList = new List<SPGetProductList_Result>();
@@ -192,26 +191,6 @@ namespace EasyToBuy.Services.Interactions
 
             return productList;
         }
-        public async Task<IEnumerable<SPGetProductDescriptionById_Result>> GetProductDescriptionById(int productId)
-
-        {
-            var productDescription = new List<SPGetProductDescriptionById_Result>();
-
-            try
-            {
-                var sqlQuery = "exec spGetProductDescriptionById @ProductId";
-                SqlParameter parameter1 = new SqlParameter("@ProductId", productId);
-                productDescription = await _dbContext.productDescriptionById_Results.FromSqlRaw(sqlQuery, parameter1).ToListAsync();
-
-            }
-            catch (Exception ex)
-            {
-                var msg = ex.Message;
-            }
-
-            return productDescription;
-        }
-
         public async Task<ApiResponseModel> ProductVariationAndRateAddEdit(ProductVariationAndRateInputModel productVariationAndRateInputModel)
         {
             var apiResponseModel = new ApiResponseModel();
@@ -283,7 +262,6 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        
         public async Task<IEnumerable<SPGetProductVariationListById_Result>> GetProductVariationListById(int productId)
         {
             var productVariationList = new List<SPGetProductVariationListById_Result>();
@@ -354,9 +332,6 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-
-     
-
         public async Task<ApiResponseModel> ProductSpecificationAddEdit(ProductSpecificationInputModel productSpecificationInputModel)
 
         {
@@ -410,7 +385,7 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        public async Task<SPGetProductDescriptionById_Result> GetProductDescriptionById(int productId)
+        public async Task<IEnumerable<SPGetProductDescriptionById_Result>> GetProductDescriptionById(int productId)
         {
             var productDescription = new SPGetProductDescriptionById_Result();
 
@@ -496,9 +471,6 @@ namespace EasyToBuy.Services.Interactions
             }
 
         }
-
-  
-
         public async Task<IEnumerable<ProductVariationImagesModel>> GetVariationImagesListByProductId(int productId)
         {
             var variationImagesList = new List<ProductVariationImagesModel>();
