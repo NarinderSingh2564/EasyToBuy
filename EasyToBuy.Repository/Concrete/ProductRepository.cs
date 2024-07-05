@@ -23,20 +23,11 @@ namespace EasyToBuy.Repository.Concrete
                 return await productService.ProductAddEdit(productInputModel);
             }
         }
-
         public async Task<ApiResponseModel> ProductVariationAndRateAddEdit(ProductVariationAndRateInputModel productVariationAndRateInputModel)
         {
             using (ProductService productService = new ProductService())
             {
                 return await productService.ProductVariationAndRateAddEdit(productVariationAndRateInputModel);
-            }
-        }
-
-        public async Task<IEnumerable<SPGetProductDescriptionById_Result>> GetProductDescriptionById(int productId)
-        {
-            using (ProductService productService = new ProductService())
-            {
-                return await productService.GetProductDescriptionById(productId);
             }
         }
         public async Task<IEnumerable<ProductWeightModel>> GetProductWeightList()
@@ -53,7 +44,14 @@ namespace EasyToBuy.Repository.Concrete
                 return await productService.GetProductPackingList();
             }
         }
-        public async Task<IEnumerable<SPGetProductSpecificationById_Result>> GetProductSpecificationById(int productId)
+        public async Task<SPGetProductDescriptionById_Result> GetProductDescriptionById(int productId)
+        {
+            using (ProductService productService = new ProductService())
+            {
+                return await productService.GetProductDescriptionById(productId);
+            }
+        }
+        public async Task<SPGetProductSpecificationById_Result> GetProductSpecificationById(int productId)
         {
             using (ProductService productService = new ProductService())
             {
@@ -74,7 +72,6 @@ namespace EasyToBuy.Repository.Concrete
                 return await productService.GetProductVariationImageById(variationId);
             }
         }
-
         public async Task<ApiResponseModel> GetDefaultVariation(int productId, int variationId)
         {
             using (ProductService productService = new ProductService())

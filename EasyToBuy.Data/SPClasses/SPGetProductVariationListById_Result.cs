@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,12 +9,11 @@ namespace EasyToBuy.Data.SPClasses
 {
     public class SPGetProductVariationListById_Result
     {
+
         public int Id { get; set; }
-        public int ProductPackingId { get; set; }
-        public string PackingType { get; set; } = string.Empty;
+        public string PackingType { get; set; }
         public int Quantity { get; set; }
-        public int ProductWeightId { get; set; }
-        public string ProductWeight { get; set; } = string.Empty;
+        public string ProductWeight { get; set; }
         public decimal MRP { get; set; }
         public decimal Discount { get; set; }
         public decimal DiscountPrice { get; set; }

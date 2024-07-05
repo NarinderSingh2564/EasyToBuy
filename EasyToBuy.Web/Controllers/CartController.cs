@@ -38,13 +38,11 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
-
         [HttpGet("CheckProductInCart")]
         public async Task<ApiResponseModel> CheckProductInCart(int variationId, int CustomerId)
         {
             return await _cartRepository.CheckProductInCart(variationId, CustomerId);
         }
-
 
         [HttpGet("GetCartDetailsByCustomerId")]
         public async Task<GetCartDetailsByCustomerId> GetCartDetailsByCustomerId(int customerId)

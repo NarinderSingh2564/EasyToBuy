@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace EasyToBuy.Data.SPClasses
 {
+
+
     public class SPGetProductSpecificationById_Result
     {
         public int Id { get; set; }
