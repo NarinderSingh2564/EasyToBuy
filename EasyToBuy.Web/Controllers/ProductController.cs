@@ -106,7 +106,7 @@ namespace EasyToBuy.Web.Controllers
         }
 
         [HttpGet("GetProductDescriptionById")]
-        public async Task<IEnumerable<SPGetProductDescriptionById_Result>> GetProductDescriptionById(int productId)
+        public async Task<SPGetProductDescriptionById_Result> GetProductDescriptionById(int productId)
         {
             var response = await _productRepository.GetProductDescriptionById(productId);
 
@@ -137,6 +137,7 @@ namespace EasyToBuy.Web.Controllers
 
             return response;
         }
+
         [HttpGet("GetProductVariationListById")]
         public async Task<IEnumerable<SPGetProductVariationListById_Result>> GetProductVariationListById(int productId)
         {
@@ -144,7 +145,6 @@ namespace EasyToBuy.Web.Controllers
 
             return response;
         }
-
 
         [HttpGet("GetProductVariationImageById")]
         public async Task<IEnumerable<SPGetProductVariationImageById_Result>> GetProductVariationImageById(int variationId)
@@ -154,10 +154,10 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
-        [HttpPost("GetDefaultVariation")]
-        public async Task<ApiResponseModel> GetDefaultVariation(int productId, int variationId)
+        [HttpPost("SetDefaultVariation")]
+        public async Task<ApiResponseModel> SetDefaultVariation(int productId, int variationId)
         {
-            var response = await _productRepository.GetDefaultVariation(productId, variationId);
+            var response = await _productRepository.SetDefaultVariation(productId, variationId);
 
             return response;
         }
@@ -182,12 +182,6 @@ namespace EasyToBuy.Web.Controllers
             var response = await _productRepository.ProductSpecificationAddEdit(productSpecificationInputModel);
 
             return response;
-        }
-
-        [HttpGet("GetProductDescriptionById")]
-        public async Task<IEnumerable<SPGetProductDescriptionById_Result>> GetProductDescriptionById(int productId)
-        {
-            return await _productRepository.GetProductDescriptionById(productId);
         }
 
         [HttpGet("GetProductSpecificationById")]

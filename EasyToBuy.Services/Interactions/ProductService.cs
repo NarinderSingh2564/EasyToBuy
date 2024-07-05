@@ -298,7 +298,7 @@ namespace EasyToBuy.Services.Interactions
 
             return productVariationImage;
         }
-        public async Task<ApiResponseModel> GetDefaultVariation(int productId, int variationId)
+        public async Task<ApiResponseModel> SetDefaultVariation(int productId, int variationId)
         {
             var apiResponseModel = new ApiResponseModel();
 
@@ -385,7 +385,7 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        public async Task<IEnumerable<SPGetProductDescriptionById_Result>> GetProductDescriptionById(int productId)
+        public async Task<SPGetProductDescriptionById_Result> GetProductDescriptionById(int productId)
         {
             var productDescription = new SPGetProductDescriptionById_Result();
 
@@ -425,11 +425,6 @@ namespace EasyToBuy.Services.Interactions
             var productVariationList = new List<ProductVariationModel>();
             try
             {
-
-                var sqlQuery = "exec SPGetProductVariationListById @ProductId";
-                SqlParameter parameter1 = new SqlParameter("@ProductId", productId);
-                productVariationList = await  _dbContext.productVariationListById_Results.FromSqlRaw(sqlQuery, parameter1).ToListAsync();
-
                 var query = (from tpv in _dbContext.tblProductVariationAndRate
                              join tp in _dbContext.tblProduct on tpv.ProductId equals tp.Id
                              join tpp in _dbContext.tblProductPacking on tpv.ProductPackingId equals tpp.Id
@@ -438,7 +433,8 @@ namespace EasyToBuy.Services.Interactions
                              select new ProductVariationModel
                              {
                                  VariationId = tpv.Id,
-                                 Variation = tp.ProductName + " (" + tpw.ProductWeight + " " + tpp.PackingType + ")"
+                                 Variation = tp.ProductName + " (" + tpw.ProductWeight + " " + tpp.PackingType + ")",
+                                 IsActive = tpv.IsActive
                              }).ToListAsync();
                              
                 productVariationList = await query.ConfigureAwait(false);

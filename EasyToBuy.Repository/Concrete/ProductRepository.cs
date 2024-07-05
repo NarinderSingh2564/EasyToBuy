@@ -45,7 +45,7 @@ namespace EasyToBuy.Repository.Concrete
                 return await productService.ProductVariationAndRateAddEdit(productVariationAndRateInputModel);
             }
         }
-        public async Task<IEnumerable<SPGetProductDescriptionById_Result>> GetProductDescriptionById(int productId)
+        public async Task<SPGetProductDescriptionById_Result> GetProductDescriptionById(int productId)
         {
             using (ProductService productService = new ProductService())
             {
@@ -66,11 +66,11 @@ namespace EasyToBuy.Repository.Concrete
                 return await productService.GetProductVariationImageById(variationId);
             }
         }
-        public async Task<ApiResponseModel> GetDefaultVariation(int productId, int variationId)
+        public async Task<ApiResponseModel> SetDefaultVariation(int productId, int variationId)
         {
             using (ProductService productService = new ProductService())
             {
-                return await productService.GetDefaultVariation(productId, variationId);
+                return await productService.SetDefaultVariation(productId, variationId);
 
             }
         }
