@@ -1,17 +1,10 @@
-﻿using EasyToBuy.Data.DBClasses;
-using EasyToBuy.Data.SPClasses;
+﻿using EasyToBuy.Data.SPClasses;
 using EasyToBuy.Models.CommonModel;
 using EasyToBuy.Models.InputModels;
 using EasyToBuy.Models.Models;
 using EasyToBuy.Models.UIModels;
 using EasyToBuy.Repository.Abstract;
-using EasyToBuy.Repository.Concrete;
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Net.Http.Headers;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace EasyToBuy.Web.Controllers
 {
@@ -52,7 +45,9 @@ namespace EasyToBuy.Web.Controllers
 
             if (productUIModel.ProductImage != null)
             {
-                UploadProductImage(productUIModel);
+                var imageName = string.Empty;
+                UploadProductImage(productUIModel.ProductImage, out imageName, "Products", productUIModel.ProductImageName);
+                productUIModel.ProductImageName = imageName;
             }
 
             productInputModel.Id = productUIModel.Id;
@@ -69,32 +64,35 @@ namespace EasyToBuy.Web.Controllers
 
             return returnResponse;
         }
-        bool UploadProductImage(ProductUIModel productUIModel)
+        bool UploadProductImage(IFormFile productImage, out string imageName, string folderName,string oldImageName)
         {
             var fileUploadStatus = false;
 
-            var imageRoutePath = Path.Combine(Directory.GetCurrentDirectory(), "Images", "Products");
+            var imageRoutePath = Path.Combine(Directory.GetCurrentDirectory(), "Images", folderName);
 
             if (!System.IO.Directory.Exists(imageRoutePath))
             {
                 System.IO.Directory.CreateDirectory(imageRoutePath);
             }
 
-            var ImageName = new Random().Next().ToString() + productUIModel.ProductImage.FileName.Trim('"').Trim('%').Replace("'", "").Replace(" ", "");
+            var ImageName = new Random().Next().ToString() + productImage.FileName.Trim('"').Trim('%').Replace("'", "").Replace(" ", "");
 
             using (var stream = new FileStream(Path.Combine(imageRoutePath, ImageName), FileMode.Create))
             {
-                productUIModel.ProductImage.CopyTo(stream);
+                productImage.CopyTo(stream);
             }
 
-            var oldimage = Path.Combine(Directory.GetCurrentDirectory(), "Images", "Products", productUIModel.ProductImageName);
-
-            if (System.IO.File.Exists(oldimage))
+            if(oldImageName != null)
             {
-                System.IO.File.Delete(oldimage);
+                var oldimage = Path.Combine(Directory.GetCurrentDirectory(), "Images", folderName, oldImageName);
+
+                if (System.IO.File.Exists(oldimage))
+                {
+                    System.IO.File.Delete(oldimage);
+                }
             }
 
-            productUIModel.ProductImageName = ImageName;
+            imageName = ImageName;
             return fileUploadStatus;
         }
 
@@ -105,7 +103,7 @@ namespace EasyToBuy.Web.Controllers
 
             return response;
         }
-      
+
         [HttpGet("GetProductDescriptionById")]
         public async Task<IEnumerable<SPGetProductDescriptionById_Result>> GetProductDescriptionById(int productId)
         {
@@ -181,7 +179,7 @@ namespace EasyToBuy.Web.Controllers
             productSpecificationInputModel.IsActive = productSpecificationUIModel.IsActive;
 
             var response = await _productRepository.ProductSpecificationAddEdit(productSpecificationInputModel);
-          
+
             return response;
         }
 
@@ -192,5 +190,59 @@ namespace EasyToBuy.Web.Controllers
 
             return response;
         }
+
+        [HttpGet("GetProductVariationListByProductId")]
+        public async Task<IEnumerable<ProductVariationModel>> GetProductVariationListByProductId(int productId)
+        {
+            var response = await _productRepository.GetProductVariationListByProductId(productId);
+            return response;
+        }
+
+        [HttpPost("ProductVariationImagesAdd")]
+        public Task<ApiResponseModel> ProductVariationImagesAdd([FromForm] ProductVariationImagesUIModel productVariationImagesUIModel)
+        {
+            var apiResponseModel = new ApiResponseModel();
+
+            try
+            {
+                if (productVariationImagesUIModel.Images.Count > 0)
+                {
+                    foreach (var item in productVariationImagesUIModel.Images)
+                    {
+                        var imageName = string.Empty;
+                        UploadProductImage(item, out imageName, "ProductVariations",null);
+                        string productImageName = imageName;
+
+                        var productVariationImagesInputModel = new ProductVariationImagesInputModel();
+
+                        productVariationImagesInputModel.VariationId = productVariationImagesUIModel.VariationId;
+                        productVariationImagesInputModel.Image = productImageName != null ? productImageName : "";
+                        productVariationImagesInputModel.CreatedBy = productVariationImagesUIModel.CreatedBy;
+                      
+                        _productRepository.ProductVariationImagesAdd(productVariationImagesInputModel);
+                    }
+                    apiResponseModel.Status = true;
+                    apiResponseModel.Message = "Images uploaded successfully.";
+                }
+            }
+
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+                apiResponseModel.Status = false;
+                apiResponseModel.Message = "";
+            }
+
+            return Task.Run(()=>apiResponseModel);
+        }
+
+        [HttpGet("GetVariationImagesListByProductId")]
+        public async Task<IEnumerable<ProductVariationImagesModel>> GetVariationImagesListByProductId(int productId)
+        {
+            var response = await _productRepository.GetVariationImagesListByProductId(productId);
+
+            return response;
+        }
+
     }
 }

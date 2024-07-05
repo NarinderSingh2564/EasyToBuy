@@ -421,5 +421,77 @@ namespace EasyToBuy.Services.Interactions
 
             return productSpecification;
         }
+        public async Task<IEnumerable<ProductVariationModel>> GetProductVariationListByProductId(int productId)
+        {
+            var productVariationList = new List<ProductVariationModel>();
+            try
+            {
+                var query = (from tpv in _dbContext.tblProductVariationAndRate
+                             join tp in _dbContext.tblProduct on tpv.ProductId equals tp.Id
+                             join tpp in _dbContext.tblProductPacking on tpv.ProductPackingId equals tpp.Id
+                             join tpw in _dbContext.tblProductWeight on tpv.ProductWeightId equals tpw.Id
+                             where tpv.ProductId == productId
+                             select new ProductVariationModel
+                             {
+                                 VariationId = tpv.Id,
+                                 Variation = tp.ProductName + " (" + tpw.ProductWeight + " " + tpp.PackingType + ")"
+                             }).ToListAsync();
+                productVariationList = await query.ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+            return productVariationList;
+        }
+        public void ProductVariationImagesAdd(ProductVariationImagesInputModel productVariationImagesInputModel)
+        {
+            try
+            {
+                var variationImagesObj = new ProductImages();
+
+                variationImagesObj.VariationId = productVariationImagesInputModel.VariationId;
+                variationImagesObj.Image = productVariationImagesInputModel.Image;
+                variationImagesObj.CreatedBy = productVariationImagesInputModel.CreatedBy;
+                variationImagesObj.CreatedOn = DateTime.Now;
+                variationImagesObj.IsActive = true;
+
+                _dbContext.tblProductImages.Add(variationImagesObj);
+                _dbContext.SaveChanges();
+            }
+
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+        }
+        public async Task<IEnumerable<ProductVariationImagesModel>> GetVariationImagesListByProductId(int productId)
+        {
+            var variationImagesList = new List<ProductVariationImagesModel>();
+            try
+            {
+                var query = (from tpi in _dbContext.tblProductImages
+                             join tpv in _dbContext.tblProductVariationAndRate on tpi.VariationId equals tpv.Id
+                             join tp in _dbContext.tblProduct on tpv.ProductId equals tp.Id
+                             join tpp in _dbContext.tblProductPacking on tpv.ProductPackingId equals tpp.Id
+                             join tpw in _dbContext.tblProductWeight on tpv.ProductWeightId equals tpw.Id
+                             where tpv.ProductId == productId orderby tpw.Id
+                             select new ProductVariationImagesModel
+                             {
+                                 Id = tpi.Id,
+                                 VariationId = tpv.Id,
+                                 Variation = tp.ProductName + " (" + tpw.ProductWeight + " " + tpp.PackingType + ")",
+                                 Image = tpi.Image,
+                             }).ToListAsync();
+
+                variationImagesList = await query.ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+            return variationImagesList;
+        }
     }
 }
