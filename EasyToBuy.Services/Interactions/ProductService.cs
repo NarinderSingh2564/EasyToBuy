@@ -60,7 +60,6 @@ namespace EasyToBuy.Services.Interactions
         }
 
         #endregion
-
         public async Task<IEnumerable<ProductWeightModel>> GetProductWeightList()
         {
             var productWeightList = new List<ProductWeightModel>();
@@ -393,7 +392,7 @@ namespace EasyToBuy.Services.Interactions
             {
                 var sqlQuery = "exec spGetProductDescriptionById @ProductId";
                 SqlParameter parameter = new SqlParameter("@ProductId", productId);
-                productDescription =  _dbContext.productDescriptionById_Results.FromSqlRaw(sqlQuery, parameter).ToList().FirstOrDefault();
+                productDescription = _dbContext.productDescriptionById_Results.FromSqlRaw(sqlQuery, parameter).ToList().FirstOrDefault();
             }
             catch (Exception ex)
             {
@@ -410,7 +409,7 @@ namespace EasyToBuy.Services.Interactions
             {
                 var sqlQuery = "exec SPGetProductSpecificationById @ProductId";
                 SqlParameter parameter1 = new SqlParameter("@ProductId", productId);
-                productSpecification =  _dbContext.productSpecificationById_Results.FromSqlRaw(sqlQuery, parameter1).ToList().FirstOrDefault();
+                productSpecification = _dbContext.productSpecificationById_Results.FromSqlRaw(sqlQuery, parameter1).ToList().FirstOrDefault();
 
             }
             catch (Exception ex)
@@ -429,6 +428,7 @@ namespace EasyToBuy.Services.Interactions
                              join tp in _dbContext.tblProduct on tpv.ProductId equals tp.Id
                              join tpp in _dbContext.tblProductPacking on tpv.ProductPackingId equals tpp.Id
                              join tpw in _dbContext.tblProductWeight on tpv.ProductWeightId equals tpw.Id
+                             orderby tpw.Id
                              where tpv.ProductId == productId
                              select new ProductVariationModel
                              {
@@ -436,7 +436,7 @@ namespace EasyToBuy.Services.Interactions
                                  Variation = tp.ProductName + " (" + tpw.ProductWeight + " " + tpp.PackingType + ")",
                                  IsActive = tpv.IsActive
                              }).ToListAsync();
-                             
+
                 productVariationList = await query.ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -445,20 +445,24 @@ namespace EasyToBuy.Services.Interactions
             }
             return productVariationList;
         }
-        public void ProductVariationImagesAdd(ProductVariationImagesInputModel productVariationImagesInputModel)
+        public async Task<ApiResponseModel> CheckVariationImagesCountById(int variationId)
         {
+            var apiResponseModel = new ApiResponseModel();
+
             try
             {
-                var variationImagesObj = new ProductImages();
+                var dbImagesCount = await _dbContext.tblProductImages.Where(x => x.VariationId == variationId).ToListAsync();
 
-                variationImagesObj.VariationId = productVariationImagesInputModel.VariationId;
-                variationImagesObj.Image = productVariationImagesInputModel.Image;
-                variationImagesObj.CreatedBy = productVariationImagesInputModel.CreatedBy;
-                variationImagesObj.CreatedOn = DateTime.Now;
-                variationImagesObj.IsActive = true;
-
-                _dbContext.tblProductImages.Add(variationImagesObj);
-                _dbContext.SaveChanges();
+                if (dbImagesCount.Count == 5)
+                {
+                    apiResponseModel.Status = false;
+                    apiResponseModel.Message = "You have already uploaded 5 images of this variation. Please delete some images to upload.";
+                }
+                else if (dbImagesCount.Count < 5)
+                {
+                    apiResponseModel.Status = true;
+                    apiResponseModel.Response = 5 - dbImagesCount.Count;
+                }
             }
 
             catch (Exception ex)
@@ -466,6 +470,20 @@ namespace EasyToBuy.Services.Interactions
                 var msg = ex.Message;
             }
 
+            return apiResponseModel;
+        }
+        public void ProductVariationImagesAdd(ProductVariationImagesInputModel productVariationImagesInputModel)
+        {
+            var variationImagesObj = new ProductImages();
+
+            variationImagesObj.VariationId = productVariationImagesInputModel.VariationId;
+            variationImagesObj.Image = productVariationImagesInputModel.Image;
+            variationImagesObj.CreatedBy = productVariationImagesInputModel.CreatedBy;
+            variationImagesObj.CreatedOn = DateTime.Now;
+            variationImagesObj.IsActive = true;
+
+            _dbContext.tblProductImages.Add(variationImagesObj);
+            _dbContext.SaveChanges();
         }
         public async Task<IEnumerable<ProductVariationImagesModel>> GetVariationImagesListByProductId(int productId)
         {
@@ -477,7 +495,8 @@ namespace EasyToBuy.Services.Interactions
                              join tp in _dbContext.tblProduct on tpv.ProductId equals tp.Id
                              join tpp in _dbContext.tblProductPacking on tpv.ProductPackingId equals tpp.Id
                              join tpw in _dbContext.tblProductWeight on tpv.ProductWeightId equals tpw.Id
-                             where tpv.ProductId == productId orderby tpw.Id
+                             where tpv.ProductId == productId
+                             orderby tpw.Id
                              select new ProductVariationImagesModel
                              {
                                  Id = tpi.Id,
@@ -494,6 +513,7 @@ namespace EasyToBuy.Services.Interactions
             }
             return variationImagesList;
         }
-       
+
+
     }
 }

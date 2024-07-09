@@ -95,11 +95,18 @@ namespace EasyToBuy.Repository.Concrete
                 return await productService.GetProductVariationListByProductId(productId);
             }
         }
+        public async Task<ApiResponseModel> CheckVariationImagesCountById(int variationId)
+        {
+            using (ProductService productService = new ProductService())
+            {
+                return await productService.CheckVariationImagesCountById(variationId);
+            }
+        }
         public void ProductVariationImagesAdd(ProductVariationImagesInputModel productVariationImagesInputModel)
         {
             using (ProductService productService = new ProductService())
             {
-                  productService.ProductVariationImagesAdd(productVariationImagesInputModel);
+               productService.ProductVariationImagesAdd(productVariationImagesInputModel);
             }
         }
         public async Task<IEnumerable<ProductVariationImagesModel>> GetVariationImagesListByProductId(int productId)
