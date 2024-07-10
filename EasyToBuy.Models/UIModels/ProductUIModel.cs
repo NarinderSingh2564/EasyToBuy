@@ -10,7 +10,7 @@ namespace EasyToBuy.Models.UIModels
         public string ProductName { get; set; }
         public string ProductDescription { get; set; }
         public IFormFile? ProductImage { get; set; }
-        public string ProductImageName { get; set; }
+        public string? ProductImageName { get; set; }
         public int CategoryId { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }

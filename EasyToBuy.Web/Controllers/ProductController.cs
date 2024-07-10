@@ -5,6 +5,7 @@ using EasyToBuy.Models.Models;
 using EasyToBuy.Models.UIModels;
 using EasyToBuy.Repository.Abstract;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EasyToBuy.Web.Controllers
 {
@@ -40,12 +41,12 @@ namespace EasyToBuy.Web.Controllers
         public async Task<ApiResponseModel> ProductAddEdit([FromForm] ProductUIModel productUIModel)
         {
             var returnResponse = new ApiResponseModel();
+            var imageName = string.Empty;
 
             var productInputModel = new ProductInputModel();
 
             if (productUIModel.ProductImage != null)
             {
-                var imageName = string.Empty;
                 UploadProductImage(productUIModel.ProductImage, out imageName, "Products", productUIModel.ProductImageName);
                 productUIModel.ProductImageName = imageName;
             }
@@ -54,7 +55,7 @@ namespace EasyToBuy.Web.Controllers
             productInputModel.VendorId = productUIModel.VendorId;
             productInputModel.ProductName = productUIModel.ProductName;
             productInputModel.ProductDescription = productUIModel.ProductDescription;
-            productInputModel.ProductImage = productUIModel.ProductImageName;
+            productInputModel.ProductImage = productUIModel.ProductImageName != null ? productUIModel.ProductImageName : "";
             productInputModel.CategoryId = productUIModel.CategoryId;
             productInputModel.CreatedBy = productUIModel.CreatedBy;
             productInputModel.UpdatedBy = productUIModel.UpdatedBy;
@@ -64,7 +65,7 @@ namespace EasyToBuy.Web.Controllers
 
             return returnResponse;
         }
-        bool UploadProductImage(IFormFile productImage, out string imageName, string folderName,string oldImageName)
+        bool UploadProductImage(IFormFile productImage, out string imageName, string folderName, string? oldImageName)
 
         {
             var fileUploadStatus = false;
@@ -83,7 +84,7 @@ namespace EasyToBuy.Web.Controllers
                 productImage.CopyTo(stream);
             }
 
-            if(oldImageName != null)
+            if (oldImageName != null)
             {
                 var oldimage = Path.Combine(Directory.GetCurrentDirectory(), "Images", folderName, oldImageName);
 
@@ -197,19 +198,29 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
+        [HttpGet("CheckVariationImagesCountById")]
+        public async Task<ApiResponseModel> CheckVariationImagesCountById(int variationId)
+        {
+            var response = await _productRepository.CheckVariationImagesCountById(variationId);
+
+            return response;
+        }
+
         [HttpPost("ProductVariationImagesAdd")]
-        public Task<ApiResponseModel> ProductVariationImagesAdd([FromForm] ProductVariationImagesUIModel productVariationImagesUIModel)
+        public async Task<ApiResponseModel> ProductVariationImagesAdd([FromForm] ProductVariationImagesUIModel productVariationImagesUIModel)
         {
             var apiResponseModel = new ApiResponseModel();
 
             try
             {
-                if (productVariationImagesUIModel.Images.Count > 0)
+                var dbImagesCountCheck = await _productRepository.CheckVariationImagesCountById(productVariationImagesUIModel.VariationId);
+
+                if (dbImagesCountCheck.Status == true && Convert.ToInt32(dbImagesCountCheck.Response) >= productVariationImagesUIModel.Images.Count)
                 {
                     foreach (var item in productVariationImagesUIModel.Images)
                     {
                         var imageName = string.Empty;
-                        UploadProductImage(item, out imageName, "ProductVariations",null);
+                        UploadProductImage(item, out imageName, "ProductVariations", null);
                         string productImageName = imageName;
 
                         var productVariationImagesInputModel = new ProductVariationImagesInputModel();
@@ -217,11 +228,23 @@ namespace EasyToBuy.Web.Controllers
                         productVariationImagesInputModel.VariationId = productVariationImagesUIModel.VariationId;
                         productVariationImagesInputModel.Image = productImageName != null ? productImageName : "";
                         productVariationImagesInputModel.CreatedBy = productVariationImagesUIModel.CreatedBy;
-                      
+
                         _productRepository.ProductVariationImagesAdd(productVariationImagesInputModel);
                     }
                     apiResponseModel.Status = true;
                     apiResponseModel.Message = "Images uploaded successfully.";
+                }
+
+                else if (dbImagesCountCheck.Response != null && Convert.ToInt32(dbImagesCountCheck.Response) < productVariationImagesUIModel.Images.Count)
+                {
+                    apiResponseModel.Status = false;
+                    apiResponseModel.Message = "You can only add " + dbImagesCountCheck.Response + " more images of this variation.";
+                }
+
+                else
+                {
+                    apiResponseModel.Status = false;
+                    apiResponseModel.Message = dbImagesCountCheck.Message;
                 }
             }
 
@@ -232,13 +255,21 @@ namespace EasyToBuy.Web.Controllers
                 apiResponseModel.Message = "";
             }
 
-            return Task.Run(()=>apiResponseModel);
+            return apiResponseModel;
         }
 
         [HttpGet("GetVariationImagesListByProductId")]
         public async Task<IEnumerable<ProductVariationImagesModel>> GetVariationImagesListByProductId(int productId)
         {
             var response = await _productRepository.GetVariationImagesListByProductId(productId);
+
+            return response;
+        }
+
+        [HttpDelete("DeleteProductVariationImage")]
+        public async Task<ApiResponseModel> DeleteProductVariationImage(int imageId)
+        {
+            var response = await _productRepository.DeleteProductVariationImage(imageId);
 
             return response;
         }
