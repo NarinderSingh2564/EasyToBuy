@@ -474,16 +474,23 @@ namespace EasyToBuy.Services.Interactions
         }
         public void ProductVariationImagesAdd(ProductVariationImagesInputModel productVariationImagesInputModel)
         {
-            var variationImagesObj = new ProductImages();
+            try
+            {
+                var variationImagesObj = new ProductImages();
 
-            variationImagesObj.VariationId = productVariationImagesInputModel.VariationId;
-            variationImagesObj.Image = productVariationImagesInputModel.Image;
-            variationImagesObj.CreatedBy = productVariationImagesInputModel.CreatedBy;
-            variationImagesObj.CreatedOn = DateTime.Now;
-            variationImagesObj.IsActive = true;
+                variationImagesObj.VariationId = productVariationImagesInputModel.VariationId;
+                variationImagesObj.Image = productVariationImagesInputModel.Image;
+                variationImagesObj.CreatedBy = productVariationImagesInputModel.CreatedBy;
+                variationImagesObj.CreatedOn = DateTime.Now;
+                variationImagesObj.IsActive = true;
 
-            _dbContext.tblProductImages.Add(variationImagesObj);
-            _dbContext.SaveChanges();
+                _dbContext.tblProductImages.Add(variationImagesObj);
+                _dbContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
         }
         public async Task<IEnumerable<ProductVariationImagesModel>> GetVariationImagesListByProductId(int productId)
         {
@@ -513,7 +520,46 @@ namespace EasyToBuy.Services.Interactions
             }
             return variationImagesList;
         }
+        public async Task<ApiResponseModel> DeleteProductVariationImage(int imageId)
+        {
+            var apiResponseModel = new ApiResponseModel();
 
+            try
+            {
+                var dbImage = await _dbContext.tblProductImages.Where(x => x.Id == imageId).FirstOrDefaultAsync();
 
+                if (dbImage != null)
+                {
+                    var imageToDelete = Path.Combine(Directory.GetCurrentDirectory(), "Images", "ProductVariations", dbImage.Image);
+
+                    if (System.IO.File.Exists(imageToDelete))
+                    {
+                        System.IO.File.Delete(imageToDelete);
+                        _dbContext.tblProductImages.Remove(dbImage);
+                        _dbContext.SaveChanges();
+
+                        apiResponseModel.Status = true;
+                        apiResponseModel.Message = "Image deleted successfully.";
+                    }
+                    else
+                    {
+                        apiResponseModel.Status = false;
+                        apiResponseModel.Message = "Unable to delete the image as it doesn't exist.";
+                    }
+                }
+                else
+                {
+                    apiResponseModel.Status = false;
+                    apiResponseModel.Message = "Unable to delete the image as it doesn't exist.";
+                }
+            }
+
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return apiResponseModel;
+        }
     }
 }

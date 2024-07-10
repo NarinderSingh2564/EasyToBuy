@@ -55,7 +55,7 @@ namespace EasyToBuy.Web.Controllers
             productInputModel.VendorId = productUIModel.VendorId;
             productInputModel.ProductName = productUIModel.ProductName;
             productInputModel.ProductDescription = productUIModel.ProductDescription;
-            productInputModel.ProductImage =  productUIModel.ProductImageName != null ? productUIModel.ProductImageName : "" ;
+            productInputModel.ProductImage = productUIModel.ProductImageName != null ? productUIModel.ProductImageName : "";
             productInputModel.CategoryId = productUIModel.CategoryId;
             productInputModel.CreatedBy = productUIModel.CreatedBy;
             productInputModel.UpdatedBy = productUIModel.UpdatedBy;
@@ -262,6 +262,14 @@ namespace EasyToBuy.Web.Controllers
         public async Task<IEnumerable<ProductVariationImagesModel>> GetVariationImagesListByProductId(int productId)
         {
             var response = await _productRepository.GetVariationImagesListByProductId(productId);
+
+            return response;
+        }
+
+        [HttpDelete("DeleteProductVariationImage")]
+        public async Task<ApiResponseModel> DeleteProductVariationImage(int imageId)
+        {
+            var response = await _productRepository.DeleteProductVariationImage(imageId);
 
             return response;
         }
