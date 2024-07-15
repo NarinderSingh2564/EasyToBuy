@@ -4,6 +4,7 @@ using EasyToBuy.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyToBuy.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240712061459_total-volume-column-add")]
+    partial class totalvolumecolumnadd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -579,9 +582,6 @@ namespace EasyToBuy.Data.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(50)");
 
-                    b.Property<decimal>("ProductWeightValue")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("int");
 
@@ -953,9 +953,6 @@ namespace EasyToBuy.Data.Migrations
 
                     b.Property<bool>("ShowProductWeight")
                         .HasColumnType("bit");
-
-                    b.Property<decimal>("TotalVolume")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("VariationId")
                         .HasColumnType("int");

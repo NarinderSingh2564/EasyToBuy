@@ -57,6 +57,8 @@ namespace EasyToBuy.Web.Controllers
             productInputModel.ProductDescription = productUIModel.ProductDescription;
             productInputModel.ProductImage = productUIModel.ProductImageName != null ? productUIModel.ProductImageName : "";
             productInputModel.CategoryId = productUIModel.CategoryId;
+            productInputModel.TotalVolume = productUIModel.TotalVolume;
+            productInputModel.PackingMode = productUIModel.PackingMode;
             productInputModel.CreatedBy = productUIModel.CreatedBy;
             productInputModel.UpdatedBy = productUIModel.UpdatedBy;
             productInputModel.IsActive = productUIModel.IsActive;

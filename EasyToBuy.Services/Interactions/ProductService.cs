@@ -73,6 +73,7 @@ namespace EasyToBuy.Services.Interactions
                     {
                         Id = weight.Id,
                         ProductWeight = weight.ProductWeight,
+                        ProductWeightValue = weight.ProductWeightValue,
                         IsActive = weight.IsActive,
                     });
                 }
@@ -132,6 +133,8 @@ namespace EasyToBuy.Services.Interactions
                         dbProduct.ProductDescription = productInputModel.ProductDescription;
                         dbProduct.ProductImage = productInputModel.ProductImage;
                         dbProduct.CategoryId = productInputModel.CategoryId;
+                        dbProduct.TotalVolume = productInputModel.TotalVolume;
+                        dbProduct.PackingMode = productInputModel.PackingMode;
                         dbProduct.UpdatedBy = productInputModel.UpdatedBy;
                         dbProduct.UpdatedOn = DateTime.Now;
                         dbProduct.IsActive = productInputModel.IsActive;
@@ -146,6 +149,8 @@ namespace EasyToBuy.Services.Interactions
                         productObj.ProductDescription = productInputModel.ProductDescription;
                         productObj.ProductImage = productInputModel.ProductImage;
                         productObj.CategoryId = productInputModel.CategoryId;
+                        productObj.TotalVolume = productInputModel.TotalVolume;
+                        productObj.PackingMode = productInputModel.PackingMode;
                         productObj.CreatedBy = productInputModel.CreatedBy;
                         productObj.CreatedOn = DateTime.Now;
                         productObj.IsActive = productInputModel.IsActive;
