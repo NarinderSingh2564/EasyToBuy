@@ -25,6 +25,7 @@ namespace EasyToBuy.Data.SPClasses
         public bool ShowProductWeight { get; set; }
         public bool SetAsDefault { get; set; }
         public bool IsActive { get; set; }
+        public bool IsDeleted { get; set; }
 
     }
 }

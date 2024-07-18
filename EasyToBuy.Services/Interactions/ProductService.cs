@@ -132,9 +132,7 @@ namespace EasyToBuy.Services.Interactions
                         dbProduct.ProductName = productInputModel.ProductName;
                         dbProduct.ProductDescription = productInputModel.ProductDescription;
                         dbProduct.ProductImage = productInputModel.ProductImage;
-                        dbProduct.CategoryId = productInputModel.CategoryId;
                         dbProduct.TotalVolume = productInputModel.TotalVolume;
-                        dbProduct.PackingMode = productInputModel.PackingMode;
                         dbProduct.UpdatedBy = productInputModel.UpdatedBy;
                         dbProduct.UpdatedOn = DateTime.Now;
                         dbProduct.IsActive = productInputModel.IsActive;
@@ -215,14 +213,10 @@ namespace EasyToBuy.Services.Interactions
 
                     if (dbVariation != null)
                     {
-                        dbVariation.ProductPackingId = productVariationAndRateInputModel.ProductPackingId;
-                        dbVariation.Quantity = productVariationAndRateInputModel.Quantity;
-                        dbVariation.ProductWeightId = productVariationAndRateInputModel.ProductWeightId;
                         dbVariation.MRP = productVariationAndRateInputModel.MRP;
                         dbVariation.Discount = productVariationAndRateInputModel.Discount;
                         dbVariation.DiscountPrice = productVariationAndRateInputModel.DiscountPrice;
                         dbVariation.PriceAfterDiscount = productVariationAndRateInputModel.PriceAfterDiscount;
-                        dbVariation.StockQuantity = productVariationAndRateInputModel.StockQuantity;
                         dbVariation.UpdatedBy = productVariationAndRateInputModel.UpdatedBy;
                         dbVariation.UpdatedOn = DateTime.Now;
                     }
@@ -250,6 +244,102 @@ namespace EasyToBuy.Services.Interactions
 
                     apiResponseModel.Status = true;
                     apiResponseModel.Message = productVariationAndRateInputModel.Id > 0 ? "Product variation updated successfully." : "Product variation added successfully.";
+                }
+            }
+
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return apiResponseModel;
+        }
+        public async Task<ApiResponseModel> SetShowProductWeight(int variationId, bool showProductWeight)
+        {
+            var apiResponseModel = new ApiResponseModel();
+
+            try
+            {
+                var dbVariation = await _dbContext.tblProductVariationAndRate.Where(x => x.Id == variationId).FirstOrDefaultAsync();
+
+                if (dbVariation != null)
+                {
+                    dbVariation.ShowProductWeight = showProductWeight;
+                    apiResponseModel.Status = true;
+                    _dbContext.SaveChanges();
+                }
+                else
+                {
+                    apiResponseModel.Status = false;
+                    apiResponseModel.Message = "This product variation does not exist.";
+                }
+            }
+
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return apiResponseModel;
+        }
+        public async Task<ApiResponseModel> SetVariationIsActive(int variationId, bool isActive)
+        {
+            var apiResponseModel = new ApiResponseModel();
+
+            try
+            {
+                var dbVariation = await _dbContext.tblProductVariationAndRate.Where(x => x.Id == variationId).FirstOrDefaultAsync();
+
+                if (dbVariation != null)
+                {
+                    dbVariation.IsActive = isActive;
+                    apiResponseModel.Status = true;
+                    _dbContext.SaveChanges();
+                }
+                else
+                {
+                    apiResponseModel.Status = false;
+                    apiResponseModel.Message = "This product variation does not exist.";
+                }
+            }
+
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return apiResponseModel;
+        }
+        public async Task<ApiResponseModel> DeleteProductVariation(int variationId)
+        {
+            var apiResponseModel = new ApiResponseModel();
+
+            try
+            {
+                var dbVariation = await _dbContext.tblProductVariationAndRate.Where(x => x.Id == variationId).FirstOrDefaultAsync();
+
+                if (dbVariation != null)
+                {
+                    var checkOrderByVariationId = await _dbContext.tblCustomerOrder.Where(x => x.VariationId == variationId).ToListAsync();
+
+                    if (checkOrderByVariationId.Count == 0)
+                    {
+                        dbVariation.IsDeleted = true;
+                        dbVariation.IsActive = false;
+                        _dbContext.SaveChanges();
+                        apiResponseModel.Status = true;
+
+                    }
+                    else
+                    {
+                        apiResponseModel.Status = false;
+                        apiResponseModel.Message = "Sorry, You can not delete this variation until the order is not delivered.";
+                    }
+                }
+                else
+                {
+                    apiResponseModel.Status = false;
+                    apiResponseModel.Message = "This product variation does not exist.";
                 }
             }
 

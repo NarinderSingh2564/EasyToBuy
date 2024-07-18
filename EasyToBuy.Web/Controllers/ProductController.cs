@@ -139,7 +139,26 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
+        [HttpPost("SetShowProductWeight")]
+        public async Task<ApiResponseModel> SetShowProductWeight(int variationId, bool showProductWeight)
+        {
+            var response = await _productRepository.SetShowProductWeight(variationId, showProductWeight);
+            return response;
+        }
 
+        [HttpPost("SetVariationIsActive")]
+        public async Task<ApiResponseModel> SetVariationIsActive(int variationId, bool isActive)
+        {
+            var response = await _productRepository.SetVariationIsActive(variationId, isActive);
+            return response;
+        }
+
+        [HttpPost("DeleteProductVariation")]
+        public async Task<ApiResponseModel> DeleteProductVariation(int variationId)
+        {
+            var response = await _productRepository.DeleteProductVariation(variationId);
+            return response;
+        }
 
         [HttpGet("GetProductVariationListById")]
         public async Task<IEnumerable<SPGetProductVariationListById_Result>> GetProductVariationListById(int productId)
