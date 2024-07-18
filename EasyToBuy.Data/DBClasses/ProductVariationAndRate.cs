@@ -48,5 +48,6 @@ namespace EasyToBuy.Data.DBClasses
         public DateTime? UpdatedOn { get; set; }
         public bool SetAsDefault { get; set; }
         public bool IsActive { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

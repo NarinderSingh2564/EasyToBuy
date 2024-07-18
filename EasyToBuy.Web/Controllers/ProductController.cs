@@ -131,15 +131,15 @@ namespace EasyToBuy.Web.Controllers
             productVariationAndRateInputModel.DiscountPrice = productVariationAndRateUIModel.DiscountPrice;
             productVariationAndRateInputModel.PriceAfterDiscount = productVariationAndRateUIModel.PriceAfterDiscount;
             productVariationAndRateInputModel.StockQuantity = productVariationAndRateUIModel.StockQuantity;
-            productVariationAndRateInputModel.ShowProductWeight = productVariationAndRateUIModel.ShowProductWeight;
             productVariationAndRateInputModel.CreatedBy = productVariationAndRateUIModel.CreatedBy;
             productVariationAndRateInputModel.UpdatedBy = productVariationAndRateUIModel.UpdatedBy;
-            productVariationAndRateInputModel.IsActive = productVariationAndRateUIModel.IsActive;
 
             var response = await _productRepository.ProductVariationAndRateAddEdit(productVariationAndRateInputModel);
 
             return response;
         }
+
+
 
         [HttpGet("GetProductVariationListById")]
         public async Task<IEnumerable<SPGetProductVariationListById_Result>> GetProductVariationListById(int productId)
@@ -158,9 +158,9 @@ namespace EasyToBuy.Web.Controllers
         }
 
         [HttpPost("SetDefaultVariation")]
-        public async Task<ApiResponseModel> SetDefaultVariation(int productId, int variationId)
+        public async Task<ApiResponseModel> SetDefaultVariation(int productId, int variationId, bool status)
         {
-            var response = await _productRepository.SetDefaultVariation(productId, variationId);
+            var response = await _productRepository.SetDefaultVariation(productId, variationId,status);
 
             return response;
         }

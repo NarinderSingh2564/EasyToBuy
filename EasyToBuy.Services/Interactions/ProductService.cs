@@ -223,11 +223,8 @@ namespace EasyToBuy.Services.Interactions
                         dbVariation.DiscountPrice = productVariationAndRateInputModel.DiscountPrice;
                         dbVariation.PriceAfterDiscount = productVariationAndRateInputModel.PriceAfterDiscount;
                         dbVariation.StockQuantity = productVariationAndRateInputModel.StockQuantity;
-                        dbVariation.ShowProductWeight = productVariationAndRateInputModel.ShowProductWeight;
                         dbVariation.UpdatedBy = productVariationAndRateInputModel.UpdatedBy;
                         dbVariation.UpdatedOn = DateTime.Now;
-                        dbVariation.SetAsDefault = productVariationAndRateInputModel.SetAsDefault;
-                        dbVariation.IsActive = productVariationAndRateInputModel.IsActive;
                     }
 
                     else
@@ -243,11 +240,8 @@ namespace EasyToBuy.Services.Interactions
                         objVariation.DiscountPrice = productVariationAndRateInputModel.DiscountPrice;
                         objVariation.PriceAfterDiscount = productVariationAndRateInputModel.PriceAfterDiscount;
                         objVariation.StockQuantity = productVariationAndRateInputModel.StockQuantity;
-                        objVariation.ShowProductWeight = productVariationAndRateInputModel.ShowProductWeight;
                         objVariation.CreatedBy = productVariationAndRateInputModel.CreatedBy;
                         objVariation.CreatedOn = DateTime.Now;
-                        objVariation.SetAsDefault = productVariationAndRateInputModel.SetAsDefault;
-                        objVariation.IsActive = productVariationAndRateInputModel.IsActive;
 
                         await _dbContext.tblProductVariationAndRate.AddAsync(objVariation);
                     }
@@ -302,7 +296,7 @@ namespace EasyToBuy.Services.Interactions
 
             return productVariationImage;
         }
-        public async Task<ApiResponseModel> SetDefaultVariation(int productId, int variationId)
+        public async Task<ApiResponseModel> SetDefaultVariation(int productId, int variationId, bool status)
         {
             var apiResponseModel = new ApiResponseModel();
 
@@ -322,7 +316,7 @@ namespace EasyToBuy.Services.Interactions
 
                 if (defaultVariation != null)
                 {
-                    defaultVariation.SetAsDefault = true;
+                    defaultVariation.SetAsDefault = status;
                     apiResponseModel.Status = true;
                     apiResponseModel.Message = "Default variation updated successfully";
                 }

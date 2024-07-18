@@ -66,11 +66,11 @@ namespace EasyToBuy.Repository.Concrete
                 return await productService.GetProductVariationImageById(variationId);
             }
         }
-        public async Task<ApiResponseModel> SetDefaultVariation(int productId, int variationId)
+        public async Task<ApiResponseModel> SetDefaultVariation(int productId, int variationId, bool status)
         {
             using (ProductService productService = new ProductService())
             {
-                return await productService.SetDefaultVariation(productId, variationId);
+                return await productService.SetDefaultVariation(productId, variationId,status);
 
             }
         }
