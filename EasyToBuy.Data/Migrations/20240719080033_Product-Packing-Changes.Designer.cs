@@ -4,6 +4,7 @@ using EasyToBuy.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyToBuy.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240719080033_Product-Packing-Changes")]
+    partial class ProductPackingChanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -182,8 +185,6 @@ namespace EasyToBuy.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PackingModeId");
 
                     b.ToTable("tblCategory", "dbo");
                 });
@@ -360,8 +361,6 @@ namespace EasyToBuy.Data.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("PackingModeId");
-
                     b.HasIndex("VendorId");
 
                     b.ToTable("tblProduct", "dbo");
@@ -435,8 +434,6 @@ namespace EasyToBuy.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PackingModeId");
 
                     b.ToTable("tblProductPacking", "dbo");
                 });
@@ -1222,17 +1219,6 @@ namespace EasyToBuy.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("EasyToBuy.Data.DBClasses.Category", b =>
-                {
-                    b.HasOne("EasyToBuy.Data.DBClasses.ProductPackingMode", "ProductPackingMode")
-                        .WithMany()
-                        .HasForeignKey("PackingModeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ProductPackingMode");
-                });
-
             modelBuilder.Entity("EasyToBuy.Data.DBClasses.CustomerOrder", b =>
                 {
                     b.HasOne("EasyToBuy.Data.DBClasses.OrderStatus", "OrderStatus")
@@ -1287,12 +1273,6 @@ namespace EasyToBuy.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EasyToBuy.Data.DBClasses.ProductPackingMode", "ProductPackingMode")
-                        .WithMany()
-                        .HasForeignKey("PackingModeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("EasyToBuy.Data.DBClasses.Vendor", "Vendor")
                         .WithMany()
                         .HasForeignKey("VendorId")
@@ -1300,8 +1280,6 @@ namespace EasyToBuy.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Categorys");
-
-                    b.Navigation("ProductPackingMode");
 
                     b.Navigation("Vendor");
                 });
@@ -1315,17 +1293,6 @@ namespace EasyToBuy.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("ProductVariationAndRate");
-                });
-
-            modelBuilder.Entity("EasyToBuy.Data.DBClasses.ProductPacking", b =>
-                {
-                    b.HasOne("EasyToBuy.Data.DBClasses.ProductPackingMode", "ProductPackingMode")
-                        .WithMany()
-                        .HasForeignKey("PackingModeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ProductPackingMode");
                 });
 
             modelBuilder.Entity("EasyToBuy.Data.DBClasses.ProductSpecification", b =>

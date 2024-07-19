@@ -58,7 +58,7 @@ namespace EasyToBuy.Web.Controllers
             productInputModel.ProductImage = productUIModel.ProductImageName != null ? productUIModel.ProductImageName : "";
             productInputModel.CategoryId = productUIModel.CategoryId;
             productInputModel.TotalVolume = productUIModel.TotalVolume;
-            productInputModel.PackingMode = productUIModel.PackingMode;
+            productInputModel.PackingModeId = productUIModel.PackingModeId;
             productInputModel.CreatedBy = productUIModel.CreatedBy;
             productInputModel.UpdatedBy = productUIModel.UpdatedBy;
             productInputModel.IsActive = productUIModel.IsActive;
@@ -68,7 +68,6 @@ namespace EasyToBuy.Web.Controllers
             return returnResponse;
         }
         bool UploadProductImage(IFormFile productImage, out string imageName, string folderName, string? oldImageName)
-
         {
             var fileUploadStatus = false;
 

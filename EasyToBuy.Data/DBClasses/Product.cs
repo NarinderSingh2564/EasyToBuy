@@ -30,9 +30,10 @@ namespace EasyToBuy.Data.DBClasses
         public int CategoryId { get; set; }
         public virtual Category Categorys { get; set; }
         public decimal TotalVolume { get; set; }
-
-        [Column(TypeName = "varchar(10)")]
-        public string PackingMode { get; set; }
+        
+        [ForeignKey("ProductPackingMode")]
+        public int PackingModeId { get; set; }
+        public virtual ProductPackingMode ProductPackingMode { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }

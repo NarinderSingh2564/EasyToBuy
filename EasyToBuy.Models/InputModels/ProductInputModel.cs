@@ -9,7 +9,7 @@
         public string ProductImage { get; set; }
         public int CategoryId { get; set; }
         public decimal TotalVolume { get; set; }
-        public string PackingMode { get; set; }
+        public int PackingModeId { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }

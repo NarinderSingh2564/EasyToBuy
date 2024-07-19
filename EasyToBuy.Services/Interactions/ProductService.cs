@@ -148,7 +148,7 @@ namespace EasyToBuy.Services.Interactions
                         productObj.ProductImage = productInputModel.ProductImage;
                         productObj.CategoryId = productInputModel.CategoryId;
                         productObj.TotalVolume = productInputModel.TotalVolume;
-                        productObj.PackingMode = productInputModel.PackingMode;
+                        productObj.PackingModeId = productInputModel.PackingModeId;
                         productObj.CreatedBy = productInputModel.CreatedBy;
                         productObj.CreatedOn = DateTime.Now;
                         productObj.IsActive = productInputModel.IsActive;
@@ -199,7 +199,7 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var checkVariationDuplicacy = await _dbContext.tblProductVariationAndRate.Where(x => x.ProductId == productVariationAndRateInputModel.ProductId && x.ProductPackingId == productVariationAndRateInputModel.ProductPackingId && x.Quantity == productVariationAndRateInputModel.Quantity && x.ProductWeightId == productVariationAndRateInputModel.ProductWeightId && x.Id != productVariationAndRateInputModel.Id).FirstOrDefaultAsync();
+                var checkVariationDuplicacy = await _dbContext.tblProductVariationAndRate.Where(x => x.ProductId == productVariationAndRateInputModel.ProductId && x.ProductPackingId == productVariationAndRateInputModel.ProductPackingId && x.Quantity == productVariationAndRateInputModel.Quantity && x.ProductWeightId == productVariationAndRateInputModel.ProductWeightId && x.Id != productVariationAndRateInputModel.Id && x.IsDeleted == false).FirstOrDefaultAsync();
 
                 if (checkVariationDuplicacy != null)
                 {
@@ -210,6 +210,16 @@ namespace EasyToBuy.Services.Interactions
                 else
                 {
                     var dbVariation = await _dbContext.tblProductVariationAndRate.Where(x => x.Id == productVariationAndRateInputModel.Id).FirstOrDefaultAsync();
+
+
+
+
+
+
+
+
+
+
 
                     if (dbVariation != null)
                     {
@@ -223,11 +233,20 @@ namespace EasyToBuy.Services.Interactions
 
                     else
                     {
+                        var totalVolume = await _dbContext.tblProduct.Where(x=>x.Id == productVariationAndRateInputModel.ProductId).Select(x => x.TotalVolume).FirstOrDefaultAsync();
+                        var variationList = await _dbContext.tblProductVariationAndRate.Where(x=>x.ProductId == productVariationAndRateInputModel.ProductId).ToListAsync();
+
+                        if(variationList.Count > 0)
+                        {
+
+                        }
+
+
                         var objVariation = new ProductVariationAndRate();
 
                         objVariation.ProductId = productVariationAndRateInputModel.ProductId;
                         objVariation.ProductPackingId = productVariationAndRateInputModel.ProductPackingId;
-                        objVariation.Quantity = productVariationAndRateInputModel.Quantity;
+                        objVariation.Quantity = productVariationAndRateInputModel.ProductPackingId == 8 ? productVariationAndRateInputModel.Quantity : 1;
                         objVariation.ProductWeightId = productVariationAndRateInputModel.ProductWeightId;
                         objVariation.MRP = productVariationAndRateInputModel.MRP;
                         objVariation.Discount = productVariationAndRateInputModel.Discount;

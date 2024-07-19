@@ -3,17 +3,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EasyToBuy.Data.DBClasses
 {
-    public class ProductPacking
+    public class ProductPackingMode
     {
         [Key]
-        public int Id { get; set; }
+        public int Id{ get; set; }
 
-        [ForeignKey("ProductPackingMode")]
-        public int PackingModeId { get; set; }
-        public virtual ProductPackingMode ProductPackingMode { get; set; }
-
-        [DataType("Varchar(50)")]
-        public string PackingType { get; set; }
+        [Column(TypeName = "varchar(20)")]
+        public string PackingMode { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }

@@ -16,8 +16,9 @@ namespace EasyToBuy.Data.DBClasses
         [Column(TypeName = "varchar(30)")]
         public string CategoryName { get; set; }
 
-        [Column(TypeName = "varchar(10)")]
-        public string PackingMode { get; set; }
+        [ForeignKey("ProductPackingMode")]
+        public int PackingModeId { get; set; }
+        public ProductPackingMode ProductPackingMode { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }
