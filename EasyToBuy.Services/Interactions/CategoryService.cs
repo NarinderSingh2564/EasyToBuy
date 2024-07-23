@@ -68,7 +68,7 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var dbCategoryList = await _dbContext.tblCategory.ToListAsync();
+                var dbCategoryList = await _dbContext.tblCategory.Include(x=>x.ProductPackingMode).Where(x => x.IsActive == true).ToListAsync();
                 foreach (var category in dbCategoryList)
                 {
                     categoryList.Add(new CategoryModel
@@ -76,7 +76,7 @@ namespace EasyToBuy.Services.Interactions
                         Id = category.Id,
                         CategoryName = category.CategoryName,
                         PackingModeId = category.PackingModeId,
-                        PackingMode = category.PackingModeId == 1 ? "kg" : "item",
+                        PackingMode = category.ProductPackingMode.PackingMode,
                         IsActive = category.IsActive,
                     });
                 }
@@ -94,7 +94,7 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var dbCategoryById = await _dbContext.tblCategory.Where(x => x.Id == Id).ToListAsync();
+                var dbCategoryById = await _dbContext.tblCategory.Include(x => x.ProductPackingMode).Where(x => x.Id == Id && x.IsActive == true).ToListAsync();
                 foreach (var category in dbCategoryById)
                 {
                     categoryById.Add(new CategoryModel
@@ -102,6 +102,7 @@ namespace EasyToBuy.Services.Interactions
                         Id = category.Id,
                         CategoryName = category.CategoryName,
                         PackingModeId = category.PackingModeId,
+                        PackingMode = category.ProductPackingMode.PackingMode,
                         IsActive = category.IsActive,
                     });
                 }

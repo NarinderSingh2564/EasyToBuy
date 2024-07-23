@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Security.Cryptography.X509Certificates;
 using EasyToBuy.Data;
 using EasyToBuy.Data.DBClasses;
 using EasyToBuy.Data.SPClasses;
@@ -12,7 +13,6 @@ namespace EasyToBuy.Services.Interactions
 {
     public class ProductService : IDisposable
     {
-
         #region Private Variables
 
         private ApplicationDbContext _dbContext;
@@ -66,7 +66,7 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var dbProductWeightList = await _dbContext.tblProductWeight.ToListAsync();
+                var dbProductWeightList = await _dbContext.tblProductWeight.Where(x => x.IsActive == true).ToListAsync();
                 foreach (var weight in dbProductWeightList)
                 {
                     productWeightList.Add(new ProductWeightModel()
@@ -91,13 +91,14 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var dbProductPackingList = await _dbContext.tblProductPacking.ToListAsync();
+                var dbProductPackingList = await _dbContext.tblProductPacking.Where(x=>x.IsActive == true).ToListAsync();
                 foreach (var packing in dbProductPackingList)
                 {
                     productPackingList.Add(new ProductPackingModel()
                     {
                         Id = packing.Id,
                         PackingType = packing.PackingType,
+                        PackingModeId = packing.PackingModeId,
                         IsActive = packing.IsActive,
                     });
                 }
@@ -209,60 +210,82 @@ namespace EasyToBuy.Services.Interactions
 
                 else
                 {
-                    var dbVariation = await _dbContext.tblProductVariationAndRate.Where(x => x.Id == productVariationAndRateInputModel.Id).FirstOrDefaultAsync();
+                    var productObject = await _dbContext.tblProduct.Include(x => x.ProductPackingMode).Where(x => x.Id == productVariationAndRateInputModel.ProductId).FirstOrDefaultAsync();
 
-
-
-
-
-
-
-
-
-
-
-                    if (dbVariation != null)
+                    if (productObject != null)
                     {
-                        dbVariation.MRP = productVariationAndRateInputModel.MRP;
-                        dbVariation.Discount = productVariationAndRateInputModel.Discount;
-                        dbVariation.DiscountPrice = productVariationAndRateInputModel.DiscountPrice;
-                        dbVariation.PriceAfterDiscount = productVariationAndRateInputModel.PriceAfterDiscount;
-                        dbVariation.UpdatedBy = productVariationAndRateInputModel.UpdatedBy;
-                        dbVariation.UpdatedOn = DateTime.Now;
-                    }
+                        var dbVariationList = await _dbContext.tblProductVariationAndRate.Include(x => x.ProductWeights).Where(x => x.ProductId == productVariationAndRateInputModel.ProductId && x.Id != productVariationAndRateInputModel.Id).ToListAsync();
+                        var productWeightValue = await _dbContext.tblProductWeight.Where(x => x.Id == productVariationAndRateInputModel.ProductWeightId).Select(x => x.ProductWeightValue).FirstOrDefaultAsync();
 
-                    else
-                    {
-                        var totalVolume = await _dbContext.tblProduct.Where(x=>x.Id == productVariationAndRateInputModel.ProductId).Select(x => x.TotalVolume).FirstOrDefaultAsync();
-                        var variationList = await _dbContext.tblProductVariationAndRate.Where(x=>x.ProductId == productVariationAndRateInputModel.ProductId).ToListAsync();
+                        decimal dbTotalVolume = 0;
 
-                        if(variationList.Count > 0)
+                        foreach (var variation in dbVariationList)
                         {
-
+                            dbTotalVolume += variation.StockQuantity * variation.Quantity * (productObject.PackingModeId == 1 ? variation.ProductWeights.ProductWeightValue : 1);
                         }
 
+                        if (dbTotalVolume == productObject.TotalVolume)
+                        {
+                            apiResponseModel.Status = false;
+                            apiResponseModel.Message = "Sorry, you can not add more variations of this product.";
+                        }
+                        else
+                        {
+                            decimal remainingVolume = productObject.TotalVolume - (dbTotalVolume + (productVariationAndRateInputModel.StockQuantity * productVariationAndRateInputModel.Quantity * (productObject.PackingModeId == 1 ? productWeightValue : 1)));
 
-                        var objVariation = new ProductVariationAndRate();
+                            if (remainingVolume < 0)
+                            {
+                                apiResponseModel.Status = false;
+                                apiResponseModel.Message = "You can only add variation of " + (productObject.PackingModeId == 1 ? (productObject.TotalVolume - dbTotalVolume) : Convert.ToUInt32(productObject.TotalVolume - dbTotalVolume))+ " " + (productObject.ProductPackingMode.PackingMode).ToLower();
+                                return apiResponseModel;
+                            }
 
-                        objVariation.ProductId = productVariationAndRateInputModel.ProductId;
-                        objVariation.ProductPackingId = productVariationAndRateInputModel.ProductPackingId;
-                        objVariation.Quantity = productVariationAndRateInputModel.ProductPackingId == 8 ? productVariationAndRateInputModel.Quantity : 1;
-                        objVariation.ProductWeightId = productVariationAndRateInputModel.ProductWeightId;
-                        objVariation.MRP = productVariationAndRateInputModel.MRP;
-                        objVariation.Discount = productVariationAndRateInputModel.Discount;
-                        objVariation.DiscountPrice = productVariationAndRateInputModel.DiscountPrice;
-                        objVariation.PriceAfterDiscount = productVariationAndRateInputModel.PriceAfterDiscount;
-                        objVariation.StockQuantity = productVariationAndRateInputModel.StockQuantity;
-                        objVariation.CreatedBy = productVariationAndRateInputModel.CreatedBy;
-                        objVariation.CreatedOn = DateTime.Now;
+                            else
+                            {
+                                var dbVariation = await _dbContext.tblProductVariationAndRate.Where(x => x.Id == productVariationAndRateInputModel.Id).FirstOrDefaultAsync();
 
-                        await _dbContext.tblProductVariationAndRate.AddAsync(objVariation);
+                                if (dbVariation != null)
+                                {
+                                    dbVariation.MRP = productVariationAndRateInputModel.MRP;
+                                    dbVariation.Discount = productVariationAndRateInputModel.Discount;
+                                    dbVariation.DiscountPrice = productVariationAndRateInputModel.DiscountPrice;
+                                    dbVariation.PriceAfterDiscount = productVariationAndRateInputModel.PriceAfterDiscount;
+                                    dbVariation.StockQuantity = productVariationAndRateInputModel.StockQuantity;
+                                    dbVariation.UpdatedBy = productVariationAndRateInputModel.UpdatedBy;
+                                    dbVariation.UpdatedOn = DateTime.Now;
+                                }
+
+                                else
+                                {
+                                    var objVariation = new ProductVariationAndRate();
+
+                                    objVariation.ProductId = productVariationAndRateInputModel.ProductId;
+                                    objVariation.ProductPackingId = productVariationAndRateInputModel.ProductPackingId;
+                                    objVariation.Quantity = productVariationAndRateInputModel.Quantity;
+                                    objVariation.ProductWeightId = productVariationAndRateInputModel.ProductWeightId;
+                                    objVariation.MRP = productVariationAndRateInputModel.MRP;
+                                    objVariation.Discount = productVariationAndRateInputModel.Discount;
+                                    objVariation.DiscountPrice = productVariationAndRateInputModel.DiscountPrice;
+                                    objVariation.PriceAfterDiscount = productVariationAndRateInputModel.PriceAfterDiscount;
+                                    objVariation.StockQuantity = productVariationAndRateInputModel.StockQuantity;
+                                    objVariation.CreatedBy = productVariationAndRateInputModel.CreatedBy;
+                                    objVariation.CreatedOn = DateTime.Now;
+
+                                    await _dbContext.tblProductVariationAndRate.AddAsync(objVariation);
+                                }
+
+                                await _dbContext.SaveChangesAsync();
+
+                                apiResponseModel.Status = true;
+                                apiResponseModel.Message = productVariationAndRateInputModel.Id > 0 ? "Product variation updated successfully." : "Product variation added successfully.";
+                            }
+                        }
                     }
-
-                    await _dbContext.SaveChangesAsync();
-
-                    apiResponseModel.Status = true;
-                    apiResponseModel.Message = productVariationAndRateInputModel.Id > 0 ? "Product variation updated successfully." : "Product variation added successfully.";
+                    else
+                    {
+                        apiResponseModel.Status = false;
+                        apiResponseModel.Message = "This product does not exists.";
+                    }
                 }
             }
 
