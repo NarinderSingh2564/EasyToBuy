@@ -266,6 +266,12 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
+        [HttpGet("GetProductSliderItemsByCategoryId")]
+        public async Task<IEnumerable<SPGetProductSliderItemsByCategoryId_Result>> GetProductSliderItemsByCategoryId(int categoryId, int productId)
+        {
+            var response = await _productRepository.GetProductSliderItemsByCategoryId(categoryId, productId);
+                  return response;
+        }
         [HttpDelete("DeleteProductVariationImage")]
         public async Task<ApiResponseModel> DeleteProductVariationImage(int imageId)
         {

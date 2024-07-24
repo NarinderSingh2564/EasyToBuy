@@ -520,6 +520,25 @@ namespace EasyToBuy.Services.Interactions
             }
             return variationImagesList;
         }
+
+public async Task<IEnumerable<SPGetProductSliderItemsByCategoryId_Result>> GetProductSliderItemsByCategoryId(int categoryId, int productId)
+        {
+            var productSliderItems = new List<SPGetProductSliderItemsByCategoryId_Result>();
+
+            try
+            {
+                var sqlQuery = "exec SPGetProductSliderItemsByCategoryId @CategoryId, @ProductId";
+                SqlParameter parameter1 = new SqlParameter("@CategoryId", categoryId);
+                SqlParameter parameter2 = new SqlParameter("@ProductId", productId);
+                productSliderItems = await _dbContext.productSliderItemsByCategoryId_Results.FromSqlRaw(sqlQuery, parameter1, parameter2).ToListAsync();
+
+            }
+             catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+            return productSliderItems;
+            }
         public async Task<ApiResponseModel> DeleteProductVariationImage(int imageId)
         {
             var apiResponseModel = new ApiResponseModel();
@@ -558,7 +577,6 @@ namespace EasyToBuy.Services.Interactions
             {
                 var msg = ex.Message;
             }
-
             return apiResponseModel;
         }
     }

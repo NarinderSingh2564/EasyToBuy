@@ -82,27 +82,36 @@ namespace EasyToBuy.Services.Interactions
                 }
                 else
                 {
-                    var isProductExists = await _dbContext.tblCart.Where(x => x.VariationId == cartInputModel.VariationId && x.UserId == cartInputModel.UserId && x.IsPlaced == false).FirstOrDefaultAsync();
-                    if (isProductExists != null)
+                    var checkStockQuantity = await _dbContext.tblProductVariationAndRate.Where(x => x.Id == cartInputModel.VariationId).Select(x => x.StockQuantity).FirstOrDefaultAsync();
+                    if (checkStockQuantity == 0)
                     {
                         apiResponseModel.Status = false;
-                        apiResponseModel.Message = "This Product is already exist in your cart.";
+                        apiResponseModel.Message = "Product is out of stock.";
                     }
                     else
                     {
-                        var cartObj = new Cart();
+                        var isProductExists = await _dbContext.tblCart.Where(x => x.VariationId == cartInputModel.VariationId && x.UserId == cartInputModel.UserId && x.IsPlaced == false).FirstOrDefaultAsync();
+                        if (isProductExists != null)
+                        {
+                            apiResponseModel.Status = false;
+                            apiResponseModel.Message = "This Product is already exist in your cart.";
+                        }
+                        else
+                        {
+                            var cartObj = new Cart();
 
-                        cartObj.UserId = cartInputModel.UserId;
-                        cartObj.VariationId = cartInputModel.VariationId;
-                        cartObj.Quantity = cartInputModel.Quantity;
-                        cartObj.AddedDate = DateTime.Now;
-                        cartObj.IsPlaced = false;
+                            cartObj.UserId = cartInputModel.UserId;
+                            cartObj.VariationId = cartInputModel.VariationId;
+                            cartObj.Quantity = cartInputModel.Quantity;
+                            cartObj.AddedDate = DateTime.Now;
+                            cartObj.IsPlaced = false;
 
-                        await _dbContext.AddAsync(cartObj);
-                        await _dbContext.SaveChangesAsync();
+                            await _dbContext.AddAsync(cartObj);
+                            await _dbContext.SaveChangesAsync();
 
-                        apiResponseModel.Status = true;
-                        apiResponseModel.Message = "Product added to cart successfully.";
+                            apiResponseModel.Status = true;
+                            apiResponseModel.Message = "Product added to cart successfully.";
+                        }
                     }
                 }
             }
@@ -165,7 +174,8 @@ namespace EasyToBuy.Services.Interactions
             try
             {
                 var isProductExist = await _dbContext.tblCart.Where(x => x.VariationId == variationId && x.UserId == userId && x.IsPlaced == false).FirstOrDefaultAsync();
-                if (isProductExist != null)
+               var s = await _dbContext.tblProductVariationAndRate.Where(x=> x.Id == variationId).Select(x=>x.SetAsDefault).FirstOrDefaultAsync();
+                if (isProductExist != null && s == false)
                 {
                     apiResponseModel.Status = true;
                 }
