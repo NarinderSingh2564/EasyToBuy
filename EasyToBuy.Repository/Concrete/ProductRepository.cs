@@ -109,5 +109,12 @@ namespace EasyToBuy.Repository.Concrete
                 return await productService.GetVariationImagesListByProductId(productId);
             }
         }
+        public async Task<IEnumerable<SPGetProductSliderItemsByCategoryId_Result>> GetProductSliderItemsByCategoryId(int categoryId, int productId)
+        {
+            using (ProductService productService = new ProductService())
+            {
+                return await productService.GetProductSliderItemsByCategoryId(categoryId, productId);
+            }
+        }
     }
 }

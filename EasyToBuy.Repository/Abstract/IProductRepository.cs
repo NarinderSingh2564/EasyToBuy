@@ -21,5 +21,6 @@ namespace EasyToBuy.Repository.Abstract
         Task<IEnumerable<ProductVariationModel>> GetProductVariationListByProductId(int productId);
         void ProductVariationImagesAdd(ProductVariationImagesInputModel productVariationImagesInputModel);
         Task<IEnumerable<ProductVariationImagesModel>> GetVariationImagesListByProductId(int productId);
+        Task<IEnumerable<SPGetProductSliderItemsByCategoryId_Result>> GetProductSliderItemsByCategoryId(int categoryId , int productId);
     }
 }

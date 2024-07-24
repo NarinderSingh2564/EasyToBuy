@@ -74,7 +74,6 @@ namespace EasyToBuy.Services.Interactions
                 if (isUserExists != null)
                 {
                     var isDeliveryAddress = await _dbContext.tblAddress.Where(x => x.UserId == userId && x.IsDeliveryAddress == true).FirstOrDefaultAsync();
-
                     if (isDeliveryAddress != null)
                     {
                         var orderList = (from c in _dbContext.tblCart
