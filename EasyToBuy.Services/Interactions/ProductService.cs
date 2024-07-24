@@ -60,7 +60,6 @@ namespace EasyToBuy.Services.Interactions
         }
 
         #endregion
-
         public async Task<IEnumerable<ProductWeightModel>> GetProductWeightList()
         {
             var productWeightList = new List<ProductWeightModel>();
@@ -393,7 +392,7 @@ namespace EasyToBuy.Services.Interactions
             {
                 var sqlQuery = "exec spGetProductDescriptionById @ProductId";
                 SqlParameter parameter = new SqlParameter("@ProductId", productId);
-                productDescription =  _dbContext.productDescriptionById_Results.FromSqlRaw(sqlQuery, parameter).ToList().FirstOrDefault();
+                productDescription = _dbContext.productDescriptionById_Results.FromSqlRaw(sqlQuery, parameter).ToList().FirstOrDefault();
             }
             catch (Exception ex)
             {
@@ -410,7 +409,7 @@ namespace EasyToBuy.Services.Interactions
             {
                 var sqlQuery = "exec SPGetProductSpecificationById @ProductId";
                 SqlParameter parameter1 = new SqlParameter("@ProductId", productId);
-                productSpecification =  _dbContext.productSpecificationById_Results.FromSqlRaw(sqlQuery, parameter1).ToList().FirstOrDefault();
+                productSpecification = _dbContext.productSpecificationById_Results.FromSqlRaw(sqlQuery, parameter1).ToList().FirstOrDefault();
 
             }
             catch (Exception ex)
@@ -429,6 +428,7 @@ namespace EasyToBuy.Services.Interactions
                              join tp in _dbContext.tblProduct on tpv.ProductId equals tp.Id
                              join tpp in _dbContext.tblProductPacking on tpv.ProductPackingId equals tpp.Id
                              join tpw in _dbContext.tblProductWeight on tpv.ProductWeightId equals tpw.Id
+                             orderby tpw.Id
                              where tpv.ProductId == productId
                              select new ProductVariationModel
                              {
@@ -436,7 +436,7 @@ namespace EasyToBuy.Services.Interactions
                                  Variation = tp.ProductName + " (" + tpw.ProductWeight + " " + tpp.PackingType + ")",
                                  IsActive = tpv.IsActive
                              }).ToListAsync();
-                             
+
                 productVariationList = await query.ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -444,6 +444,33 @@ namespace EasyToBuy.Services.Interactions
                 var msg = ex.Message;
             }
             return productVariationList;
+        }
+        public async Task<ApiResponseModel> CheckVariationImagesCountById(int variationId)
+        {
+            var apiResponseModel = new ApiResponseModel();
+
+            try
+            {
+                var dbImagesCount = await _dbContext.tblProductImages.Where(x => x.VariationId == variationId).ToListAsync();
+
+                if (dbImagesCount.Count == 5)
+                {
+                    apiResponseModel.Status = false;
+                    apiResponseModel.Message = "You have already uploaded 5 images of this variation. Please delete some images to upload.";
+                }
+                else if (dbImagesCount.Count < 5)
+                {
+                    apiResponseModel.Status = true;
+                    apiResponseModel.Response = 5 - dbImagesCount.Count;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return apiResponseModel;
         }
         public void ProductVariationImagesAdd(ProductVariationImagesInputModel productVariationImagesInputModel)
         {
@@ -460,12 +487,10 @@ namespace EasyToBuy.Services.Interactions
                 _dbContext.tblProductImages.Add(variationImagesObj);
                 _dbContext.SaveChanges();
             }
-
             catch (Exception ex)
             {
                 var msg = ex.Message;
             }
-
         }
         public async Task<IEnumerable<ProductVariationImagesModel>> GetVariationImagesListByProductId(int productId)
         {
@@ -477,7 +502,8 @@ namespace EasyToBuy.Services.Interactions
                              join tp in _dbContext.tblProduct on tpv.ProductId equals tp.Id
                              join tpp in _dbContext.tblProductPacking on tpv.ProductPackingId equals tpp.Id
                              join tpw in _dbContext.tblProductWeight on tpv.ProductWeightId equals tpw.Id
-                             where tpv.ProductId == productId orderby tpw.Id
+                             where tpv.ProductId == productId
+                             orderby tpw.Id
                              select new ProductVariationImagesModel
                              {
                                  Id = tpi.Id,
@@ -494,7 +520,8 @@ namespace EasyToBuy.Services.Interactions
             }
             return variationImagesList;
         }
-        public async Task<IEnumerable<SPGetProductSliderItemsByCategoryId_Result>> GetProductSliderItemsByCategoryId(int categoryId, int productId)
+
+public async Task<IEnumerable<SPGetProductSliderItemsByCategoryId_Result>> GetProductSliderItemsByCategoryId(int categoryId, int productId)
         {
             var productSliderItems = new List<SPGetProductSliderItemsByCategoryId_Result>();
 
@@ -506,12 +533,51 @@ namespace EasyToBuy.Services.Interactions
                 productSliderItems = await _dbContext.productSliderItemsByCategoryId_Results.FromSqlRaw(sqlQuery, parameter1, parameter2).ToListAsync();
 
             }
+             catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+            return productSliderItems;
+            }
+        public async Task<ApiResponseModel> DeleteProductVariationImage(int imageId)
+        {
+            var apiResponseModel = new ApiResponseModel();
+
+            try
+            {
+                var dbImage = await _dbContext.tblProductImages.Where(x => x.Id == imageId).FirstOrDefaultAsync();
+
+                if (dbImage != null)
+                {
+                    var imageToDelete = Path.Combine(Directory.GetCurrentDirectory(), "Images", "ProductVariations", dbImage.Image);
+
+                    if (System.IO.File.Exists(imageToDelete))
+                    {
+                        System.IO.File.Delete(imageToDelete);
+                        _dbContext.tblProductImages.Remove(dbImage);
+                        _dbContext.SaveChanges();
+
+                        apiResponseModel.Status = true;
+                        apiResponseModel.Message = "Image deleted successfully.";
+                    }
+                    else
+                    {
+                        apiResponseModel.Status = false;
+                        apiResponseModel.Message = "Unable to delete the image as it doesn't exist.";
+                    }
+                }
+                else
+                {
+                    apiResponseModel.Status = false;
+                    apiResponseModel.Message = "Unable to delete the image as it doesn't exist.";
+                }
+            }
+
             catch (Exception ex)
             {
                 var msg = ex.Message;
             }
-
-            return productSliderItems;
+            return apiResponseModel;
         }
     }
 }
