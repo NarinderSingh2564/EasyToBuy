@@ -60,7 +60,7 @@ namespace EasyToBuy.Services.Interactions
         }
 
         #endregion
-        public async Task<IEnumerable<ProductWeightModel>> GetProductWeightList()
+        public async Task<IEnumerable<ProductWeightModel>> GetProductWeightList(string packingMode)
         {
             var productWeightList = new List<ProductWeightModel>();
 
@@ -214,7 +214,7 @@ namespace EasyToBuy.Services.Interactions
 
                     if (productObject != null)
                     {
-                        var dbVariationList = await _dbContext.tblProductVariationAndRate.Include(x => x.ProductWeights).Where(x => x.ProductId == productVariationAndRateInputModel.ProductId && x.Id != productVariationAndRateInputModel.Id).ToListAsync();
+                        var dbVariationList = await _dbContext.tblProductVariationAndRate.Include(x => x.ProductWeights).Where(x => x.ProductId == productVariationAndRateInputModel.ProductId && x.Id != productVariationAndRateInputModel.Id && x.IsDeleted == false).ToListAsync();
                         var productWeightValue = await _dbContext.tblProductWeight.Where(x => x.Id == productVariationAndRateInputModel.ProductWeightId).Select(x => x.ProductWeightValue).FirstOrDefaultAsync();
 
                         decimal dbTotalVolume = 0;
