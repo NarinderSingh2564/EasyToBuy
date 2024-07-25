@@ -29,7 +29,7 @@ namespace EasyToBuy.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=xxxxx;Database=EasyToBuyDb;User Id=EasyToBuyAdmin; Password=xxxx;Trusted_Connection=False;TrustServerCertificate=true;Integrated Security=false;");
+            optionsBuilder.UseSqlServer("Server=xxxxx;Database=xxxxxxx;User Id=xxxx; Password=xxxx;Trusted_Connection=False;TrustServerCertificate=true;Integrated Security=false;");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
