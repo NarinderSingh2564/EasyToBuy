@@ -11,6 +11,7 @@ namespace EasyToBuy.Models.Models
     {
         public int Id { get; set; }
         public string ProductWeight { get; set; } = string.Empty;
+        public decimal ProductWeightValue { get; set; }
         public bool IsActive { get; set; }
     }
 }

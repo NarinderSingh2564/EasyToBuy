@@ -16,6 +16,7 @@ namespace EasyToBuy.Data.SPClasses
         public int ProductPackingId { get; set; }
         public int ProductWeightId { get; set; }
         public string ProductWeight { get; set; }
+        public decimal ProductWeightValue { get; set; }
         public decimal MRP { get; set; }
         public decimal Discount { get; set; }
         public decimal DiscountPrice { get; set; }
@@ -24,6 +25,7 @@ namespace EasyToBuy.Data.SPClasses
         public bool ShowProductWeight { get; set; }
         public bool SetAsDefault { get; set; }
         public bool IsActive { get; set; }
+        public bool IsDeleted { get; set; }
 
     }
 }

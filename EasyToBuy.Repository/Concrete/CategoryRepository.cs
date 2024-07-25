@@ -29,12 +29,5 @@ namespace EasyToBuy.Repository.Concrete
                 return await categoryService.CategoryAddEdit(categoryInputModel);
             }
         }
-        public async Task<ApiResponseModel> CategoryDelete(int Id)
-        {
-            using (CategoryService categoryService = new CategoryService())
-            {
-                return await categoryService.CategoryDelete(Id);
-            }
-        }
     }
 }

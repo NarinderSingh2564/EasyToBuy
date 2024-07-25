@@ -172,9 +172,8 @@ namespace EasyToBuy.Data.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<string>("PackingMode")
-                        .IsRequired()
-                        .HasColumnType("varchar(10)");
+                    b.Property<int>("PackingModeId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("int");
@@ -183,6 +182,8 @@ namespace EasyToBuy.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PackingModeId");
 
                     b.ToTable("tblCategory", "dbo");
                 });
@@ -328,6 +329,9 @@ namespace EasyToBuy.Data.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<int>("PackingModeId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ProductDescription")
                         .IsRequired()
                         .HasColumnType("varchar(500)");
@@ -339,6 +343,9 @@ namespace EasyToBuy.Data.Migrations
                     b.Property<string>("ProductName")
                         .IsRequired()
                         .HasColumnType("varchar(200)");
+
+                    b.Property<decimal>("TotalVolume")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("int");
@@ -352,6 +359,8 @@ namespace EasyToBuy.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("PackingModeId");
 
                     b.HasIndex("VendorId");
 
@@ -412,6 +421,9 @@ namespace EasyToBuy.Data.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<int>("PackingModeId")
+                        .HasColumnType("int");
+
                     b.Property<string>("PackingType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -424,7 +436,41 @@ namespace EasyToBuy.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PackingModeId");
+
                     b.ToTable("tblProductPacking", "dbo");
+                });
+
+            modelBuilder.Entity("EasyToBuy.Data.DBClasses.ProductPackingMode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PackingMode")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tblProductPackingMode", "dbo");
                 });
 
             modelBuilder.Entity("EasyToBuy.Data.DBClasses.ProductSpecification", b =>
@@ -507,6 +553,9 @@ namespace EasyToBuy.Data.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<decimal>("MRP")
                         .HasColumnType("Decimal(7,2)");
 
@@ -571,6 +620,9 @@ namespace EasyToBuy.Data.Migrations
                     b.Property<string>("ProductWeight")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
+
+                    b.Property<decimal>("ProductWeightValue")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("int");
@@ -944,6 +996,9 @@ namespace EasyToBuy.Data.Migrations
                     b.Property<bool>("ShowProductWeight")
                         .HasColumnType("bit");
 
+                    b.Property<decimal>("TotalVolume")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("VariationId")
                         .HasColumnType("int");
 
@@ -1033,6 +1088,9 @@ namespace EasyToBuy.Data.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<decimal>("MRP")
                         .HasColumnType("decimal(18,2)");
 
@@ -1052,6 +1110,9 @@ namespace EasyToBuy.Data.Migrations
 
                     b.Property<int>("ProductWeightId")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("ProductWeightValue")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -1161,6 +1222,17 @@ namespace EasyToBuy.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("EasyToBuy.Data.DBClasses.Category", b =>
+                {
+                    b.HasOne("EasyToBuy.Data.DBClasses.ProductPackingMode", "ProductPackingMode")
+                        .WithMany()
+                        .HasForeignKey("PackingModeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProductPackingMode");
+                });
+
             modelBuilder.Entity("EasyToBuy.Data.DBClasses.CustomerOrder", b =>
                 {
                     b.HasOne("EasyToBuy.Data.DBClasses.OrderStatus", "OrderStatus")
@@ -1215,6 +1287,12 @@ namespace EasyToBuy.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("EasyToBuy.Data.DBClasses.ProductPackingMode", "ProductPackingMode")
+                        .WithMany()
+                        .HasForeignKey("PackingModeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("EasyToBuy.Data.DBClasses.Vendor", "Vendor")
                         .WithMany()
                         .HasForeignKey("VendorId")
@@ -1222,6 +1300,8 @@ namespace EasyToBuy.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Categorys");
+
+                    b.Navigation("ProductPackingMode");
 
                     b.Navigation("Vendor");
                 });
@@ -1235,6 +1315,17 @@ namespace EasyToBuy.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("ProductVariationAndRate");
+                });
+
+            modelBuilder.Entity("EasyToBuy.Data.DBClasses.ProductPacking", b =>
+                {
+                    b.HasOne("EasyToBuy.Data.DBClasses.ProductPackingMode", "ProductPackingMode")
+                        .WithMany()
+                        .HasForeignKey("PackingModeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProductPackingMode");
                 });
 
             modelBuilder.Entity("EasyToBuy.Data.DBClasses.ProductSpecification", b =>

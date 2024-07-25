@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace EasyToBuy.Data.SPClasses
+﻿namespace EasyToBuy.Data.SPClasses
 {
     public class SPGetProductList_Result
     {
@@ -9,6 +7,8 @@ namespace EasyToBuy.Data.SPClasses
         public string ProductImage { get; set; } = string.Empty;
         public string ProductDescription { get; set; } = string.Empty;
         public int CategoryId { get; set; }
+        public decimal TotalVolume { get; set; }
+        public int PackingModeId { get; set; }
         public string PackingMode { get; set; } = string.Empty;
         public bool IsActive { get; set; }
         public int VendorId { get; set; }

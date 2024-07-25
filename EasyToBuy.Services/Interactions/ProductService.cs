@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Security.Cryptography.X509Certificates;
 using EasyToBuy.Data;
 using EasyToBuy.Data.DBClasses;
 using EasyToBuy.Data.SPClasses;
@@ -12,7 +13,6 @@ namespace EasyToBuy.Services.Interactions
 {
     public class ProductService : IDisposable
     {
-
         #region Private Variables
 
         private ApplicationDbContext _dbContext;
@@ -60,19 +60,20 @@ namespace EasyToBuy.Services.Interactions
         }
 
         #endregion
-        public async Task<IEnumerable<ProductWeightModel>> GetProductWeightList()
+        public async Task<IEnumerable<ProductWeightModel>> GetProductWeightList(string packingMode)
         {
             var productWeightList = new List<ProductWeightModel>();
 
             try
             {
-                var dbProductWeightList = await _dbContext.tblProductWeight.ToListAsync();
+                var dbProductWeightList = await _dbContext.tblProductWeight.Where(x => x.IsActive == true).ToListAsync();
                 foreach (var weight in dbProductWeightList)
                 {
                     productWeightList.Add(new ProductWeightModel()
                     {
                         Id = weight.Id,
                         ProductWeight = weight.ProductWeight,
+                        ProductWeightValue = weight.ProductWeightValue,
                         IsActive = weight.IsActive,
                     });
                 }
@@ -90,13 +91,14 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var dbProductPackingList = await _dbContext.tblProductPacking.ToListAsync();
+                var dbProductPackingList = await _dbContext.tblProductPacking.Where(x=>x.IsActive == true).ToListAsync();
                 foreach (var packing in dbProductPackingList)
                 {
                     productPackingList.Add(new ProductPackingModel()
                     {
                         Id = packing.Id,
                         PackingType = packing.PackingType,
+                        PackingModeId = packing.PackingModeId,
                         IsActive = packing.IsActive,
                     });
                 }
@@ -131,7 +133,7 @@ namespace EasyToBuy.Services.Interactions
                         dbProduct.ProductName = productInputModel.ProductName;
                         dbProduct.ProductDescription = productInputModel.ProductDescription;
                         dbProduct.ProductImage = productInputModel.ProductImage;
-                        dbProduct.CategoryId = productInputModel.CategoryId;
+                        dbProduct.TotalVolume = productInputModel.TotalVolume;
                         dbProduct.UpdatedBy = productInputModel.UpdatedBy;
                         dbProduct.UpdatedOn = DateTime.Now;
                         dbProduct.IsActive = productInputModel.IsActive;
@@ -146,6 +148,8 @@ namespace EasyToBuy.Services.Interactions
                         productObj.ProductDescription = productInputModel.ProductDescription;
                         productObj.ProductImage = productInputModel.ProductImage;
                         productObj.CategoryId = productInputModel.CategoryId;
+                        productObj.TotalVolume = productInputModel.TotalVolume;
+                        productObj.PackingModeId = productInputModel.PackingModeId;
                         productObj.CreatedBy = productInputModel.CreatedBy;
                         productObj.CreatedOn = DateTime.Now;
                         productObj.IsActive = productInputModel.IsActive;
@@ -196,7 +200,7 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var checkVariationDuplicacy = await _dbContext.tblProductVariationAndRate.Where(x => x.ProductId == productVariationAndRateInputModel.ProductId && x.ProductPackingId == productVariationAndRateInputModel.ProductPackingId && x.Quantity == productVariationAndRateInputModel.Quantity && x.ProductWeightId == productVariationAndRateInputModel.ProductWeightId && x.Id != productVariationAndRateInputModel.Id).FirstOrDefaultAsync();
+                var checkVariationDuplicacy = await _dbContext.tblProductVariationAndRate.Where(x => x.ProductId == productVariationAndRateInputModel.ProductId && x.ProductPackingId == productVariationAndRateInputModel.ProductPackingId && x.Quantity == productVariationAndRateInputModel.Quantity && x.ProductWeightId == productVariationAndRateInputModel.ProductWeightId && x.Id != productVariationAndRateInputModel.Id && x.IsDeleted == false).FirstOrDefaultAsync();
 
                 if (checkVariationDuplicacy != null)
                 {
@@ -206,51 +210,178 @@ namespace EasyToBuy.Services.Interactions
 
                 else
                 {
-                    var dbVariation = await _dbContext.tblProductVariationAndRate.Where(x => x.Id == productVariationAndRateInputModel.Id).FirstOrDefaultAsync();
+                    var productObject = await _dbContext.tblProduct.Include(x => x.ProductPackingMode).Where(x => x.Id == productVariationAndRateInputModel.ProductId).FirstOrDefaultAsync();
 
-                    if (dbVariation != null)
+                    if (productObject != null)
                     {
-                        dbVariation.ProductPackingId = productVariationAndRateInputModel.ProductPackingId;
-                        dbVariation.Quantity = productVariationAndRateInputModel.Quantity;
-                        dbVariation.ProductWeightId = productVariationAndRateInputModel.ProductWeightId;
-                        dbVariation.MRP = productVariationAndRateInputModel.MRP;
-                        dbVariation.Discount = productVariationAndRateInputModel.Discount;
-                        dbVariation.DiscountPrice = productVariationAndRateInputModel.DiscountPrice;
-                        dbVariation.PriceAfterDiscount = productVariationAndRateInputModel.PriceAfterDiscount;
-                        dbVariation.StockQuantity = productVariationAndRateInputModel.StockQuantity;
-                        dbVariation.ShowProductWeight = productVariationAndRateInputModel.ShowProductWeight;
-                        dbVariation.UpdatedBy = productVariationAndRateInputModel.UpdatedBy;
-                        dbVariation.UpdatedOn = DateTime.Now;
-                        dbVariation.SetAsDefault = productVariationAndRateInputModel.SetAsDefault;
-                        dbVariation.IsActive = productVariationAndRateInputModel.IsActive;
-                    }
+                        var dbVariationList = await _dbContext.tblProductVariationAndRate.Include(x => x.ProductWeights).Where(x => x.ProductId == productVariationAndRateInputModel.ProductId && x.Id != productVariationAndRateInputModel.Id && x.IsDeleted == false).ToListAsync();
+                        var productWeightValue = await _dbContext.tblProductWeight.Where(x => x.Id == productVariationAndRateInputModel.ProductWeightId).Select(x => x.ProductWeightValue).FirstOrDefaultAsync();
 
+                        decimal dbTotalVolume = 0;
+
+                        foreach (var variation in dbVariationList)
+                        {
+                            dbTotalVolume += variation.StockQuantity * variation.Quantity * (productObject.PackingModeId == 1 ? variation.ProductWeights.ProductWeightValue : 1);
+                        }
+
+                        if (dbTotalVolume == productObject.TotalVolume)
+                        {
+                            apiResponseModel.Status = false;
+                            apiResponseModel.Message = "Sorry, you can not add more variations of this product.";
+                        }
+                        else
+                        {
+                            decimal remainingVolume = productObject.TotalVolume - (dbTotalVolume + (productVariationAndRateInputModel.StockQuantity * productVariationAndRateInputModel.Quantity * (productObject.PackingModeId == 1 ? productWeightValue : 1)));
+
+                            if (remainingVolume < 0)
+                            {
+                                apiResponseModel.Status = false;
+                                apiResponseModel.Message = "You can only add variation of " + (productObject.PackingModeId == 1 ? (productObject.TotalVolume - dbTotalVolume) : Convert.ToUInt32(productObject.TotalVolume - dbTotalVolume))+ " " + (productObject.ProductPackingMode.PackingMode).ToLower();
+                                return apiResponseModel;
+                            }
+
+                            else
+                            {
+                                var dbVariation = await _dbContext.tblProductVariationAndRate.Where(x => x.Id == productVariationAndRateInputModel.Id).FirstOrDefaultAsync();
+
+                                if (dbVariation != null)
+                                {
+                                    dbVariation.MRP = productVariationAndRateInputModel.MRP;
+                                    dbVariation.Discount = productVariationAndRateInputModel.Discount;
+                                    dbVariation.DiscountPrice = productVariationAndRateInputModel.DiscountPrice;
+                                    dbVariation.PriceAfterDiscount = productVariationAndRateInputModel.PriceAfterDiscount;
+                                    dbVariation.StockQuantity = productVariationAndRateInputModel.StockQuantity;
+                                    dbVariation.UpdatedBy = productVariationAndRateInputModel.UpdatedBy;
+                                    dbVariation.UpdatedOn = DateTime.Now;
+                                }
+
+                                else
+                                {
+                                    var objVariation = new ProductVariationAndRate();
+
+                                    objVariation.ProductId = productVariationAndRateInputModel.ProductId;
+                                    objVariation.ProductPackingId = productVariationAndRateInputModel.ProductPackingId;
+                                    objVariation.Quantity = productVariationAndRateInputModel.Quantity;
+                                    objVariation.ProductWeightId = productVariationAndRateInputModel.ProductWeightId;
+                                    objVariation.MRP = productVariationAndRateInputModel.MRP;
+                                    objVariation.Discount = productVariationAndRateInputModel.Discount;
+                                    objVariation.DiscountPrice = productVariationAndRateInputModel.DiscountPrice;
+                                    objVariation.PriceAfterDiscount = productVariationAndRateInputModel.PriceAfterDiscount;
+                                    objVariation.StockQuantity = productVariationAndRateInputModel.StockQuantity;
+                                    objVariation.CreatedBy = productVariationAndRateInputModel.CreatedBy;
+                                    objVariation.CreatedOn = DateTime.Now;
+
+                                    await _dbContext.tblProductVariationAndRate.AddAsync(objVariation);
+                                }
+
+                                await _dbContext.SaveChangesAsync();
+
+                                apiResponseModel.Status = true;
+                                apiResponseModel.Message = productVariationAndRateInputModel.Id > 0 ? "Product variation updated successfully." : "Product variation added successfully.";
+                            }
+                        }
+                    }
                     else
                     {
-                        var objVariation = new ProductVariationAndRate();
-
-                        objVariation.ProductId = productVariationAndRateInputModel.ProductId;
-                        objVariation.ProductPackingId = productVariationAndRateInputModel.ProductPackingId;
-                        objVariation.Quantity = productVariationAndRateInputModel.Quantity;
-                        objVariation.ProductWeightId = productVariationAndRateInputModel.ProductWeightId;
-                        objVariation.MRP = productVariationAndRateInputModel.MRP;
-                        objVariation.Discount = productVariationAndRateInputModel.Discount;
-                        objVariation.DiscountPrice = productVariationAndRateInputModel.DiscountPrice;
-                        objVariation.PriceAfterDiscount = productVariationAndRateInputModel.PriceAfterDiscount;
-                        objVariation.StockQuantity = productVariationAndRateInputModel.StockQuantity;
-                        objVariation.ShowProductWeight = productVariationAndRateInputModel.ShowProductWeight;
-                        objVariation.CreatedBy = productVariationAndRateInputModel.CreatedBy;
-                        objVariation.CreatedOn = DateTime.Now;
-                        objVariation.SetAsDefault = productVariationAndRateInputModel.SetAsDefault;
-                        objVariation.IsActive = productVariationAndRateInputModel.IsActive;
-
-                        await _dbContext.tblProductVariationAndRate.AddAsync(objVariation);
+                        apiResponseModel.Status = false;
+                        apiResponseModel.Message = "This product does not exists.";
                     }
+                }
+            }
 
-                    await _dbContext.SaveChangesAsync();
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
 
+            return apiResponseModel;
+        }
+        public async Task<ApiResponseModel> SetShowProductWeight(int variationId, bool showProductWeight)
+        {
+            var apiResponseModel = new ApiResponseModel();
+
+            try
+            {
+                var dbVariation = await _dbContext.tblProductVariationAndRate.Where(x => x.Id == variationId).FirstOrDefaultAsync();
+
+                if (dbVariation != null)
+                {
+                    dbVariation.ShowProductWeight = showProductWeight;
                     apiResponseModel.Status = true;
-                    apiResponseModel.Message = productVariationAndRateInputModel.Id > 0 ? "Product variation updated successfully." : "Product variation added successfully.";
+                    _dbContext.SaveChanges();
+                }
+                else
+                {
+                    apiResponseModel.Status = false;
+                    apiResponseModel.Message = "This product variation does not exist.";
+                }
+            }
+
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return apiResponseModel;
+        }
+        public async Task<ApiResponseModel> SetVariationIsActive(int variationId, bool isActive)
+        {
+            var apiResponseModel = new ApiResponseModel();
+
+            try
+            {
+                var dbVariation = await _dbContext.tblProductVariationAndRate.Where(x => x.Id == variationId).FirstOrDefaultAsync();
+
+                if (dbVariation != null)
+                {
+                    dbVariation.IsActive = isActive;
+                    apiResponseModel.Status = true;
+                    _dbContext.SaveChanges();
+                }
+                else
+                {
+                    apiResponseModel.Status = false;
+                    apiResponseModel.Message = "This product variation does not exist.";
+                }
+            }
+
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return apiResponseModel;
+        }
+        public async Task<ApiResponseModel> DeleteProductVariation(int variationId)
+        {
+            var apiResponseModel = new ApiResponseModel();
+
+            try
+            {
+                var dbVariation = await _dbContext.tblProductVariationAndRate.Where(x => x.Id == variationId).FirstOrDefaultAsync();
+
+                if (dbVariation != null)
+                {
+                    var checkOrderByVariationId = await _dbContext.tblCustomerOrder.Where(x => x.VariationId == variationId).ToListAsync();
+
+                    if (checkOrderByVariationId.Count == 0)
+                    {
+                        dbVariation.IsDeleted = true;
+                        dbVariation.IsActive = false;
+                        _dbContext.SaveChanges();
+                        apiResponseModel.Status = true;
+
+                    }
+                    else
+                    {
+                        apiResponseModel.Status = false;
+                        apiResponseModel.Message = "Sorry, You can not delete this variation until the order is not delivered.";
+                    }
+                }
+                else
+                {
+                    apiResponseModel.Status = false;
+                    apiResponseModel.Message = "This product variation does not exist.";
                 }
             }
 
@@ -297,7 +428,7 @@ namespace EasyToBuy.Services.Interactions
 
             return productVariationImage;
         }
-        public async Task<ApiResponseModel> SetDefaultVariation(int productId, int variationId)
+        public async Task<ApiResponseModel> SetDefaultVariation(int productId, int variationId, bool status)
         {
             var apiResponseModel = new ApiResponseModel();
 
@@ -317,7 +448,7 @@ namespace EasyToBuy.Services.Interactions
 
                 if (defaultVariation != null)
                 {
-                    defaultVariation.SetAsDefault = true;
+                    defaultVariation.SetAsDefault = status;
                     apiResponseModel.Status = true;
                     apiResponseModel.Message = "Default variation updated successfully";
                 }

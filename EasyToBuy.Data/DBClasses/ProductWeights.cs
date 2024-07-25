@@ -15,6 +15,7 @@ namespace EasyToBuy.Data.DBClasses
 
         [Column(TypeName = "varchar(50)")]
         public string ProductWeight { get; set; } = string.Empty;
+        public decimal ProductWeightValue { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }

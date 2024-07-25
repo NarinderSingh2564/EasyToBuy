@@ -5,6 +5,7 @@ using EasyToBuy.Models.InputModels;
 using EasyToBuy.Models.Models;
 using EasyToBuy.Repository.Abstract;
 using EasyToBuy.Services.Interactions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace EasyToBuy.Repository.Concrete
 {
@@ -45,6 +46,27 @@ namespace EasyToBuy.Repository.Concrete
                 return await productService.ProductVariationAndRateAddEdit(productVariationAndRateInputModel);
             }
         }
+        public async Task<ApiResponseModel> SetShowProductWeight(int variationId, bool showProductWeight)
+        {
+            using (ProductService productService = new ProductService())
+            {
+                return await productService.SetShowProductWeight(variationId, showProductWeight);
+            }
+        }
+        public async Task<ApiResponseModel> SetVariationIsActive(int variationId, bool isActive)
+        {
+            using (ProductService productService = new ProductService())
+            {
+                return await productService.SetVariationIsActive(variationId, isActive);
+            }
+        }
+        public async Task<ApiResponseModel> DeleteProductVariation(int variationId)
+        {
+            using (ProductService productService = new ProductService())
+            {
+                return await productService.DeleteProductVariation(variationId);
+            }
+        }
         public async Task<SPGetProductDescriptionById_Result> GetProductDescriptionById(int productId)
         {
             using (ProductService productService = new ProductService())
@@ -66,11 +88,11 @@ namespace EasyToBuy.Repository.Concrete
                 return await productService.GetProductVariationImageById(variationId);
             }
         }
-        public async Task<ApiResponseModel> SetDefaultVariation(int productId, int variationId)
+        public async Task<ApiResponseModel> SetDefaultVariation(int productId, int variationId, bool status)
         {
             using (ProductService productService = new ProductService())
             {
-                return await productService.SetDefaultVariation(productId, variationId);
+                return await productService.SetDefaultVariation(productId, variationId,status);
 
             }
         }
@@ -130,5 +152,6 @@ namespace EasyToBuy.Repository.Concrete
                 return await productService.DeleteProductVariationImage(imageId);
             }
         }
+     
     }
 }

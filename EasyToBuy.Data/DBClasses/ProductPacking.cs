@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EasyToBuy.Data.DBClasses
 {
@@ -6,6 +7,10 @@ namespace EasyToBuy.Data.DBClasses
     {
         [Key]
         public int Id { get; set; }
+
+        [ForeignKey("ProductPackingMode")]
+        public int PackingModeId { get; set; }
+        public virtual ProductPackingMode ProductPackingMode { get; set; }
 
         [DataType("Varchar(50)")]
         public string PackingType { get; set; }

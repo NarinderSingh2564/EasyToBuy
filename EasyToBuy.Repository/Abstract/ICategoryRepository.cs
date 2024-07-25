@@ -9,6 +9,5 @@ namespace EasyToBuy.Repository.Abstract
         Task<IEnumerable<CategoryModel>> GetCategoryList();
         Task<IEnumerable<CategoryModel>> GetCategoryById(int Id);
         Task<ApiResponseModel> CategoryAddEdit(CategoryInputModel categoryInputModel);
-        Task<ApiResponseModel> CategoryDelete(int Id);
     }
 }

@@ -57,6 +57,8 @@ namespace EasyToBuy.Web.Controllers
             productInputModel.ProductDescription = productUIModel.ProductDescription;
             productInputModel.ProductImage = productUIModel.ProductImageName != null ? productUIModel.ProductImageName : "";
             productInputModel.CategoryId = productUIModel.CategoryId;
+            productInputModel.TotalVolume = productUIModel.TotalVolume;
+            productInputModel.PackingModeId = productUIModel.PackingModeId;
             productInputModel.CreatedBy = productUIModel.CreatedBy;
             productInputModel.UpdatedBy = productUIModel.UpdatedBy;
             productInputModel.IsActive = productUIModel.IsActive;
@@ -66,7 +68,6 @@ namespace EasyToBuy.Web.Controllers
             return returnResponse;
         }
         bool UploadProductImage(IFormFile productImage, out string imageName, string folderName, string? oldImageName)
-
         {
             var fileUploadStatus = false;
 
@@ -129,13 +130,32 @@ namespace EasyToBuy.Web.Controllers
             productVariationAndRateInputModel.DiscountPrice = productVariationAndRateUIModel.DiscountPrice;
             productVariationAndRateInputModel.PriceAfterDiscount = productVariationAndRateUIModel.PriceAfterDiscount;
             productVariationAndRateInputModel.StockQuantity = productVariationAndRateUIModel.StockQuantity;
-            productVariationAndRateInputModel.ShowProductWeight = productVariationAndRateUIModel.ShowProductWeight;
             productVariationAndRateInputModel.CreatedBy = productVariationAndRateUIModel.CreatedBy;
             productVariationAndRateInputModel.UpdatedBy = productVariationAndRateUIModel.UpdatedBy;
-            productVariationAndRateInputModel.IsActive = productVariationAndRateUIModel.IsActive;
 
             var response = await _productRepository.ProductVariationAndRateAddEdit(productVariationAndRateInputModel);
 
+            return response;
+        }
+
+        [HttpPost("SetShowProductWeight")]
+        public async Task<ApiResponseModel> SetShowProductWeight(int variationId, bool showProductWeight)
+        {
+            var response = await _productRepository.SetShowProductWeight(variationId, showProductWeight);
+            return response;
+        }
+
+        [HttpPost("SetVariationIsActive")]
+        public async Task<ApiResponseModel> SetVariationIsActive(int variationId, bool isActive)
+        {
+            var response = await _productRepository.SetVariationIsActive(variationId, isActive);
+            return response;
+        }
+
+        [HttpPost("DeleteProductVariation")]
+        public async Task<ApiResponseModel> DeleteProductVariation(int variationId)
+        {
+            var response = await _productRepository.DeleteProductVariation(variationId);
             return response;
         }
 
@@ -156,9 +176,9 @@ namespace EasyToBuy.Web.Controllers
         }
 
         [HttpPost("SetDefaultVariation")]
-        public async Task<ApiResponseModel> SetDefaultVariation(int productId, int variationId)
+        public async Task<ApiResponseModel> SetDefaultVariation(int productId, int variationId, bool status)
         {
-            var response = await _productRepository.SetDefaultVariation(productId, variationId);
+            var response = await _productRepository.SetDefaultVariation(productId, variationId,status);
 
             return response;
         }
