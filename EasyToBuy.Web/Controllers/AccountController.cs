@@ -45,6 +45,7 @@ namespace EasyToBuy.Web.Controllers
             var response = await _accountRepository.UserRegistration(userInputModel);
 
             return response;
+            
         }
 
         [HttpGet("GetAddressListByUserId")]

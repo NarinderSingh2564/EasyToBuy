@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using EasyToBuy.Data;
-using EasyToBuy.Data.DBClasses;
 using EasyToBuy.Data.SPClasses;
 using EasyToBuy.Models.CommonModel;
-using EasyToBuy.Models.InputModels;
 using EasyToBuy.Models.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using EasyToBuy.Models.InputModels;
+using EasyToBuy.Data.DBClasses;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace EasyToBuy.Services.Interactions
 {
@@ -65,70 +61,92 @@ namespace EasyToBuy.Services.Interactions
         }
 
         #endregion
+
         public async Task<ApiResponseModel> VendorAddEdit(VendorInputModel vendorInputModel)
         {
             var apiResponseModel = new ApiResponseModel();
-
-            try
+          
+            using (DbContextTransaction transaction = _dbContext.Database.BeginTransaction())
             {
-                var checkVendorDuplicacy = await _dbContext.tblVendor.Where(x => x.Mobile == vendorInputModel.Mobile && x.Email == vendorInputModel.Email && x.Id != vendorInputModel.Id).FirstOrDefaultAsync();
-
-                if (checkVendorDuplicacy != null)
+                try
                 {
-                    apiResponseModel.Status = false;
-                    apiResponseModel.Message = "This mobile number and email is already registered, please try with new.";
-                }
-                else
-                {
-                    var dbVendor = await _dbContext.tblVendor.Where(x => x.Id == vendorInputModel.Id).FirstOrDefaultAsync();
+                    var checkVendorDuplicacy = await _dbContext.tblVendor.Where(x => x.Mobile == vendorInputModel.vendorBasicDetailsInputModel.Mobile && x.Email == vendorInputModel.vendorBasicDetailsInputModel.Email && x.Id != vendorInputModel.vendorBasicDetailsInputModel.Id).FirstOrDefaultAsync();
 
-                    if (dbVendor != null)
+                    if (checkVendorDuplicacy != null)
                     {
-                        dbVendor.Name = vendorInputModel.Name;
-                        dbVendor.Email = vendorInputModel.Email;
-                        dbVendor.Password = vendorInputModel.Password;
-                        dbVendor.Mobile = vendorInputModel.Mobile;
-                        dbVendor.Pincode = vendorInputModel.Pincode;
-                        dbVendor.City = vendorInputModel.City;
-                        dbVendor.State = vendorInputModel.State;
-                        dbVendor.Country = vendorInputModel.Country;
-                        dbVendor.FullAddress = vendorInputModel.FullAddress;
-                        dbVendor.UpdatedBy = vendorInputModel.UpdatedBy;
-                        dbVendor.UpdatedOn = DateTime.Now;
+                        apiResponseModel.Status = false;
+                        apiResponseModel.Message = "This mobile number and email is already registered, please try with new.";
                     }
+
                     else
                     {
-                        var vendorObj = new Vendor();
+                        var dbVendor = await _dbContext.tblVendor.Where(x => x.Id == vendorInputModel.vendorBasicDetailsInputModel.Id).FirstOrDefaultAsync();
 
-                        vendorObj.Name = vendorInputModel.Name;
-                        vendorObj.Email = vendorInputModel.Email;
-                        vendorObj.Password = vendorInputModel.Password;
-                        vendorObj.Mobile = vendorInputModel.Mobile;
-                        vendorObj.DealingPerson = vendorInputModel.DealingPerson;
-                        vendorObj.Pincode = vendorInputModel.Pincode;
-                        vendorObj.City = vendorInputModel.City;
-                        vendorObj.State = vendorInputModel.State;
-                        vendorObj.Country = vendorInputModel.Country;
-                        vendorObj.FullAddress = vendorInputModel.FullAddress;
-                        vendorObj.Status = "Pending";
-                        vendorObj.StatusRemarks = "Your request has been sent to admin.";
-                        vendorObj.CreatedBy = vendorInputModel.CreatedBy;
-                        vendorObj.CreatedOn = DateTime.Now;
+                        if (dbVendor != null)
+                        {
+                            dbVendor.Name = vendorInputModel.vendorBasicDetailsInputModel.Name;
+                            dbVendor.Email = vendorInputModel.vendorBasicDetailsInputModel.Email;
+                            dbVendor.Password = vendorInputModel.vendorBasicDetailsInputModel.Password;
+                            dbVendor.Mobile = vendorInputModel.vendorBasicDetailsInputModel.Mobile;
+                            dbVendor.Type = vendorInputModel.vendorBasicDetailsInputModel.Type;
+                            dbVendor.IdentificationType = vendorInputModel.vendorBasicDetailsInputModel.IdentificationType;
+                            dbVendor.IdentificationNumber = vendorInputModel.vendorBasicDetailsInputModel.IdentificationNumber;
+                            dbVendor.Pincode = vendorInputModel.vendorBasicDetailsInputModel.Pincode;
+                            dbVendor.City = vendorInputModel.vendorBasicDetailsInputModel.City;
+                            dbVendor.State = vendorInputModel.vendorBasicDetailsInputModel.State;
+                            dbVendor.Country = vendorInputModel.vendorBasicDetailsInputModel.Country;
+                            dbVendor.FullAddress = vendorInputModel.vendorBasicDetailsInputModel.FullAddress;
+                            dbVendor.UpdatedBy = vendorInputModel.vendorBasicDetailsInputModel.UpdatedBy;
+                            dbVendor.UpdatedOn = DateTime.Now;
+                        }
+                        else
+                        {
+                            var vendorObj = new Vendor();
 
-                        await _dbContext.AddAsync(vendorObj);
+                            vendorObj.Name = vendorInputModel.vendorBasicDetailsInputModel.Name;
+                            vendorObj.VendorCode = "ETB-" + new Random().Next(50000).ToString();
+                            vendorObj.Email = vendorInputModel.vendorBasicDetailsInputModel.Email;
+                            vendorObj.Password = vendorInputModel.vendorBasicDetailsInputModel.Password;
+                            vendorObj.Mobile = vendorInputModel.vendorBasicDetailsInputModel.Mobile;
+                            vendorObj.Type = vendorInputModel.vendorBasicDetailsInputModel.Type;
+                            vendorObj.IdentificationType = vendorInputModel.vendorBasicDetailsInputModel.IdentificationType;
+                            vendorObj.IdentificationNumber = vendorInputModel.vendorBasicDetailsInputModel.IdentificationNumber;
+                            vendorObj.Pincode = vendorInputModel.vendorBasicDetailsInputModel.Pincode;
+                            vendorObj.City = vendorInputModel.vendorBasicDetailsInputModel.City;
+                            vendorObj.State = vendorInputModel.vendorBasicDetailsInputModel.State;
+                            vendorObj.Country = vendorInputModel.vendorBasicDetailsInputModel.Country;
+                            vendorObj.FullAddress = vendorInputModel.vendorBasicDetailsInputModel.FullAddress;
+                            vendorObj.Status = "Pending";
+                            vendorObj.StatusRemarks = "Your request has been sent to admin.";
+                            vendorObj.CreatedBy = 1;
+                            vendorObj.CreatedOn = DateTime.Now;
+
+                            await _dbContext.tblVendor.AddAsync(vendorObj);
+                            await _dbContext.SaveChangesAsync();
+
+                            //var vendorCompanyDetailsObj = new VendorCompanyDetails();
+
+                            //vendorCompanyDetailsObj.VendorId = vendorObj.Id;
+                            //vendorCompanyDetailsObj.CompanyName = vendorInputModel.vendorCompanyDetailsInputModel.CompanyName;
+                            //vendorCompanyDetailsObj.Description = vendorInputModel.vendorCompanyDetailsInputModel.Description;
+                            //vendorCompanyDetailsObj.DealingPerson = vendorInputModel.vendorCompanyDetailsInputModel.DealingPerson;
+                            //vendorCompanyDetailsObj.GSTIN = vendorInputModel.vendorCompanyDetailsInputModel.GSTIN;
+                            //vendorCompanyDetailsObj.Pincode = vendorInputModel.vendorCompanyDetailsInputModel.Pincode;
+                            //vendorCompanyDetailsObj.City = vendorInputModel.vendorCompanyDetailsInputModel.City;
+                            //vendorCompanyDetailsObj.State = vendorInputModel.vendorCompanyDetailsInputModel.State;
+                            //vendorCompanyDetailsObj.Country = vendorInputModel.vendorCompanyDetailsInputModel.Country;
+                            //vendorCompanyDetailsObj.FullAddress = vendorInputModel.vendorCompanyDetailsInputModel.FullAddress;
+                        }
+
+                        apiResponseModel.Status = true;
+                        apiResponseModel.Message = vendorInputModel.vendorBasicDetailsInputModel.Id > 0 ? "Vendor updated successfully." : "Vendor's basic details added successfully.";
                     }
-
-                    await _dbContext.SaveChangesAsync();
-
-                    apiResponseModel.Status = true;
-                    apiResponseModel.Message = vendorInputModel.Id > 0 ? "Vendor updated successfully" : "Vendor added successfully";
                 }
 
-            }
-
-            catch (Exception ex)
-            {
-                var msg = ex.Message;
+                catch (Exception ex)
+                {
+                    var msg = ex.Message;
+                }
             }
 
             return apiResponseModel;
@@ -148,7 +166,6 @@ namespace EasyToBuy.Services.Interactions
                         Name = vendor.Name,
                         Email = vendor.Email,
                         Mobile = vendor.Mobile,
-                        DealingPerson = vendor.DealingPerson,
                         Pincode = vendor.Pincode,
                         City = vendor.City,
                         State = vendor.State,
@@ -167,7 +184,7 @@ namespace EasyToBuy.Services.Interactions
             }
             return vendorList;
         }
-        public async Task<ApiResponseModel> VendorStatusUpdate(int vendorId,int userId, string status, string statusRemarks)
+        public async Task<ApiResponseModel> VendorStatusUpdate(int vendorId, int userId, string status, string statusRemarks)
         {
             var apiResponseModel = new ApiResponseModel();
 
@@ -205,7 +222,7 @@ namespace EasyToBuy.Services.Interactions
 
                 if (dbVendor != null)
                 {
-                    if(dbVendor.Password != password)
+                    if (dbVendor.Password != password)
                     {
                         apiResponseModel.Status = false;
                         apiResponseModel.Message = "Incorrect password";
@@ -219,12 +236,12 @@ namespace EasyToBuy.Services.Interactions
                         dbVendor.LastLoginDate = DateTime.Now;
                         await _dbContext.SaveChangesAsync();
                     }
-                    else if(dbVendor.Status == "Rejected")
+                    else if (dbVendor.Status == "Rejected")
                     {
                         apiResponseModel.Status = false;
                         apiResponseModel.Message = "Sorry, you are rejected by admin.";
                     }
-                    else if(dbVendor.Status == "Pending")
+                    else if (dbVendor.Status == "Pending")
                     {
                         apiResponseModel.Status = false;
                         apiResponseModel.Message = "Your request is pending.";
@@ -252,13 +269,13 @@ namespace EasyToBuy.Services.Interactions
 
         public async Task<IEnumerable<SPGetVendorOrdersCountById_Result>> GetVendorOrdersCount(int vendorId)
         {
-            var VendorOrdersCount  = new List<SPGetVendorOrdersCountById_Result>();
+            var VendorOrdersCount = new List<SPGetVendorOrdersCountById_Result>();
 
             try
             {
                 var sqlQuery = "exec SPGetVendorOrdersCountById @VendorId";
 
-                SqlParameter parameter1 = new SqlParameter("@VendorId", (int) vendorId );
+                SqlParameter parameter1 = new SqlParameter("@VendorId", (int)vendorId);
 
 
                 VendorOrdersCount = await _dbContext.vendorOrdersCountById_Results.FromSqlRaw(sqlQuery, parameter1).ToListAsync();
