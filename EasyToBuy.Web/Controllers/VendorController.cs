@@ -20,8 +20,8 @@ namespace EasyToBuy.Web.Controllers
         }
         #endregion
 
-        [HttpPost("VendorAddEdit")]
-        public async Task<ApiResponseModel> VendorAddEdit( VendorUIModel vendorUIModel)
+        [HttpPost("VendorRegistration")]
+        public async Task<ApiResponseModel> VendorRegistration( VendorUIModel vendorUIModel)
         {
             var vendorInputModel = new VendorInputModel();
 
@@ -54,8 +54,8 @@ namespace EasyToBuy.Web.Controllers
             vendorInputModel.vendorBankDetailsInputModel.BankName = vendorUIModel.vendorBankDetailsUIModel.BankName;
             vendorInputModel.vendorBankDetailsInputModel.Branch = vendorUIModel.vendorBankDetailsUIModel.Branch;
 
-            var response = await _vendorRepository.VendorAddEdit(vendorInputModel);
-
+            var response = await _vendorRepository.VendorRegistration(vendorInputModel);
+            
             return response;
         }
 

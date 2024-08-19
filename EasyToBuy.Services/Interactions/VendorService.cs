@@ -8,7 +8,6 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using EasyToBuy.Models.InputModels;
 using EasyToBuy.Data.DBClasses;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace EasyToBuy.Services.Interactions
 {
@@ -62,91 +61,99 @@ namespace EasyToBuy.Services.Interactions
 
         #endregion
 
-        public async Task<ApiResponseModel> VendorAddEdit(VendorInputModel vendorInputModel)
+        public async Task<ApiResponseModel> VendorRegistration(VendorInputModel vendorInputModel)
         {
             var apiResponseModel = new ApiResponseModel();
-          
-            using (DbContextTransaction transaction = _dbContext.Database.BeginTransaction())
+            var transaction = _dbContext.Database.BeginTransaction();
+            var errorArea = string.Empty;
+
+            try
             {
-                try
+                var checkVendorDuplicacy = await _dbContext.tblVendor.Where(x => x.Mobile == vendorInputModel.vendorBasicDetailsInputModel.Mobile && x.Email == vendorInputModel.vendorBasicDetailsInputModel.Email && x.Id != vendorInputModel.vendorBasicDetailsInputModel.Id).FirstOrDefaultAsync();
+
+                if (checkVendorDuplicacy != null)
                 {
-                    var checkVendorDuplicacy = await _dbContext.tblVendor.Where(x => x.Mobile == vendorInputModel.vendorBasicDetailsInputModel.Mobile && x.Email == vendorInputModel.vendorBasicDetailsInputModel.Email && x.Id != vendorInputModel.vendorBasicDetailsInputModel.Id).FirstOrDefaultAsync();
-
-                    if (checkVendorDuplicacy != null)
-                    {
-                        apiResponseModel.Status = false;
-                        apiResponseModel.Message = "This mobile number and email is already registered, please try with new.";
-                    }
-
-                    else
-                    {
-                        var dbVendor = await _dbContext.tblVendor.Where(x => x.Id == vendorInputModel.vendorBasicDetailsInputModel.Id).FirstOrDefaultAsync();
-
-                        if (dbVendor != null)
-                        {
-                            dbVendor.Name = vendorInputModel.vendorBasicDetailsInputModel.Name;
-                            dbVendor.Email = vendorInputModel.vendorBasicDetailsInputModel.Email;
-                            dbVendor.Password = vendorInputModel.vendorBasicDetailsInputModel.Password;
-                            dbVendor.Mobile = vendorInputModel.vendorBasicDetailsInputModel.Mobile;
-                            dbVendor.Type = vendorInputModel.vendorBasicDetailsInputModel.Type;
-                            dbVendor.IdentificationType = vendorInputModel.vendorBasicDetailsInputModel.IdentificationType;
-                            dbVendor.IdentificationNumber = vendorInputModel.vendorBasicDetailsInputModel.IdentificationNumber;
-                            dbVendor.Pincode = vendorInputModel.vendorBasicDetailsInputModel.Pincode;
-                            dbVendor.City = vendorInputModel.vendorBasicDetailsInputModel.City;
-                            dbVendor.State = vendorInputModel.vendorBasicDetailsInputModel.State;
-                            dbVendor.Country = vendorInputModel.vendorBasicDetailsInputModel.Country;
-                            dbVendor.FullAddress = vendorInputModel.vendorBasicDetailsInputModel.FullAddress;
-                            dbVendor.UpdatedBy = vendorInputModel.vendorBasicDetailsInputModel.UpdatedBy;
-                            dbVendor.UpdatedOn = DateTime.Now;
-                        }
-                        else
-                        {
-                            var vendorObj = new Vendor();
-
-                            vendorObj.Name = vendorInputModel.vendorBasicDetailsInputModel.Name;
-                            vendorObj.VendorCode = "ETB-" + new Random().Next(50000).ToString();
-                            vendorObj.Email = vendorInputModel.vendorBasicDetailsInputModel.Email;
-                            vendorObj.Password = vendorInputModel.vendorBasicDetailsInputModel.Password;
-                            vendorObj.Mobile = vendorInputModel.vendorBasicDetailsInputModel.Mobile;
-                            vendorObj.Type = vendorInputModel.vendorBasicDetailsInputModel.Type;
-                            vendorObj.IdentificationType = vendorInputModel.vendorBasicDetailsInputModel.IdentificationType;
-                            vendorObj.IdentificationNumber = vendorInputModel.vendorBasicDetailsInputModel.IdentificationNumber;
-                            vendorObj.Pincode = vendorInputModel.vendorBasicDetailsInputModel.Pincode;
-                            vendorObj.City = vendorInputModel.vendorBasicDetailsInputModel.City;
-                            vendorObj.State = vendorInputModel.vendorBasicDetailsInputModel.State;
-                            vendorObj.Country = vendorInputModel.vendorBasicDetailsInputModel.Country;
-                            vendorObj.FullAddress = vendorInputModel.vendorBasicDetailsInputModel.FullAddress;
-                            vendorObj.Status = "Pending";
-                            vendorObj.StatusRemarks = "Your request has been sent to admin.";
-                            vendorObj.CreatedBy = 1;
-                            vendorObj.CreatedOn = DateTime.Now;
-
-                            await _dbContext.tblVendor.AddAsync(vendorObj);
-                            await _dbContext.SaveChangesAsync();
-
-                            //var vendorCompanyDetailsObj = new VendorCompanyDetails();
-
-                            //vendorCompanyDetailsObj.VendorId = vendorObj.Id;
-                            //vendorCompanyDetailsObj.CompanyName = vendorInputModel.vendorCompanyDetailsInputModel.CompanyName;
-                            //vendorCompanyDetailsObj.Description = vendorInputModel.vendorCompanyDetailsInputModel.Description;
-                            //vendorCompanyDetailsObj.DealingPerson = vendorInputModel.vendorCompanyDetailsInputModel.DealingPerson;
-                            //vendorCompanyDetailsObj.GSTIN = vendorInputModel.vendorCompanyDetailsInputModel.GSTIN;
-                            //vendorCompanyDetailsObj.Pincode = vendorInputModel.vendorCompanyDetailsInputModel.Pincode;
-                            //vendorCompanyDetailsObj.City = vendorInputModel.vendorCompanyDetailsInputModel.City;
-                            //vendorCompanyDetailsObj.State = vendorInputModel.vendorCompanyDetailsInputModel.State;
-                            //vendorCompanyDetailsObj.Country = vendorInputModel.vendorCompanyDetailsInputModel.Country;
-                            //vendorCompanyDetailsObj.FullAddress = vendorInputModel.vendorCompanyDetailsInputModel.FullAddress;
-                        }
-
-                        apiResponseModel.Status = true;
-                        apiResponseModel.Message = vendorInputModel.vendorBasicDetailsInputModel.Id > 0 ? "Vendor updated successfully." : "Vendor's basic details added successfully.";
-                    }
+                    apiResponseModel.Status = false;
+                    apiResponseModel.Message = "This mobile number and email is already registered, please try with new.";
                 }
 
-                catch (Exception ex)
+                else
                 {
-                    var msg = ex.Message;
+                    errorArea = "basic details";
+
+                    var vendorObj = new Vendor();
+
+                    vendorObj.Name = vendorInputModel.vendorBasicDetailsInputModel.Name;
+                    vendorObj.VendorCode = "ETB-" + new Random().Next().ToString();
+                    vendorObj.Email = vendorInputModel.vendorBasicDetailsInputModel.Email;
+                    vendorObj.Password = vendorInputModel.vendorBasicDetailsInputModel.Password;
+                    vendorObj.Mobile = vendorInputModel.vendorBasicDetailsInputModel.Mobile;
+                    vendorObj.Type = vendorInputModel.vendorBasicDetailsInputModel.Type;
+                    vendorObj.IdentificationType = vendorInputModel.vendorBasicDetailsInputModel.IdentificationType;
+                    vendorObj.IdentificationNumber = vendorInputModel.vendorBasicDetailsInputModel.IdentificationNumber;
+                    vendorObj.Pincode = vendorInputModel.vendorBasicDetailsInputModel.Pincode;
+                    vendorObj.City = vendorInputModel.vendorBasicDetailsInputModel.City;
+                    vendorObj.State = vendorInputModel.vendorBasicDetailsInputModel.State;
+                    vendorObj.Country = vendorInputModel.vendorBasicDetailsInputModel.Country;
+                    vendorObj.FullAddress = vendorInputModel.vendorBasicDetailsInputModel.FullAddress;
+                    vendorObj.Status = "Pending";
+                    vendorObj.StatusRemarks = "Your request has been sent to admin.";
+                    vendorObj.CreatedBy = 1;
+                    vendorObj.CreatedOn = DateTime.Now;
+
+                    await _dbContext.tblVendor.AddAsync(vendorObj);
+                    await _dbContext.SaveChangesAsync();
+
+                    errorArea = "company details";
+
+                    var vendorCompanyDetailsObj = new VendorCompanyDetails();
+
+                    vendorCompanyDetailsObj.VendorId = vendorObj.Id;
+                    vendorCompanyDetailsObj.CompanyName = vendorInputModel.vendorCompanyDetailsInputModel.CompanyName;
+                    vendorCompanyDetailsObj.Description = vendorInputModel.vendorCompanyDetailsInputModel.Description;
+                    vendorCompanyDetailsObj.DealingPerson = vendorInputModel.vendorCompanyDetailsInputModel.DealingPerson;
+                    vendorCompanyDetailsObj.GSTIN = vendorInputModel.vendorCompanyDetailsInputModel.GSTIN;
+                    vendorCompanyDetailsObj.Pincode = vendorInputModel.vendorCompanyDetailsInputModel.Pincode;
+                    vendorCompanyDetailsObj.City = vendorInputModel.vendorCompanyDetailsInputModel.City;
+                    vendorCompanyDetailsObj.State = vendorInputModel.vendorCompanyDetailsInputModel.State;
+                    vendorCompanyDetailsObj.Country = vendorInputModel.vendorCompanyDetailsInputModel.Country;
+                    vendorCompanyDetailsObj.FullAddress = vendorInputModel.vendorCompanyDetailsInputModel.FullAddress;
+                    vendorCompanyDetailsObj.CreatedBy = 1;
+                    vendorCompanyDetailsObj.CreatedOn = DateTime.Now;
+                    vendorCompanyDetailsObj.IsActive = true;
+
+                    await _dbContext.tblVendorCompanyDetails.AddAsync(vendorCompanyDetailsObj);
+                    await _dbContext.SaveChangesAsync();
+
+                    errorArea = "bank details";
+
+                    var vendorBankDetailsObj = new VendorBankDetails();
+
+                    vendorBankDetailsObj.VendorId = vendorObj.Id;
+                    vendorBankDetailsObj.AccountHolderName = vendorInputModel.vendorBankDetailsInputModel.AccountHolderName;
+                    vendorBankDetailsObj.AccountNumber = vendorInputModel.vendorBankDetailsInputModel.AccountNumber;
+                    vendorBankDetailsObj.IFSCCode = vendorInputModel.vendorBankDetailsInputModel.IFSCCode;
+                    vendorBankDetailsObj.BankName = vendorInputModel.vendorBankDetailsInputModel.BankName;
+                    vendorBankDetailsObj.Branch = vendorInputModel.vendorBankDetailsInputModel.Branch;
+                    vendorBankDetailsObj.CreatedBy = 1;
+                    vendorBankDetailsObj.CreatedOn = DateTime.Now;
+                    vendorBankDetailsObj.IsActive = true;
+
+                    await _dbContext.tblVendorBankDetails.AddAsync(vendorBankDetailsObj);
+                    await _dbContext.SaveChangesAsync();
                 }
+
+                transaction.Commit();
+                apiResponseModel.Status = true;
+                apiResponseModel.Message = "Your registration request has been successfully sent to admin.";
+            }
+
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+                transaction.Rollback();
+                apiResponseModel.Status = false;
+                apiResponseModel.Message = "Sorry, an error occured while saving the entries, please check your " + errorArea + ".";
             }
 
             return apiResponseModel;

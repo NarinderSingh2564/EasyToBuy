@@ -12,7 +12,7 @@ namespace EasyToBuy.Repository.Abstract
 {
     public interface IVendorRepository
     {
-        Task<ApiResponseModel> VendorAddEdit(VendorInputModel vendorInputModel);
+        Task<ApiResponseModel> VendorRegistration(VendorInputModel vendorInputModel);
         Task<IEnumerable<VendorModel>> GetVendorList();
         Task<ApiResponseModel> VendorStatusUpdate(int vendorId, int userId, string status, string statusRemarks);
         Task<ApiResponseModel> VendorLogin(string mobile, string password);
