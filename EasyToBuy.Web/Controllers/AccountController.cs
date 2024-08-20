@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics.Metrics;
+using System.Globalization;
+using EasyToBuy.Data.DBClasses;
 using EasyToBuy.Models.CommonModel;
 using EasyToBuy.Models.CommonModels;
 using EasyToBuy.Models.InputModels;
@@ -6,6 +8,8 @@ using EasyToBuy.Models.Models;
 using EasyToBuy.Models.UIModels;
 using EasyToBuy.Repository.Abstract;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EasyToBuy.Web.Controllers
 {
@@ -20,7 +24,6 @@ namespace EasyToBuy.Web.Controllers
             _accountRepository = accountRepository;
         }
         #endregion
-
 
         [HttpPost("CheckUser")]
         public async Task<ApiResponseModel> CheckUser(LoginModel loginModel)
@@ -91,6 +94,27 @@ namespace EasyToBuy.Web.Controllers
             var response = await _accountRepository.SetDeliveryAddress(id, userId);
 
             return response;
+        }
+
+        [HttpGet("GetCustomerAccountProfile")]
+        public async Task<UserModel> GetCustomerAccountProfile(int userId)
+        {
+            var objectUser = new UserUIModel();
+
+            var response = await _accountRepository.GetCustomerAccountProfile(userId);
+
+            var result = await _accountRepository.GetAddressUserByUserId(userId);
+
+            //objectUserUI.address.City = userAddress.City;
+            //objectUserUI.address.State = userAddress.State;
+            //objectUserUI.address.Country = userAddress.Country;
+            //objectUserUI.address.FullAddress = userAddress.FullAddress;
+            //objectUserUI.address.AddressTypeId = userAddress.AddressTypeId;
+            //objectUserUI.address.TypeOfAddress = userAddress.TypeOfAddress;
+            //objectUserUI.address.Pincode = userAddress.Pincode;
+
+            return response;
+
         }
 
     }

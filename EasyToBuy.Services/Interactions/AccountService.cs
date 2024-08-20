@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection;
 using EasyToBuy.Data;
 using EasyToBuy.Data.DBClasses;
@@ -313,6 +314,51 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
+        public async Task<UserModel> GetCustomerAccountProfile(int userId)
+        {
+            var userModel = new UserModel();
 
+            try
+            {
+                var userDetail = _dbContext.tblUser.Where(x => x.Id == userId).ToList().FirstOrDefault();
+                if (userDetail != null)
+                {
+                    userModel.Id = userDetail.Id;
+                    userModel.Name = userDetail.Name;
+                    userModel.Mobile = userDetail.Mobile;
+                    userModel.Email = userDetail.Email;
+                    userModel.Password = userDetail.Password;
+                    userModel.IsActive = userDetail.IsActive;
+                }
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+            return userModel;
+        }
+        public async Task<AddressModel> GetAddressUserByUserId(int userId)
+        {
+            var addressModel = new AddressModel();
+
+            try
+            {
+                var userAddressDetail = _dbContext.tblAddress.Where(x => x.UserId == userId && x.IsDeliveryAddress == true).ToList().FirstOrDefault();
+                if (userAddressDetail != null)
+                {
+                    addressModel.Id = userAddressDetail.UserId;
+                    addressModel.City = userAddressDetail.City;
+                    addressModel.State = userAddressDetail.State;
+                    addressModel.Country = userAddressDetail.Country;
+                    addressModel.FullAddress = userAddressDetail.FullAddress;
+                    addressModel.Pincode = userAddressDetail.Pincode;
+                }
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+            return addressModel;
+        }
     }
 }
