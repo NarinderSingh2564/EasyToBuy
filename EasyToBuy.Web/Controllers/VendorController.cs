@@ -1,4 +1,6 @@
-﻿using EasyToBuy.Data.SPClasses;
+﻿using System.Net;
+using System.Net.Mail;
+using EasyToBuy.Data.SPClasses;
 using EasyToBuy.Models.CommonModel;
 using EasyToBuy.Models.InputModels;
 using EasyToBuy.Models.Models;
@@ -55,7 +57,7 @@ namespace EasyToBuy.Web.Controllers
             vendorInputModel.vendorBankDetailsInputModel.Branch = vendorUIModel.vendorBankDetailsUIModel.Branch;
 
             var response = await _vendorRepository.VendorRegistration(vendorInputModel);
-            
+
             return response;
         }
 
@@ -91,6 +93,6 @@ namespace EasyToBuy.Web.Controllers
 
             return response;
         }
-
+       
     }
 }
