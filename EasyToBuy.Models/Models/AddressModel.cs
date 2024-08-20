@@ -18,6 +18,6 @@ namespace EasyToBuy.Models.Models
         public string FullAddress { get; set; } = string.Empty;
         public string TypeOfAddress { get; set; }
         public string Pincode { get; set; } = string.Empty;
-        public bool IsDeliveryAddress { get; set; }
+        public bool IsDeliveryAddress { get; set; }      
     }
 }

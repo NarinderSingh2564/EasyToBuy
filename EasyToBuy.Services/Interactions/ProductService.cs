@@ -60,7 +60,7 @@ namespace EasyToBuy.Services.Interactions
         }
 
         #endregion
-        public async Task<IEnumerable<ProductWeightModel>> GetProductWeightList(string packingMode)
+        public async Task<IEnumerable<ProductWeightModel>> GetProductWeightList()
         {
             var productWeightList = new List<ProductWeightModel>();
 
@@ -651,17 +651,17 @@ namespace EasyToBuy.Services.Interactions
             }
             return variationImagesList;
         }
-
-public async Task<IEnumerable<SPGetProductSliderItemsByCategoryId_Result>> GetProductSliderItemsByCategoryId(int categoryId, int productId)
+        public async Task<IEnumerable<SPGetProductSliderItemsByCategoryId_Result>> GetProductSliderItemsByCategoryId(int categoryId, int productId, string dataTypes)
         {
             var productSliderItems = new List<SPGetProductSliderItemsByCategoryId_Result>();
 
             try
             {
-                var sqlQuery = "exec SPGetProductSliderItemsByCategoryId @CategoryId, @ProductId";
+                var sqlQuery = "exec SPGetProductSliderItemsByCategoryId @CategoryId, @ProductId, @DataTypes";
                 SqlParameter parameter1 = new SqlParameter("@CategoryId", categoryId);
-                SqlParameter parameter2 = new SqlParameter("@ProductId", productId);
-                productSliderItems = await _dbContext.productSliderItemsByCategoryId_Results.FromSqlRaw(sqlQuery, parameter1, parameter2).ToListAsync();
+                SqlParameter parameter2 = new SqlParameter("@ProductId", productId < 1 ? DBNull.Value : productId);
+                SqlParameter parameter3 = new SqlParameter("@DataTypes", string.IsNullOrEmpty(dataTypes) ? DBNull.Value : dataTypes);
+                productSliderItems = await _dbContext.productSliderItemsByCategoryId_Results.FromSqlRaw(sqlQuery, parameter1, parameter2, parameter3).ToListAsync();
 
             }
              catch (Exception ex)

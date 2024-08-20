@@ -1,4 +1,6 @@
-﻿namespace EasyToBuy.Models.Models
+﻿using System.Net;
+
+namespace EasyToBuy.Models.Models
 {
     public class UserModel
     {
@@ -11,6 +13,6 @@
         public DateTime CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; }     
     }
 }

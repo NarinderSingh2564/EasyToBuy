@@ -17,6 +17,7 @@ namespace EasyToBuy.Models.Models
         public string OrderNumber { get; set; }
         public int NumberOfProducts { get; set; }
         public DateTime OrderDate { get; set; }
+        public int StockQuantity { get; set; }
         public int StatusId { get; set; }
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }

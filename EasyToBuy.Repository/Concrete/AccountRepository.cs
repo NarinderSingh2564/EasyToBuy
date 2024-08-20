@@ -14,7 +14,7 @@ namespace EasyToBuy.Repository.Concrete
         {
             using (AccountService accountService = new AccountService())
             {
-                return await accountService.CheckUser(mobile, password,role);
+                return await accountService.CheckUser(mobile, password, role);
             }
         }
         public async Task<ApiResponseModel> UserRegistration(UserInputModel userInputModel)
@@ -54,6 +54,20 @@ namespace EasyToBuy.Repository.Concrete
             {
                 return await accountService.SetDeliveryAddress(id, userId);
 
+            }
+        }
+        public async Task<UserModel> GetCustomerAccountProfile(int userId)
+        {
+            using (AccountService accountService = new AccountService())
+            {
+                return await accountService.GetCustomerAccountProfile(userId);
+            }
+        }
+        public async Task<AddressModel> GetAddressUserByUserId(int userId)
+        {
+            using (AccountService accountService = new AccountService())
+            {
+                return await accountService.GetAddressUserByUserId(userId);
             }
         }
     }
