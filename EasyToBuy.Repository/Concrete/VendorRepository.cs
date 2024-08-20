@@ -16,11 +16,11 @@ namespace EasyToBuy.Repository.Concrete
 {
     public class VendorRepository : IVendorRepository
     {
-        public async Task<ApiResponseModel> VendorAddEdit(VendorInputModel vendorInputModel)
+        public async Task<ApiResponseModel> VendorRegistration(VendorInputModel vendorInputModel)
         {
             using (VendorService vendorService = new VendorService())
             {
-                return await vendorService.VendorAddEdit(vendorInputModel);
+                return await vendorService.VendorRegistration(vendorInputModel);
             }
         }
         public async Task<IEnumerable<VendorModel>> GetVendorList()

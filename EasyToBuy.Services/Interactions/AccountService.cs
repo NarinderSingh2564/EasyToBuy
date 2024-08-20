@@ -61,7 +61,7 @@ namespace EasyToBuy.Services.Interactions
         }
 
         #endregion
-        public async Task<ApiResponseModel> CheckUser(string mobile, string password,string role)
+        public async Task<ApiResponseModel> CheckUser(string mobile, string password, string role)
         {
             var apiResponseModel = new ApiResponseModel();
 
@@ -105,7 +105,11 @@ namespace EasyToBuy.Services.Interactions
                             Mobile = dbUser.Mobile,
                             Role = role,
                         };
-
+                        if (role == "Vendor")
+                        {
+                            dbUser.LastLoginDate = DateTime.Now;
+                            await _dbContext.SaveChangesAsync();
+                        }
                         apiResponseModel.Status = true;
                         apiResponseModel.Message = "User logged in successfully.";
                         apiResponseModel.Response = userDetails;

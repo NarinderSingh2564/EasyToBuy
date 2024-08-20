@@ -12,6 +12,9 @@ namespace EasyToBuy.Data.DBClasses
         [Key]
         public int Id { get; set; }
 
+        [StringLength(15)]
+        public string VendorCode { get; set; }
+
         [StringLength(30)]
         public string Name { get; set; }
 
@@ -23,9 +26,6 @@ namespace EasyToBuy.Data.DBClasses
 
         [StringLength(12)]
         public string Mobile { get; set; }
-
-        [StringLength(30)]
-        public string DealingPerson { get; set; }
         public int Pincode { get; set; }
 
         [StringLength(30)]
@@ -40,6 +40,15 @@ namespace EasyToBuy.Data.DBClasses
         [StringLength(200)]
         public string FullAddress { get; set; }
 
+        [StringLength(20)]
+        public string Type { get; set; }
+
+        [StringLength(30)]
+        public string IdentificationType { get; set; }
+
+        [StringLength(30)]
+        public string IdentificationNumber { get; set; }
+
         [StringLength(15)]
         public string Status { get; set; }
 
@@ -47,11 +56,11 @@ namespace EasyToBuy.Data.DBClasses
         public string StatusRemarks { get; set; }
         public bool IsLicensed { get; set; }
         public DateTime? LicenseExpiredOn { get; set; }
+        public DateTime? LastLoginDate { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public DateTime? LastLoginDate { get; set; }
 
     }
 }

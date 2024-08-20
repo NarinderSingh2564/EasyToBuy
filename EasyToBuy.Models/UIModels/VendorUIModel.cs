@@ -1,26 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EasyToBuy.Models.UIModels
+﻿namespace EasyToBuy.Models.UIModels
 {
     public class VendorUIModel
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public string Mobile { get; set; }
-        public string Password { get; set; }
-        public string DealingPerson { get; set; }
+        public VendorBasicDetailsUIModel vendorBasicDetailsUIModel { get; set; }
+        public VendorCompanyDetailsUIModel vendorCompanyDetailsUIModel { get; set; }
+        public VendorBankDetailsUIModel vendorBankDetailsUIModel { get; set; }
+        public VendorUIModel()
+        {
+            vendorBasicDetailsUIModel = new VendorBasicDetailsUIModel();
+            vendorCompanyDetailsUIModel = new VendorCompanyDetailsUIModel();
+            vendorBankDetailsUIModel = new VendorBankDetailsUIModel();
+        }
+    }
+    public class VendorBasicDetailsUIModel
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Mobile { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public string Type { get; set; } = string.Empty;
+        public string IdentificationType { get; set; } = string.Empty;
+        public string IdentificationNumber { get; set; } = string.Empty;
         public int Pincode { get; set; }
-        public string City { get; set; }
-        public string State { get; set; }
-        public string Country { get; set; }
-        public string FullAddress { get; set; }
-        public int CreatedBy { get; set; }
-        public int? UpdatedBy { get; set; }
-    
+        public string City { get; set; } = string.Empty;
+        public string State { get; set; } = string.Empty;
+        public string Country { get; set; } = string.Empty;
+        public string FullAddress { get; set; } = string.Empty;
+    }
+    public class VendorCompanyDetailsUIModel
+    {
+        public string CompanyName { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string DealingPerson { get; set; } = string.Empty;
+        public string GSTIN { get; set; } = string.Empty;
+        public int Pincode { get; set; }
+        public string City { get; set; } = string.Empty;
+        public string State { get; set; } = string.Empty;
+        public string Country { get; set; } = string.Empty;
+        public string FullAddress { get; set; } = string.Empty;
+    }
+    public class VendorBankDetailsUIModel
+    {
+        public string AccountHolderName { get; set; } = string.Empty;
+        public string AccountNumber { get; set; } = string.Empty;
+        public string IFSCCode { get; set; } = string.Empty;
+        public string BankName { get; set; } = string.Empty;
+        public string Branch { get; set; } = string.Empty;
     }
 }

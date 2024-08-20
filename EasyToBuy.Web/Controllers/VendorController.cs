@@ -1,12 +1,11 @@
-﻿using EasyToBuy.Data.SPClasses;
+﻿using System.Net;
+using System.Net.Mail;
+using EasyToBuy.Data.SPClasses;
 using EasyToBuy.Models.CommonModel;
 using EasyToBuy.Models.InputModels;
 using EasyToBuy.Models.Models;
 using EasyToBuy.Models.UIModels;
 using EasyToBuy.Repository.Abstract;
-using EasyToBuy.Repository.Concrete;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EasyToBuy.Web.Controllers
@@ -23,26 +22,41 @@ namespace EasyToBuy.Web.Controllers
         }
         #endregion
 
-        [HttpPost("VendorAddEdit")]
-        public async Task<ApiResponseModel> VendorAddEdit(VendorUIModel vendorUIModel)
+        [HttpPost("VendorRegistration")]
+        public async Task<ApiResponseModel> VendorRegistration( VendorUIModel vendorUIModel)
         {
             var vendorInputModel = new VendorInputModel();
 
-            vendorInputModel.Id = vendorUIModel.Id;
-            vendorInputModel.Name = vendorUIModel.Name;
-            vendorInputModel.Email = vendorUIModel.Email;
-            vendorInputModel.Password = vendorUIModel.Password;
-            vendorInputModel.Mobile = vendorUIModel.Mobile;
-            vendorInputModel.DealingPerson = vendorUIModel.DealingPerson;
-            vendorInputModel.Pincode = vendorUIModel.Pincode;
-            vendorInputModel.City = vendorUIModel.City;
-            vendorInputModel.State = vendorUIModel.State;
-            vendorInputModel.Country = vendorUIModel.Country;
-            vendorInputModel.FullAddress = vendorUIModel.FullAddress;
-            vendorInputModel.CreatedBy = vendorUIModel.CreatedBy;
-            vendorInputModel.UpdatedBy = vendorUIModel.UpdatedBy;   
-          
-            var response = await _vendorRepository.VendorAddEdit(vendorInputModel);
+            vendorInputModel.vendorBasicDetailsInputModel.Name = vendorUIModel.vendorBasicDetailsUIModel.Name;
+            vendorInputModel.vendorBasicDetailsInputModel.Email = vendorUIModel.vendorBasicDetailsUIModel.Email;
+            vendorInputModel.vendorBasicDetailsInputModel.Password = vendorUIModel.vendorBasicDetailsUIModel.Password;
+            vendorInputModel.vendorBasicDetailsInputModel.Mobile = vendorUIModel.vendorBasicDetailsUIModel.Mobile;
+            vendorInputModel.vendorBasicDetailsInputModel.Type = vendorUIModel.vendorBasicDetailsUIModel.Type;
+            vendorInputModel.vendorBasicDetailsInputModel.IdentificationType = vendorUIModel.vendorBasicDetailsUIModel.IdentificationType;
+            vendorInputModel.vendorBasicDetailsInputModel.IdentificationNumber = vendorUIModel.vendorBasicDetailsUIModel.IdentificationNumber;
+            vendorInputModel.vendorBasicDetailsInputModel.Pincode = vendorUIModel.vendorBasicDetailsUIModel.Pincode;
+            vendorInputModel.vendorBasicDetailsInputModel.City = vendorUIModel.vendorBasicDetailsUIModel.City;
+            vendorInputModel.vendorBasicDetailsInputModel.State = vendorUIModel.vendorBasicDetailsUIModel.State;
+            vendorInputModel.vendorBasicDetailsInputModel.Country = vendorUIModel.vendorBasicDetailsUIModel.Country;
+            vendorInputModel.vendorBasicDetailsInputModel.FullAddress = vendorUIModel.vendorBasicDetailsUIModel.FullAddress;
+
+            vendorInputModel.vendorCompanyDetailsInputModel.CompanyName = vendorUIModel.vendorCompanyDetailsUIModel.CompanyName;
+            vendorInputModel.vendorCompanyDetailsInputModel.Description = vendorUIModel.vendorCompanyDetailsUIModel.Description;
+            vendorInputModel.vendorCompanyDetailsInputModel.DealingPerson = vendorUIModel.vendorCompanyDetailsUIModel.DealingPerson;
+            vendorInputModel.vendorCompanyDetailsInputModel.GSTIN = vendorUIModel.vendorCompanyDetailsUIModel.GSTIN;
+            vendorInputModel.vendorCompanyDetailsInputModel.Pincode = vendorUIModel.vendorCompanyDetailsUIModel.Pincode;
+            vendorInputModel.vendorCompanyDetailsInputModel.City = vendorUIModel.vendorCompanyDetailsUIModel.City;
+            vendorInputModel.vendorCompanyDetailsInputModel.State = vendorUIModel.vendorCompanyDetailsUIModel.State;
+            vendorInputModel.vendorCompanyDetailsInputModel.Country = vendorUIModel.vendorCompanyDetailsUIModel.Country;
+            vendorInputModel.vendorCompanyDetailsInputModel.FullAddress = vendorUIModel.vendorCompanyDetailsUIModel.FullAddress;
+
+            vendorInputModel.vendorBankDetailsInputModel.AccountHolderName = vendorUIModel.vendorBankDetailsUIModel.AccountHolderName;
+            vendorInputModel.vendorBankDetailsInputModel.AccountNumber = vendorUIModel.vendorBankDetailsUIModel.AccountNumber;
+            vendorInputModel.vendorBankDetailsInputModel.IFSCCode = vendorUIModel.vendorBankDetailsUIModel.IFSCCode;
+            vendorInputModel.vendorBankDetailsInputModel.BankName = vendorUIModel.vendorBankDetailsUIModel.BankName;
+            vendorInputModel.vendorBankDetailsInputModel.Branch = vendorUIModel.vendorBankDetailsUIModel.Branch;
+
+            var response = await _vendorRepository.VendorRegistration(vendorInputModel);
 
             return response;
         }
@@ -55,9 +69,9 @@ namespace EasyToBuy.Web.Controllers
         }
 
         [HttpPost("VendorStatusUpdate")]
-        public async Task<ApiResponseModel> VendorStatusUpdate(int vendorId, int userId ,string status, string statusRemarks)
+        public async Task<ApiResponseModel> VendorStatusUpdate(int vendorId, int userId, string status, string statusRemarks)
         {
-            var response = await _vendorRepository.VendorStatusUpdate(vendorId,userId, status, statusRemarks);
+            var response = await _vendorRepository.VendorStatusUpdate(vendorId, userId, status, statusRemarks);
 
             return response;
         }
@@ -79,6 +93,6 @@ namespace EasyToBuy.Web.Controllers
 
             return response;
         }
-
+       
     }
 }

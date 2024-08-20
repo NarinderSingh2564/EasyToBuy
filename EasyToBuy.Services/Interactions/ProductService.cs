@@ -91,7 +91,7 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var dbProductPackingList = await _dbContext.tblProductPacking.Where(x=>x.IsActive == true).ToListAsync();
+                var dbProductPackingList = await _dbContext.tblProductPacking.Where(x => x.IsActive == true).ToListAsync();
                 foreach (var packing in dbProductPackingList)
                 {
                     productPackingList.Add(new ProductPackingModel()
@@ -227,7 +227,9 @@ namespace EasyToBuy.Services.Interactions
                         if (dbTotalVolume == productObject.TotalVolume)
                         {
                             apiResponseModel.Status = false;
-                            apiResponseModel.Message = "Sorry, you can not add more variations of this product.";
+                            apiResponseModel.Message = "Sorr" +
+                                "" +
+                                "y, you can not add more variations of this product.";
                         }
                         else
                         {
@@ -236,7 +238,7 @@ namespace EasyToBuy.Services.Interactions
                             if (remainingVolume < 0)
                             {
                                 apiResponseModel.Status = false;
-                                apiResponseModel.Message = "You can only add variation of " + (productObject.PackingModeId == 1 ? (productObject.TotalVolume - dbTotalVolume) : Convert.ToUInt32(productObject.TotalVolume - dbTotalVolume))+ " " + (productObject.ProductPackingMode.PackingMode).ToLower();
+                                apiResponseModel.Message = "You can only add variation of " + (productObject.PackingModeId == 1 ? (productObject.TotalVolume - dbTotalVolume) : Convert.ToUInt32(productObject.TotalVolume - dbTotalVolume)) + " " + (productObject.ProductPackingMode.PackingMode).ToLower();
                                 return apiResponseModel;
                             }
 
@@ -335,12 +337,15 @@ namespace EasyToBuy.Services.Interactions
                 if (dbVariation != null)
                 {
                     dbVariation.IsActive = isActive;
+                    dbVariation.SetAsDefault = isActive == false ? false : dbVariation.SetAsDefault;
                     apiResponseModel.Status = true;
                     _dbContext.SaveChanges();
                 }
                 else
                 {
                     apiResponseModel.Status = false;
+
+
                     apiResponseModel.Message = "This product variation does not exist.";
                 }
             }
@@ -434,11 +439,11 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var getDefaultVariation = await _dbContext.tblProductVariationAndRate.Where(x => x.ProductId == productId).ToListAsync();
+                var dbVariationList = await _dbContext.tblProductVariationAndRate.Where(x => x.ProductId == productId).ToListAsync();
 
-                if (getDefaultVariation.Count > 0)
+                if (dbVariationList.Count > 0)
                 {
-                    foreach (var item in getDefaultVariation)
+                    foreach (var item in dbVariationList)
                     {
                         item.SetAsDefault = false;
                     }
@@ -448,11 +453,20 @@ namespace EasyToBuy.Services.Interactions
 
                 if (defaultVariation != null)
                 {
-                    defaultVariation.SetAsDefault = status;
-                    apiResponseModel.Status = true;
-                    apiResponseModel.Message = "Default variation updated successfully";
+                    if (status && defaultVariation.IsActive == false)
+                    {
+                        apiResponseModel.Status = false;
+                        apiResponseModel.Message = "Variation must be active to make it default variation.";
+                        defaultVariation.SetAsDefault = false;
+                    }
+                    else
+                    {
+                        defaultVariation.SetAsDefault = status;
+                        apiResponseModel.Status = true;
+                        apiResponseModel.Message = "Default variation updated successfully.";
+                    }
+                    await _dbContext.SaveChangesAsync();
                 }
-                await _dbContext.SaveChangesAsync();
             }
 
             catch (Exception ex)
@@ -651,6 +665,7 @@ namespace EasyToBuy.Services.Interactions
             }
             return variationImagesList;
         }
+        
         public async Task<IEnumerable<SPGetProductSliderItemsByCategoryId_Result>> GetProductSliderItemsByCategoryId(int categoryId, int productId, string dataTypes)
         {
             var productSliderItems = new List<SPGetProductSliderItemsByCategoryId_Result>();
@@ -664,12 +679,13 @@ namespace EasyToBuy.Services.Interactions
                 productSliderItems = await _dbContext.productSliderItemsByCategoryId_Results.FromSqlRaw(sqlQuery, parameter1, parameter2, parameter3).ToListAsync();
 
             }
-             catch (Exception ex)
+            catch (Exception ex)
             {
                 var msg = ex.Message;
             }
             return productSliderItems;
-            }
+        }
+        
         public async Task<ApiResponseModel> DeleteProductVariationImage(int imageId)
         {
             var apiResponseModel = new ApiResponseModel();
