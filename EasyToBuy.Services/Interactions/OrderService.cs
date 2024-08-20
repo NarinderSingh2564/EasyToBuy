@@ -79,7 +79,7 @@ namespace EasyToBuy.Services.Interactions
                         var orderList = (from c in _dbContext.tblCart
                                          join tpv in _dbContext.tblProductVariationAndRate
                                          on c.VariationId equals tpv.Id
-                                         where c.UserId == userId && c.IsPlaced == false
+                                         where c.UserId == userId && c.IsPlaced == false  && tpv.IsActive == true && tpv.IsDeleted == false
 
                                          select new OrderModel()
                                          {
@@ -90,13 +90,18 @@ namespace EasyToBuy.Services.Interactions
                                              DiscountPrice = tpv.DiscountPrice,
                                              PriceAfterDiscount = tpv.PriceAfterDiscount,
                                          }).ToList();
-
+                                           
                         if (orderList != null && orderList.Count > 0)
                         {
-
                             foreach (var order in orderList)
                             {
                                 var customerOrderObj = new CustomerOrder();
+
+                                var dbVariation = _dbContext.tblProductVariationAndRate.Where(x => x.Id == order.VariationId).FirstOrDefault();
+                                if (dbVariation != null)
+                                {
+                                    dbVariation.StockQuantity = order.StockQuantity - order.Quantity;
+                                }
 
                                 customerOrderObj.UserId = userId;
                                 customerOrderObj.OrderNumber = "ETB-" + new Random().Next().ToString();
@@ -123,8 +128,7 @@ namespace EasyToBuy.Services.Interactions
                                 await _dbContext.SaveChangesAsync();
 
                             }
-
-
+                            
                             var objCart = await _dbContext.tblCart.Where(x => x.UserId == userId && x.IsPlaced == false).ToListAsync();
 
                             foreach (var item in objCart)
@@ -133,9 +137,6 @@ namespace EasyToBuy.Services.Interactions
                             }
 
                             await _dbContext.SaveChangesAsync();
-
-
-
 
                             apiResponseModel.Status = true;
                             apiResponseModel.Message = "Order placed successfully.";
@@ -157,10 +158,7 @@ namespace EasyToBuy.Services.Interactions
                     apiResponseModel.Status = false;
                     apiResponseModel.Message = "User does not exists.";
                 }
-
-
             }
-
             catch (Exception ex)
             {
                 var msg = ex.Message;
