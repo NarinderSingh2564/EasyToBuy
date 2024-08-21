@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace EasyToBuy.Data.SPClasses
 {
-    public class SPGetVendorOrdersCountById_Result
+    public class SPGetUserOrdersCountById_Result
     {
         [Key]
         public int Id { get; set; }
-        public int VendorId { get; set; }
+        public int UserId { get; set; }
         public int OrderStatusId { get; set; }
         public string OrderStatus { get; set; }
         public int OrderCount { get; set; }

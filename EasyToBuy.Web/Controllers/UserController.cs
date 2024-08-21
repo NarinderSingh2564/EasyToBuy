@@ -87,7 +87,7 @@ namespace EasyToBuy.Web.Controllers
 
 
         [HttpGet("GetUserOrdersCount")]
-        public async Task<IEnumerable<SPGetVendorOrdersCountById_Result>> GetUserOrdersCount(int userId)
+        public async Task<IEnumerable<SPGetUserOrdersCountById_Result>> GetUserOrdersCount(int userId)
         {
             var response = await _userRepository.GetUserOrdersCount(userId);
 

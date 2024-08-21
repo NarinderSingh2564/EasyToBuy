@@ -45,7 +45,7 @@ namespace EasyToBuy.Repository.Concrete
             }
         }
 
-        public async Task<IEnumerable<SPGetVendorOrdersCountById_Result>> GetUserOrdersCount(int userId)
+        public async Task<IEnumerable<SPGetUserOrdersCountById_Result>> GetUserOrdersCount(int userId)
         {
             using (UserService userService = new UserService())
             {

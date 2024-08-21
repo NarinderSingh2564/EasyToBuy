@@ -274,18 +274,18 @@ namespace EasyToBuy.Services.Interactions
             return apiResponseModel;
         }
 
-        public async Task<IEnumerable<SPGetVendorOrdersCountById_Result>> GetUserOrdersCount(int userId)
+        public async Task<IEnumerable<SPGetUserOrdersCountById_Result>> GetUserOrdersCount(int userId)
         {
-            var UserOrdersCount = new List<SPGetVendorOrdersCountById_Result>();
+            var UserOrdersCount = new List<SPGetUserOrdersCountById_Result>();
 
             try
             {
-                var sqlQuery = "exec SPGetVendorOrdersCountById @VendorId";
+                var sqlQuery = "exec SPGetUserOrdersCountById @UserId";
 
-                SqlParameter parameter1 = new SqlParameter("@VendorId", (int)userId);
+                SqlParameter parameter1 = new SqlParameter("@UserId", (int)userId);
 
 
-                UserOrdersCount = await _dbContext.vendorOrdersCountById_Results.FromSqlRaw(sqlQuery, parameter1).ToListAsync();
+                UserOrdersCount = await _dbContext.userOrdersCountById_Results.FromSqlRaw(sqlQuery, parameter1).ToListAsync();
 
             }
             catch (Exception ex)
