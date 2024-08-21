@@ -1,6 +1,8 @@
-﻿namespace EasyToBuy.Models.InputModels
+﻿using System.Net;
+
+namespace EasyToBuy.Models.Models
 {
-    public class UserInputModel
+    public class CustomerModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -11,6 +13,6 @@
         public DateTime CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; }     
     }
 }

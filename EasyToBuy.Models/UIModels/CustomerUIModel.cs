@@ -1,8 +1,6 @@
-﻿using System.Net;
-
-namespace EasyToBuy.Models.Models
+﻿namespace EasyToBuy.Models.UIModels
 {
-    public class UserModel
+    public class CustomerUIModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -13,6 +11,6 @@ namespace EasyToBuy.Models.Models
         public DateTime CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public bool IsActive { get; set; }     
+        public bool IsActive { get; set; }
     }
 }

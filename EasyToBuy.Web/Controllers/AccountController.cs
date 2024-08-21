@@ -34,9 +34,9 @@ namespace EasyToBuy.Web.Controllers
         }
 
         [HttpPost("UserRegistration")]
-        public async Task<ApiResponseModel> UserRegistration(UserUIModel userUIModel)
+        public async Task<ApiResponseModel> UserRegistration(CustomerUIModel userUIModel)
         {
-            var userInputModel = new UserInputModel();
+            var userInputModel = new CustomerInputModel();
 
             userInputModel.Id = userUIModel.Id;
             userInputModel.Name = userUIModel.Name;
@@ -97,9 +97,9 @@ namespace EasyToBuy.Web.Controllers
         }
 
         [HttpGet("GetCustomerAccountProfile")]
-        public async Task<UserModel> GetCustomerAccountProfile(int userId)
+        public async Task<CustomerModel> GetCustomerAccountProfile(int userId)
         {
-            var objectUser = new UserUIModel();
+            var objectUser = new CustomerUIModel();
 
             var response = await _accountRepository.GetCustomerAccountProfile(userId);
 

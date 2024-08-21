@@ -1,6 +1,6 @@
-﻿namespace EasyToBuy.Models.UIModels
+﻿namespace EasyToBuy.Models.InputModels
 {
-    public class UserUIModel
+    public class CustomerInputModel
     {
         public int Id { get; set; }
         public string Name { get; set; }

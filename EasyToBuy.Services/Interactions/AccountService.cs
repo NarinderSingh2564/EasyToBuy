@@ -129,7 +129,7 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        public async Task<ApiResponseModel> UserRegistration(UserInputModel userInputModel)
+        public async Task<ApiResponseModel> UserRegistration(CustomerInputModel userInputModel)
 
         {
             var apiResponseModel = new ApiResponseModel();
@@ -314,9 +314,9 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        public async Task<UserModel> GetCustomerAccountProfile(int userId)
+        public async Task<CustomerModel> GetCustomerAccountProfile(int userId)
         {
-            var userModel = new UserModel();
+            var userModel = new CustomerModel();
 
             try
             {

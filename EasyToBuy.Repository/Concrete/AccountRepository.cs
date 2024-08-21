@@ -17,7 +17,7 @@ namespace EasyToBuy.Repository.Concrete
                 return await accountService.CheckUser(mobile, password, role);
             }
         }
-        public async Task<ApiResponseModel> UserRegistration(UserInputModel userInputModel)
+        public async Task<ApiResponseModel> UserRegistration(CustomerInputModel userInputModel)
         {
             using (AccountService accountService = new AccountService())
             {
@@ -56,7 +56,7 @@ namespace EasyToBuy.Repository.Concrete
 
             }
         }
-        public async Task<UserModel> GetCustomerAccountProfile(int userId)
+        public async Task<CustomerModel> GetCustomerAccountProfile(int userId)
         {
             using (AccountService accountService = new AccountService())
             {
