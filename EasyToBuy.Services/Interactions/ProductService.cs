@@ -116,7 +116,7 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var checkProductDuplicacy = await _dbContext.tblProduct.Where(x => x.ProductName == productInputModel.ProductName && x.VendorId == productInputModel.VendorId && x.Id != productInputModel.Id).FirstOrDefaultAsync();
+                var checkProductDuplicacy = await _dbContext.tblProduct.Where(x => x.ProductName == productInputModel.ProductName && x.UserId == productInputModel.VendorId && x.Id != productInputModel.Id).FirstOrDefaultAsync();
 
                 if (checkProductDuplicacy != null)
                 {
@@ -143,7 +143,7 @@ namespace EasyToBuy.Services.Interactions
                     {
                         var productObj = new Product();
 
-                        productObj.VendorId = productInputModel.VendorId;
+                        productObj.UserId = productInputModel.VendorId;
                         productObj.ProductName = productInputModel.ProductName;
                         productObj.ProductDescription = productInputModel.ProductDescription;
                         productObj.ProductImage = productInputModel.ProductImage;

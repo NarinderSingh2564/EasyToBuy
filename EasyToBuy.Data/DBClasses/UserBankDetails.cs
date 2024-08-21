@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EasyToBuy.Data.DBClasses
 {
-    public class Product
+    public class UserBankDetails
     {
         [Key]
         public int Id { get; set; }
@@ -17,23 +17,20 @@ namespace EasyToBuy.Data.DBClasses
         public int UserId { get; set; }
         public virtual User User { get; set; }
 
-        [Column(TypeName = "varchar(200)")]
-        public string ProductName { get; set; }
+        [StringLength(30)]
+        public string AccountHolderName { get; set; }
 
-        [Column(TypeName = "varchar(500)")]
-        public string ProductDescription { get; set; }
-
-        [Column(TypeName = "varchar(150)")]
-        public string ProductImage { get; set; }
-
-        [ForeignKey("Categorys")]
-        public int CategoryId { get; set; }
-        public virtual Category Categorys { get; set; }
-        public decimal TotalVolume { get; set; }
+        [StringLength(30)]
+        public string AccountNumber { get; set; }
         
-        [ForeignKey("ProductPackingMode")]
-        public int PackingModeId { get; set; }
-        public virtual ProductPackingMode ProductPackingMode { get; set; }
+        [StringLength(20)]
+        public string IFSCCode { get; set; }
+
+        [StringLength(50)]
+        public string BankName { get; set; }
+
+        [StringLength(50)]
+        public string Branch { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }

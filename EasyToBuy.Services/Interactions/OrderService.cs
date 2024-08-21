@@ -69,17 +69,17 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var isUserExists = await _dbContext.tblUser.Where(x => x.Id == userId && x.IsActive == true).FirstOrDefaultAsync();
+                var isUserExists = await _dbContext.tblCustomer.Where(x => x.Id == userId && x.IsActive == true).FirstOrDefaultAsync();
 
                 if (isUserExists != null)
                 {
-                    var isDeliveryAddress = await _dbContext.tblAddress.Where(x => x.UserId == userId && x.IsDeliveryAddress == true).FirstOrDefaultAsync();
+                    var isDeliveryAddress = await _dbContext.tblAddress.Where(x => x.CustomerId == userId && x.IsDeliveryAddress == true).FirstOrDefaultAsync();
                     if (isDeliveryAddress != null)
                     {
                         var orderList = (from c in _dbContext.tblCart
                                          join tpv in _dbContext.tblProductVariationAndRate
                                          on c.VariationId equals tpv.Id
-                                         where c.UserId == userId && c.IsPlaced == false  && tpv.IsActive == true && tpv.IsDeleted == false
+                                         where c.CustomerId == userId && c.IsPlaced == false && tpv.IsActive == true && tpv.IsDeleted == false
 
                                          select new OrderModel()
                                          {
@@ -90,7 +90,7 @@ namespace EasyToBuy.Services.Interactions
                                              DiscountPrice = tpv.DiscountPrice,
                                              PriceAfterDiscount = tpv.PriceAfterDiscount,
                                          }).ToList();
-                                           
+
                         if (orderList != null && orderList.Count > 0)
                         {
                             foreach (var order in orderList)
@@ -103,7 +103,7 @@ namespace EasyToBuy.Services.Interactions
                                     dbVariation.StockQuantity = order.StockQuantity - order.Quantity;
                                 }
 
-                                customerOrderObj.UserId = userId;
+                                customerOrderObj.CustomerId = userId;
                                 customerOrderObj.OrderNumber = "ETB-" + new Random().Next().ToString();
                                 customerOrderObj.OrderDate = DateTime.Now;
                                 customerOrderObj.StatusId = 1;
@@ -128,8 +128,8 @@ namespace EasyToBuy.Services.Interactions
                                 await _dbContext.SaveChangesAsync();
 
                             }
-                            
-                            var objCart = await _dbContext.tblCart.Where(x => x.UserId == userId && x.IsPlaced == false).ToListAsync();
+
+                            var objCart = await _dbContext.tblCart.Where(x => x.CustomerId == userId && x.IsPlaced == false).ToListAsync();
 
                             foreach (var item in objCart)
                             {

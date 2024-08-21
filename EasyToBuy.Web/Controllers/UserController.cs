@@ -12,11 +12,11 @@ namespace EasyToBuy.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class VendorController : ControllerBase
+    public class UserController : ControllerBase
     {
         #region PRIVATE VARIABLES
-        private IVendorRepository _vendorRepository;
-        public VendorController(IVendorRepository vendorRepository)
+        private IUserRepository _vendorRepository;
+        public UserController(IUserRepository vendorRepository)
         {
             _vendorRepository = vendorRepository;
         }

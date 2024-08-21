@@ -11,7 +11,7 @@ using EasyToBuy.Data.DBClasses;
 
 namespace EasyToBuy.Services.Interactions
 {
-    public class VendorService : IDisposable
+    public class UserService : IDisposable
     {
         #region Private Variables
 
@@ -45,7 +45,7 @@ namespace EasyToBuy.Services.Interactions
 
         #region Constructor
 
-        public VendorService()
+        public UserService()
         {
             _dbContext = new ApplicationDbContext();
         }
@@ -54,7 +54,7 @@ namespace EasyToBuy.Services.Interactions
 
         #region Destructor
 
-        ~VendorService()
+        ~UserService()
         {
             Dispose(false);
         }
@@ -69,7 +69,7 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var checkVendorDuplicacy = await _dbContext.tblVendor.Where(x => x.Mobile == vendorInputModel.vendorBasicDetailsInputModel.Mobile && x.Email == vendorInputModel.vendorBasicDetailsInputModel.Email && x.Id != vendorInputModel.vendorBasicDetailsInputModel.Id).FirstOrDefaultAsync();
+                var checkVendorDuplicacy = await _dbContext.tblUser.Where(x => x.Mobile == vendorInputModel.vendorBasicDetailsInputModel.Mobile && x.Email == vendorInputModel.vendorBasicDetailsInputModel.Email && x.Id != vendorInputModel.vendorBasicDetailsInputModel.Id).FirstOrDefaultAsync();
 
                 if (checkVendorDuplicacy != null)
                 {
@@ -81,14 +81,14 @@ namespace EasyToBuy.Services.Interactions
                 {
                     errorArea = "basic details";
 
-                    var vendorObj = new Vendor();
+                    var vendorObj = new User();
 
                     vendorObj.Name = vendorInputModel.vendorBasicDetailsInputModel.Name;
-                    vendorObj.VendorCode = "ETB-" + new Random().Next().ToString();
+                    vendorObj.UserCode = "ETB-" + new Random().Next().ToString();
                     vendorObj.Email = vendorInputModel.vendorBasicDetailsInputModel.Email;
                     vendorObj.Password = vendorInputModel.vendorBasicDetailsInputModel.Password;
                     vendorObj.Mobile = vendorInputModel.vendorBasicDetailsInputModel.Mobile;
-                    vendorObj.Type = vendorInputModel.vendorBasicDetailsInputModel.Type;
+                    vendorObj.Role = vendorInputModel.vendorBasicDetailsInputModel.Type;
                     vendorObj.IdentificationType = vendorInputModel.vendorBasicDetailsInputModel.IdentificationType;
                     vendorObj.IdentificationNumber = vendorInputModel.vendorBasicDetailsInputModel.IdentificationNumber;
                     vendorObj.Pincode = vendorInputModel.vendorBasicDetailsInputModel.Pincode;
@@ -101,14 +101,14 @@ namespace EasyToBuy.Services.Interactions
                     vendorObj.CreatedBy = 1;
                     vendorObj.CreatedOn = DateTime.Now;
 
-                    await _dbContext.tblVendor.AddAsync(vendorObj);
+                    await _dbContext.tblUser.AddAsync(vendorObj);
                     await _dbContext.SaveChangesAsync();
 
                     errorArea = "company details";
 
-                    var vendorCompanyDetailsObj = new VendorCompanyDetails();
+                    var vendorCompanyDetailsObj = new UserCompanyDetails();
 
-                    vendorCompanyDetailsObj.VendorId = vendorObj.Id;
+                    vendorCompanyDetailsObj.UserId = vendorObj.Id;
                     vendorCompanyDetailsObj.CompanyName = vendorInputModel.vendorCompanyDetailsInputModel.CompanyName;
                     vendorCompanyDetailsObj.Description = vendorInputModel.vendorCompanyDetailsInputModel.Description;
                     vendorCompanyDetailsObj.DealingPerson = vendorInputModel.vendorCompanyDetailsInputModel.DealingPerson;
@@ -122,14 +122,14 @@ namespace EasyToBuy.Services.Interactions
                     vendorCompanyDetailsObj.CreatedOn = DateTime.Now;
                     vendorCompanyDetailsObj.IsActive = true;
 
-                    await _dbContext.tblVendorCompanyDetails.AddAsync(vendorCompanyDetailsObj);
+                    await _dbContext.tblUserCompanyDetails.AddAsync(vendorCompanyDetailsObj);
                     await _dbContext.SaveChangesAsync();
 
                     errorArea = "bank details";
 
-                    var vendorBankDetailsObj = new VendorBankDetails();
+                    var vendorBankDetailsObj = new UserBankDetails();
 
-                    vendorBankDetailsObj.VendorId = vendorObj.Id;
+                    vendorBankDetailsObj.UserId = vendorObj.Id;
                     vendorBankDetailsObj.AccountHolderName = vendorInputModel.vendorBankDetailsInputModel.AccountHolderName;
                     vendorBankDetailsObj.AccountNumber = vendorInputModel.vendorBankDetailsInputModel.AccountNumber;
                     vendorBankDetailsObj.IFSCCode = vendorInputModel.vendorBankDetailsInputModel.IFSCCode;
@@ -139,7 +139,7 @@ namespace EasyToBuy.Services.Interactions
                     vendorBankDetailsObj.CreatedOn = DateTime.Now;
                     vendorBankDetailsObj.IsActive = true;
 
-                    await _dbContext.tblVendorBankDetails.AddAsync(vendorBankDetailsObj);
+                    await _dbContext.tblUserBankDetails.AddAsync(vendorBankDetailsObj);
                     await _dbContext.SaveChangesAsync();
                 }
 
@@ -164,7 +164,7 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var dbVendorList = await _dbContext.tblVendor.ToListAsync();
+                var dbVendorList = await _dbContext.tblUser.ToListAsync();
                 foreach (var vendor in dbVendorList)
                 {
                     vendorList.Add(new VendorModel
@@ -197,7 +197,7 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var dbVendor = await _dbContext.tblVendor.Where(x => x.Id == vendorId).FirstOrDefaultAsync();
+                var dbVendor = await _dbContext.tblUser.Where(x => x.Id == vendorId).FirstOrDefaultAsync();
 
                 if (dbVendor != null)
                 {
@@ -225,7 +225,7 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var dbVendor = await _dbContext.tblVendor.Where(x => x.Mobile == mobile).FirstOrDefaultAsync();
+                var dbVendor = await _dbContext.tblUser.Where(x => x.Mobile == mobile).FirstOrDefaultAsync();
 
                 if (dbVendor != null)
                 {

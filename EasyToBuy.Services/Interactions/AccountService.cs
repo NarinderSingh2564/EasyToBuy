@@ -69,13 +69,13 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                if (role == "Vendor")
+                if (role == "User")
                 {
-                    dbUser = await _dbContext.tblVendor.Where(x => x.Mobile == mobile || x.Email == mobile).FirstOrDefaultAsync();
+                    dbUser = await _dbContext.tblUser.Where(x => x.Mobile == mobile || x.Email == mobile).FirstOrDefaultAsync();
                 }
                 if (role == "Customer")
                 {
-                    dbUser = await _dbContext.tblUser.Where(x => x.Mobile == mobile || x.Email == mobile).FirstOrDefaultAsync();
+                    dbUser = await _dbContext.tblCustomer.Where(x => x.Mobile == mobile || x.Email == mobile).FirstOrDefaultAsync();
                 }
 
                 if (dbUser != null)
@@ -136,7 +136,7 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var isUserExists = await _dbContext.tblUser.Where(x => x.Mobile == userInputModel.Mobile).FirstOrDefaultAsync();
+                var isUserExists = await _dbContext.tblCustomer.Where(x => x.Mobile == userInputModel.Mobile).FirstOrDefaultAsync();
 
                 if (isUserExists != null)
                 {
@@ -146,7 +146,7 @@ namespace EasyToBuy.Services.Interactions
 
                 else
                 {
-                    var dbUser = new User();
+                    var dbUser = new Customer();
 
                     dbUser.Name = userInputModel.Name;
                     dbUser.Email = userInputModel.Email;
@@ -156,7 +156,7 @@ namespace EasyToBuy.Services.Interactions
                     dbUser.CreatedOn = DateTime.Now;
                     dbUser.IsActive = true;
 
-                    await _dbContext.tblUser.AddAsync(dbUser);
+                    await _dbContext.tblCustomer.AddAsync(dbUser);
                     await _dbContext.SaveChangesAsync();
 
                     apiResponseModel.Status = true;
@@ -180,7 +180,7 @@ namespace EasyToBuy.Services.Interactions
                 var query = (from a in _dbContext.tblAddress
                              join at in _dbContext.tblAddressType
                              on a.AddressTypeId equals at.Id
-                             where a.UserId == userID
+                             where a.CustomerId == userID
 
                              select new AddressModel
                              {
@@ -252,7 +252,7 @@ namespace EasyToBuy.Services.Interactions
                 {
                     var addressObj = new Address();
 
-                    addressObj.UserId = addressInputModel.UserId;
+                    addressObj.CustomerId = addressInputModel.UserId;
                     addressObj.FullAddress = addressInputModel.FullAddress;
                     addressObj.Pincode = addressInputModel.Pincode;
                     addressObj.CreatedBy = addressInputModel.CreatedBy;
@@ -287,7 +287,7 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var dbAdressByUserId = await _dbContext.tblAddress.Where(x => x.UserId == userId).ToListAsync();
+                var dbAdressByUserId = await _dbContext.tblAddress.Where(x => x.CustomerId == userId).ToListAsync();
 
                 if (dbAdressByUserId.Count > 0)
                 {
@@ -320,7 +320,7 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var userDetail = _dbContext.tblUser.Where(x => x.Id == userId).ToList().FirstOrDefault();
+                var userDetail = _dbContext.tblCustomer.Where(x => x.Id == userId).FirstOrDefault();
                 if (userDetail != null)
                 {
                     userModel.Id = userDetail.Id;
@@ -343,10 +343,10 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var userAddressDetail = _dbContext.tblAddress.Where(x => x.UserId == userId && x.IsDeliveryAddress == true).ToList().FirstOrDefault();
+                var userAddressDetail = _dbContext.tblAddress.Where(x => x.CustomerId == userId && x.IsDeliveryAddress == true).ToList().FirstOrDefault();
                 if (userAddressDetail != null)
                 {
-                    addressModel.Id = userAddressDetail.UserId;
+                    addressModel.Id = userAddressDetail.CustomerId;
                     addressModel.City = userAddressDetail.City;
                     addressModel.State = userAddressDetail.State;
                     addressModel.Country = userAddressDetail.Country;

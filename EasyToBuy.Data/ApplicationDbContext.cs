@@ -12,10 +12,10 @@ namespace EasyToBuy.Data
         }
         public DbSet<Address> tblAddress  { get; set; }
         public DbSet<AddressType> tblAddressType { get; set; }
-        public DbSet<Vendor> tblVendor { get; set; }
-        public DbSet<VendorCompanyDetails> tblVendorCompanyDetails { get; set; }
-        public DbSet<VendorBankDetails> tblVendorBankDetails { get; set; }
         public DbSet<User> tblUser { get; set; }
+        public DbSet<UserCompanyDetails> tblUserCompanyDetails { get; set; }
+        public DbSet<UserBankDetails> tblUserBankDetails { get; set; }
+        public DbSet<Customer> tblCustomer { get; set; }
         public DbSet<Category> tblCategory { get; set; }
         public DbSet<Product> tblProduct { get; set; }
         public DbSet<ProductWeights> tblProductWeight { get; set; } 

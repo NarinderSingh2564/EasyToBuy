@@ -10,7 +10,7 @@ using EasyToBuy.Models.Models;
 
 namespace EasyToBuy.Repository.Abstract
 {
-    public interface IVendorRepository
+    public interface IUserRepository
     {
         Task<ApiResponseModel> VendorRegistration(VendorInputModel vendorInputModel);
         Task<IEnumerable<VendorModel>> GetVendorList();

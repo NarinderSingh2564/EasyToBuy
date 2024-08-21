@@ -29,7 +29,7 @@ namespace EasyToBuy.Repository.Concrete
         {
             using (ProductService productService = new ProductService())
             {
-                return await productService.ProductAddEdit(productInputModel);
+                return new ApiResponseModel();// await productService.ProductAddEdit(productInputModel);
             }
         }
         public async Task<IEnumerable<SPGetProductList_Result>> GetProductList(int categoryId, string? searchText, int vendorId, string role)

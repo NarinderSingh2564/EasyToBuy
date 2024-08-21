@@ -65,7 +65,7 @@ namespace EasyToBuy.Services.Interactions
             {
                 if (cartInputModel.RequestFrom == "Cart")
                 {
-                    var isProductExists = await _dbContext.tblCart.Where(x => x.VariationId == cartInputModel.VariationId && x.UserId == cartInputModel.UserId && x.IsPlaced == false).FirstOrDefaultAsync();
+                    var isProductExists = await _dbContext.tblCart.Where(x => x.VariationId == cartInputModel.VariationId && x.CustomerId == cartInputModel.UserId && x.IsPlaced == false).FirstOrDefaultAsync();
                     if (isProductExists != null)
                     {
                         isProductExists.Quantity = cartInputModel.Quantity;
@@ -90,7 +90,7 @@ namespace EasyToBuy.Services.Interactions
                     }
                     else
                     {
-                        var isProductExists = await _dbContext.tblCart.Where(x => x.VariationId == cartInputModel.VariationId && x.UserId == cartInputModel.UserId && x.IsPlaced == false).FirstOrDefaultAsync();
+                        var isProductExists = await _dbContext.tblCart.Where(x => x.VariationId == cartInputModel.VariationId && x.CustomerId == cartInputModel.UserId && x.IsPlaced == false).FirstOrDefaultAsync();
                         if (isProductExists != null)
                         {
                             apiResponseModel.Status = false;
@@ -100,7 +100,7 @@ namespace EasyToBuy.Services.Interactions
                         {
                             var cartObj = new Cart();
 
-                            cartObj.UserId = cartInputModel.UserId;
+                            cartObj.CustomerId = cartInputModel.UserId;
                             cartObj.VariationId = cartInputModel.VariationId;
                             cartObj.Quantity = cartInputModel.Quantity;
                             cartObj.AddedDate = DateTime.Now;
@@ -173,8 +173,8 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var isProductExist = await _dbContext.tblCart.Where(x => x.VariationId == variationId && x.UserId == userId && x.IsPlaced == false).FirstOrDefaultAsync();
-               var s = await _dbContext.tblProductVariationAndRate.Where(x=> x.Id == variationId).Select(x=>x.SetAsDefault).FirstOrDefaultAsync();
+                var isProductExist = await _dbContext.tblCart.Where(x => x.VariationId == variationId && x.CustomerId == userId && x.IsPlaced == false).FirstOrDefaultAsync();
+                var s = await _dbContext.tblProductVariationAndRate.Where(x => x.Id == variationId).Select(x => x.SetAsDefault).FirstOrDefaultAsync();
                 if (isProductExist != null && s == false)
                 {
                     apiResponseModel.Status = true;

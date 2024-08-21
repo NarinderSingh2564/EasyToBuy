@@ -9,9 +9,9 @@ namespace EasyToBuy.Data.DBClasses
         [Key]
         public int Id { get; set; }
 
-        [ForeignKey("User")]
-        public int UserId { get; set; }
-        public virtual User User { get; set; }
+        [ForeignKey("Customer")]
+        public int CustomerId { get; set; }
+        public virtual Customer Customer { get; set; }
 
         [StringLength(20)]
         public string OrderNumber { get; set; } = string.Empty;
