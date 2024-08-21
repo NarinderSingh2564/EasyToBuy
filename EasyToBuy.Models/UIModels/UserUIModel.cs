@@ -2,17 +2,17 @@
 {
     public class UserUIModel
     {
-        public VendorBasicDetailsUIModel vendorBasicDetailsUIModel { get; set; }
-        public VendorCompanyDetailsUIModel vendorCompanyDetailsUIModel { get; set; }
-        public VendorBankDetailsUIModel vendorBankDetailsUIModel { get; set; }
+        public UserBasicDetailsUIModel userBasicDetailsUIModel { get; set; }
+        public UserCompanyDetailsUIModel userCompanyDetailsUIModel { get; set; }
+        public UserBankDetailsUIModel userBankDetailsUIModel { get; set; }
         public UserUIModel()
         {
-            vendorBasicDetailsUIModel = new VendorBasicDetailsUIModel();
-            vendorCompanyDetailsUIModel = new VendorCompanyDetailsUIModel();
-            vendorBankDetailsUIModel = new VendorBankDetailsUIModel();
+            userBasicDetailsUIModel = new UserBasicDetailsUIModel();
+            userCompanyDetailsUIModel = new UserCompanyDetailsUIModel();
+            userBankDetailsUIModel = new UserBankDetailsUIModel();
         }
     }
-    public class VendorBasicDetailsUIModel
+    public class UserBasicDetailsUIModel
     {
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
@@ -27,7 +27,7 @@
         public string Country { get; set; } = string.Empty;
         public string FullAddress { get; set; } = string.Empty;
     }
-    public class VendorCompanyDetailsUIModel
+    public class UserCompanyDetailsUIModel
     {
         public string CompanyName { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
@@ -39,7 +39,7 @@
         public string Country { get; set; } = string.Empty;
         public string FullAddress { get; set; } = string.Empty;
     }
-    public class VendorBankDetailsUIModel
+    public class UserBankDetailsUIModel
     {
         public string AccountHolderName { get; set; } = string.Empty;
         public string AccountNumber { get; set; } = string.Empty;

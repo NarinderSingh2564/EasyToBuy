@@ -12,10 +12,10 @@ namespace EasyToBuy.Repository.Abstract
 {
     public interface IUserRepository
     {
-        Task<ApiResponseModel> VendorRegistration(UserInputModel vendorInputModel);
-        Task<IEnumerable<UserModel>> GetVendorList();
-        Task<ApiResponseModel> VendorStatusUpdate(int vendorId, int userId, string status, string statusRemarks);
-        Task<ApiResponseModel> VendorLogin(string mobile, string password);
-        Task<IEnumerable<SPGetVendorOrdersCountById_Result>> GetVendorOrdersCount(int vendorId);
+        Task<ApiResponseModel> UserRegistration(UserInputModel userInputModel);
+        Task<IEnumerable<UserModel>> GetUserList();
+        Task<ApiResponseModel> UserStatusUpdate(int userId, int customerId, string status, string statusRemarks);
+        Task<ApiResponseModel> UserLogin(string mobile, string password);
+        Task<IEnumerable<SPGetVendorOrdersCountById_Result>> GetUserOrdersCount(int userId);
     }
 }

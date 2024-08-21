@@ -16,40 +16,40 @@ namespace EasyToBuy.Repository.Concrete
 {
     public class UserRepository : IUserRepository
     {
-        public async Task<ApiResponseModel> VendorRegistration(UserInputModel vendorInputModel)
+        public async Task<ApiResponseModel> UserRegistration(UserInputModel userInputModel)
         {
-            using (UserService vendorService = new UserService())
+            using (UserService userService = new UserService())
             {
-                return await vendorService.VendorRegistration(vendorInputModel);
+                return await userService.UserRegistration(userInputModel);
             }
         }
-        public async Task<IEnumerable<UserModel>> GetVendorList()
+        public async Task<IEnumerable<UserModel>> GetUserList()
         {
-            using (UserService vendorService = new UserService())
+            using (UserService userService = new UserService())
             {
-                return await vendorService.GetVendorList();
+                return await userService.GetUserList();
             }
         }
-        public async Task<ApiResponseModel> VendorStatusUpdate(int vendorId, int userId, string status, string statusRemarks)
+        public async Task<ApiResponseModel> UserStatusUpdate(int userId, int customerId, string status, string statusRemarks)
         {
-            using (UserService vendorService = new UserService())
+            using (UserService userService = new UserService())
             {
-                return await vendorService.VendorStatusUpdate(vendorId,userId, status, statusRemarks);
+                return await userService.UserStatusUpdate(userId, customerId, status, statusRemarks);
             }
         }
-        public async Task<ApiResponseModel> VendorLogin(string mobile, string password)
+        public async Task<ApiResponseModel> UserLogin(string mobile, string password)
         {
-            using (UserService vendorService = new UserService())
+            using (UserService userService = new UserService())
             {
-                return await vendorService.VendorLogin(mobile,password);
+                return await userService.UserLogin(mobile,password);
             }
         }
 
-        public async Task<IEnumerable<SPGetVendorOrdersCountById_Result>> GetVendorOrdersCount(int vendorId)
+        public async Task<IEnumerable<SPGetVendorOrdersCountById_Result>> GetUserOrdersCount(int userId)
         {
-            using (UserService vendorService = new UserService())
+            using (UserService userService = new UserService())
             {
-                return await vendorService.GetVendorOrdersCount(vendorId);
+                return await userService.GetUserOrdersCount(userId);
             }
         }
 

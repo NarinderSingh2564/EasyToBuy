@@ -15,81 +15,81 @@ namespace EasyToBuy.Web.Controllers
     public class UserController : ControllerBase
     {
         #region PRIVATE VARIABLES
-        private IUserRepository _vendorRepository;
+        private IUserRepository _userRepository;
         public UserController(IUserRepository vendorRepository)
         {
-            _vendorRepository = vendorRepository;
+            _userRepository = vendorRepository;
         }
         #endregion
 
-        [HttpPost("VendorRegistration")]
-        public async Task<ApiResponseModel> VendorRegistration( UserUIModel vendorUIModel)
+        [HttpPost("UserRegistration")]
+        public async Task<ApiResponseModel> UserRegistration( UserUIModel userUIModel)
         {
-            var vendorInputModel = new UserInputModel();
+            var userInputModel = new UserInputModel();
 
-            vendorInputModel.vendorBasicDetailsInputModel.Name = vendorUIModel.vendorBasicDetailsUIModel.Name;
-            vendorInputModel.vendorBasicDetailsInputModel.Email = vendorUIModel.vendorBasicDetailsUIModel.Email;
-            vendorInputModel.vendorBasicDetailsInputModel.Password = vendorUIModel.vendorBasicDetailsUIModel.Password;
-            vendorInputModel.vendorBasicDetailsInputModel.Mobile = vendorUIModel.vendorBasicDetailsUIModel.Mobile;
-            vendorInputModel.vendorBasicDetailsInputModel.Type = vendorUIModel.vendorBasicDetailsUIModel.Type;
-            vendorInputModel.vendorBasicDetailsInputModel.IdentificationType = vendorUIModel.vendorBasicDetailsUIModel.IdentificationType;
-            vendorInputModel.vendorBasicDetailsInputModel.IdentificationNumber = vendorUIModel.vendorBasicDetailsUIModel.IdentificationNumber;
-            vendorInputModel.vendorBasicDetailsInputModel.Pincode = vendorUIModel.vendorBasicDetailsUIModel.Pincode;
-            vendorInputModel.vendorBasicDetailsInputModel.City = vendorUIModel.vendorBasicDetailsUIModel.City;
-            vendorInputModel.vendorBasicDetailsInputModel.State = vendorUIModel.vendorBasicDetailsUIModel.State;
-            vendorInputModel.vendorBasicDetailsInputModel.Country = vendorUIModel.vendorBasicDetailsUIModel.Country;
-            vendorInputModel.vendorBasicDetailsInputModel.FullAddress = vendorUIModel.vendorBasicDetailsUIModel.FullAddress;
+            userInputModel.userBasicDetailsInputModel.Name = userUIModel.userBasicDetailsUIModel.Name;
+            userInputModel.userBasicDetailsInputModel.Email = userUIModel.userBasicDetailsUIModel.Email;
+            userInputModel.userBasicDetailsInputModel.Password = userUIModel.userBasicDetailsUIModel.Password;
+            userInputModel.userBasicDetailsInputModel.Mobile = userUIModel.userBasicDetailsUIModel.Mobile;
+            userInputModel.userBasicDetailsInputModel.Type = userUIModel.userBasicDetailsUIModel.Type;
+            userInputModel.userBasicDetailsInputModel.IdentificationType = userUIModel.userBasicDetailsUIModel.IdentificationType;
+            userInputModel.userBasicDetailsInputModel.IdentificationNumber = userUIModel.userBasicDetailsUIModel.IdentificationNumber;
+            userInputModel.userBasicDetailsInputModel.Pincode = userUIModel.userBasicDetailsUIModel.Pincode;
+            userInputModel.userBasicDetailsInputModel.City = userUIModel.userBasicDetailsUIModel.City;
+            userInputModel.userBasicDetailsInputModel.State = userUIModel.userBasicDetailsUIModel.State;
+            userInputModel.userBasicDetailsInputModel.Country = userUIModel.userBasicDetailsUIModel.Country;
+            userInputModel.userBasicDetailsInputModel.FullAddress = userUIModel.userBasicDetailsUIModel.FullAddress;
 
-            vendorInputModel.vendorCompanyDetailsInputModel.CompanyName = vendorUIModel.vendorCompanyDetailsUIModel.CompanyName;
-            vendorInputModel.vendorCompanyDetailsInputModel.Description = vendorUIModel.vendorCompanyDetailsUIModel.Description;
-            vendorInputModel.vendorCompanyDetailsInputModel.DealingPerson = vendorUIModel.vendorCompanyDetailsUIModel.DealingPerson;
-            vendorInputModel.vendorCompanyDetailsInputModel.GSTIN = vendorUIModel.vendorCompanyDetailsUIModel.GSTIN;
-            vendorInputModel.vendorCompanyDetailsInputModel.Pincode = vendorUIModel.vendorCompanyDetailsUIModel.Pincode;
-            vendorInputModel.vendorCompanyDetailsInputModel.City = vendorUIModel.vendorCompanyDetailsUIModel.City;
-            vendorInputModel.vendorCompanyDetailsInputModel.State = vendorUIModel.vendorCompanyDetailsUIModel.State;
-            vendorInputModel.vendorCompanyDetailsInputModel.Country = vendorUIModel.vendorCompanyDetailsUIModel.Country;
-            vendorInputModel.vendorCompanyDetailsInputModel.FullAddress = vendorUIModel.vendorCompanyDetailsUIModel.FullAddress;
+            userInputModel.userCompanyDetailsInputModel.CompanyName = userUIModel.userCompanyDetailsUIModel.CompanyName;
+            userInputModel.userCompanyDetailsInputModel.Description = userUIModel.userCompanyDetailsUIModel.Description;
+            userInputModel.userCompanyDetailsInputModel.DealingPerson = userUIModel.userCompanyDetailsUIModel.DealingPerson;
+            userInputModel.userCompanyDetailsInputModel.GSTIN = userUIModel.userCompanyDetailsUIModel.GSTIN;
+            userInputModel.userCompanyDetailsInputModel.Pincode = userUIModel.userCompanyDetailsUIModel.Pincode;
+            userInputModel.userCompanyDetailsInputModel.City = userUIModel.userCompanyDetailsUIModel.City;
+            userInputModel.userCompanyDetailsInputModel.State = userUIModel.userCompanyDetailsUIModel.State;
+            userInputModel.userCompanyDetailsInputModel.Country = userUIModel.userCompanyDetailsUIModel.Country;
+            userInputModel.userCompanyDetailsInputModel.FullAddress = userUIModel.userCompanyDetailsUIModel.FullAddress;
 
-            vendorInputModel.vendorBankDetailsInputModel.AccountHolderName = vendorUIModel.vendorBankDetailsUIModel.AccountHolderName;
-            vendorInputModel.vendorBankDetailsInputModel.AccountNumber = vendorUIModel.vendorBankDetailsUIModel.AccountNumber;
-            vendorInputModel.vendorBankDetailsInputModel.IFSCCode = vendorUIModel.vendorBankDetailsUIModel.IFSCCode;
-            vendorInputModel.vendorBankDetailsInputModel.BankName = vendorUIModel.vendorBankDetailsUIModel.BankName;
-            vendorInputModel.vendorBankDetailsInputModel.Branch = vendorUIModel.vendorBankDetailsUIModel.Branch;
+            userInputModel.userBankDetailsInputModel.AccountHolderName = userUIModel.userBankDetailsUIModel.AccountHolderName;
+            userInputModel.userBankDetailsInputModel.AccountNumber = userUIModel.userBankDetailsUIModel.AccountNumber;
+            userInputModel.userBankDetailsInputModel.IFSCCode = userUIModel.userBankDetailsUIModel.IFSCCode;
+            userInputModel.userBankDetailsInputModel.BankName = userUIModel.userBankDetailsUIModel.BankName;
+            userInputModel.userBankDetailsInputModel.Branch = userUIModel.userBankDetailsUIModel.Branch;
 
-            var response = await _vendorRepository.VendorRegistration(vendorInputModel);
+            var response = await _userRepository.UserRegistration(userInputModel);
 
             return response;
         }
 
-        [HttpGet("GetVendorList")]
-        public async Task<IEnumerable<UserModel>> GetVendorList()
+        [HttpGet("GetUserList")]
+        public async Task<IEnumerable<UserModel>> GetUserList()
         {
-            var response = await _vendorRepository.GetVendorList();
+            var response = await _userRepository.GetUserList();
             return response;
         }
 
-        [HttpPost("VendorStatusUpdate")]
-        public async Task<ApiResponseModel> VendorStatusUpdate(int vendorId, int userId, string status, string statusRemarks)
+        [HttpPost("UserStatusUpdate")]
+        public async Task<ApiResponseModel> UserStatusUpdate(int userId, int customerId, string status, string statusRemarks)
         {
-            var response = await _vendorRepository.VendorStatusUpdate(vendorId, userId, status, statusRemarks);
-
-            return response;
-        }
-
-        [HttpPost("VendorLogin")]
-
-        public async Task<ApiResponseModel> VendorLogin(string mobile, string password)
-        {
-            var response = await _vendorRepository.VendorLogin(mobile, password);
+            var response = await _userRepository.UserStatusUpdate(userId, customerId, status, statusRemarks);
 
             return response;
         }
 
+        [HttpPost("UserLogin")]
 
-        [HttpGet("GetVendorOrdersCount")]
-        public async Task<IEnumerable<SPGetVendorOrdersCountById_Result>> GetVendorOrdersCount(int vendorId)
+        public async Task<ApiResponseModel> UserLogin(string mobile, string password)
         {
-            var response = await _vendorRepository.GetVendorOrdersCount(vendorId);
+            var response = await _userRepository.UserLogin(mobile, password);
+
+            return response;
+        }
+
+
+        [HttpGet("GetUserOrdersCount")]
+        public async Task<IEnumerable<SPGetVendorOrdersCountById_Result>> GetUserOrdersCount(int userId)
+        {
+            var response = await _userRepository.GetUserOrdersCount(userId);
 
             return response;
         }

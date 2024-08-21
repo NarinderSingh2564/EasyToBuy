@@ -61,7 +61,7 @@ namespace EasyToBuy.Services.Interactions
 
         #endregion
 
-        public async Task<ApiResponseModel> VendorRegistration(UserInputModel vendorInputModel)
+        public async Task<ApiResponseModel> UserRegistration(UserInputModel userInputModel)
         {
             var apiResponseModel = new ApiResponseModel();
             var transaction = _dbContext.Database.BeginTransaction();
@@ -69,9 +69,9 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var checkVendorDuplicacy = await _dbContext.tblUser.Where(x => x.Mobile == vendorInputModel.vendorBasicDetailsInputModel.Mobile && x.Email == vendorInputModel.vendorBasicDetailsInputModel.Email && x.Id != vendorInputModel.vendorBasicDetailsInputModel.Id).FirstOrDefaultAsync();
+                var checkUserDuplicacy = await _dbContext.tblUser.Where(x => x.Mobile == userInputModel.userBasicDetailsInputModel.Mobile && x.Email == userInputModel.userBasicDetailsInputModel.Email && x.Id != userInputModel.userBasicDetailsInputModel.Id).FirstOrDefaultAsync();
 
-                if (checkVendorDuplicacy != null)
+                if (checkUserDuplicacy != null)
                 {
                     apiResponseModel.Status = false;
                     apiResponseModel.Message = "This mobile number and email is already registered, please try with new.";
@@ -81,65 +81,65 @@ namespace EasyToBuy.Services.Interactions
                 {
                     errorArea = "basic details";
 
-                    var vendorObj = new User();
+                    var userObj = new User();
 
-                    vendorObj.Name = vendorInputModel.vendorBasicDetailsInputModel.Name;
-                    vendorObj.UserCode = "ETB-" + new Random().Next().ToString();
-                    vendorObj.Email = vendorInputModel.vendorBasicDetailsInputModel.Email;
-                    vendorObj.Password = vendorInputModel.vendorBasicDetailsInputModel.Password;
-                    vendorObj.Mobile = vendorInputModel.vendorBasicDetailsInputModel.Mobile;
-                    vendorObj.Role = vendorInputModel.vendorBasicDetailsInputModel.Type;
-                    vendorObj.IdentificationType = vendorInputModel.vendorBasicDetailsInputModel.IdentificationType;
-                    vendorObj.IdentificationNumber = vendorInputModel.vendorBasicDetailsInputModel.IdentificationNumber;
-                    vendorObj.Pincode = vendorInputModel.vendorBasicDetailsInputModel.Pincode;
-                    vendorObj.City = vendorInputModel.vendorBasicDetailsInputModel.City;
-                    vendorObj.State = vendorInputModel.vendorBasicDetailsInputModel.State;
-                    vendorObj.Country = vendorInputModel.vendorBasicDetailsInputModel.Country;
-                    vendorObj.FullAddress = vendorInputModel.vendorBasicDetailsInputModel.FullAddress;
-                    vendorObj.Status = "Pending";
-                    vendorObj.StatusRemarks = "Your request has been sent to admin.";
-                    vendorObj.CreatedBy = 1;
-                    vendorObj.CreatedOn = DateTime.Now;
+                    userObj.Name = userInputModel.userBasicDetailsInputModel.Name;
+                    userObj.UserCode = "ETB-" + new Random().Next().ToString();
+                    userObj.Email = userInputModel.userBasicDetailsInputModel.Email;
+                    userObj.Password = userInputModel.userBasicDetailsInputModel.Password;
+                    userObj.Mobile = userInputModel.userBasicDetailsInputModel.Mobile;
+                    userObj.Role = userInputModel.userBasicDetailsInputModel.Type;
+                    userObj.IdentificationType = userInputModel.userBasicDetailsInputModel.IdentificationType;
+                    userObj.IdentificationNumber = userInputModel.userBasicDetailsInputModel.IdentificationNumber;
+                    userObj.Pincode = userInputModel.userBasicDetailsInputModel.Pincode;
+                    userObj.City = userInputModel.userBasicDetailsInputModel.City;
+                    userObj.State = userInputModel.userBasicDetailsInputModel.State;
+                    userObj.Country = userInputModel.userBasicDetailsInputModel.Country;
+                    userObj.FullAddress = userInputModel.userBasicDetailsInputModel.FullAddress;
+                    userObj.Status = "Pending";
+                    userObj.StatusRemarks = "Your request has been sent to admin.";
+                    userObj.CreatedBy = 1;
+                    userObj.CreatedOn = DateTime.Now;
 
-                    await _dbContext.tblUser.AddAsync(vendorObj);
+                    await _dbContext.tblUser.AddAsync(userObj);
                     await _dbContext.SaveChangesAsync();
 
                     errorArea = "company details";
 
-                    var vendorCompanyDetailsObj = new UserCompanyDetails();
+                    var userCompanyDetailsObj = new UserCompanyDetails();
 
-                    vendorCompanyDetailsObj.UserId = vendorObj.Id;
-                    vendorCompanyDetailsObj.CompanyName = vendorInputModel.vendorCompanyDetailsInputModel.CompanyName;
-                    vendorCompanyDetailsObj.Description = vendorInputModel.vendorCompanyDetailsInputModel.Description;
-                    vendorCompanyDetailsObj.DealingPerson = vendorInputModel.vendorCompanyDetailsInputModel.DealingPerson;
-                    vendorCompanyDetailsObj.GSTIN = vendorInputModel.vendorCompanyDetailsInputModel.GSTIN;
-                    vendorCompanyDetailsObj.Pincode = vendorInputModel.vendorCompanyDetailsInputModel.Pincode;
-                    vendorCompanyDetailsObj.City = vendorInputModel.vendorCompanyDetailsInputModel.City;
-                    vendorCompanyDetailsObj.State = vendorInputModel.vendorCompanyDetailsInputModel.State;
-                    vendorCompanyDetailsObj.Country = vendorInputModel.vendorCompanyDetailsInputModel.Country;
-                    vendorCompanyDetailsObj.FullAddress = vendorInputModel.vendorCompanyDetailsInputModel.FullAddress;
-                    vendorCompanyDetailsObj.CreatedBy = 1;
-                    vendorCompanyDetailsObj.CreatedOn = DateTime.Now;
-                    vendorCompanyDetailsObj.IsActive = true;
+                    userCompanyDetailsObj.UserId = userObj.Id;
+                    userCompanyDetailsObj.CompanyName = userInputModel.userCompanyDetailsInputModel.CompanyName;
+                    userCompanyDetailsObj.Description = userInputModel.userCompanyDetailsInputModel.Description;
+                    userCompanyDetailsObj.DealingPerson = userInputModel.userCompanyDetailsInputModel.DealingPerson;
+                    userCompanyDetailsObj.GSTIN = userInputModel.userCompanyDetailsInputModel.GSTIN;
+                    userCompanyDetailsObj.Pincode = userInputModel.userCompanyDetailsInputModel.Pincode;
+                    userCompanyDetailsObj.City = userInputModel.userCompanyDetailsInputModel.City;
+                    userCompanyDetailsObj.State = userInputModel.userCompanyDetailsInputModel.State;
+                    userCompanyDetailsObj.Country = userInputModel.userCompanyDetailsInputModel.Country;
+                    userCompanyDetailsObj.FullAddress = userInputModel.userCompanyDetailsInputModel.FullAddress;
+                    userCompanyDetailsObj.CreatedBy = 1;
+                    userCompanyDetailsObj.CreatedOn = DateTime.Now;
+                    userCompanyDetailsObj.IsActive = true;
 
-                    await _dbContext.tblUserCompanyDetails.AddAsync(vendorCompanyDetailsObj);
+                    await _dbContext.tblUserCompanyDetails.AddAsync(userCompanyDetailsObj);
                     await _dbContext.SaveChangesAsync();
 
                     errorArea = "bank details";
 
-                    var vendorBankDetailsObj = new UserBankDetails();
+                    var userBankDetailsObj = new UserBankDetails();
 
-                    vendorBankDetailsObj.UserId = vendorObj.Id;
-                    vendorBankDetailsObj.AccountHolderName = vendorInputModel.vendorBankDetailsInputModel.AccountHolderName;
-                    vendorBankDetailsObj.AccountNumber = vendorInputModel.vendorBankDetailsInputModel.AccountNumber;
-                    vendorBankDetailsObj.IFSCCode = vendorInputModel.vendorBankDetailsInputModel.IFSCCode;
-                    vendorBankDetailsObj.BankName = vendorInputModel.vendorBankDetailsInputModel.BankName;
-                    vendorBankDetailsObj.Branch = vendorInputModel.vendorBankDetailsInputModel.Branch;
-                    vendorBankDetailsObj.CreatedBy = 1;
-                    vendorBankDetailsObj.CreatedOn = DateTime.Now;
-                    vendorBankDetailsObj.IsActive = true;
+                    userBankDetailsObj.UserId = userObj.Id;
+                    userBankDetailsObj.AccountHolderName = userInputModel.userBankDetailsInputModel.AccountHolderName;
+                    userBankDetailsObj.AccountNumber = userInputModel.userBankDetailsInputModel.AccountNumber;
+                    userBankDetailsObj.IFSCCode = userInputModel.userBankDetailsInputModel.IFSCCode;
+                    userBankDetailsObj.BankName = userInputModel.userBankDetailsInputModel.BankName;
+                    userBankDetailsObj.Branch = userInputModel.userBankDetailsInputModel.Branch;
+                    userBankDetailsObj.CreatedBy = 1;
+                    userBankDetailsObj.CreatedOn = DateTime.Now;
+                    userBankDetailsObj.IsActive = true;
 
-                    await _dbContext.tblUserBankDetails.AddAsync(vendorBankDetailsObj);
+                    await _dbContext.tblUserBankDetails.AddAsync(userBankDetailsObj);
                     await _dbContext.SaveChangesAsync();
                 }
 
@@ -158,30 +158,30 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        public async Task<IEnumerable<UserModel>> GetVendorList()
+        public async Task<IEnumerable<UserModel>> GetUserList()
         {
-            var vendorList = new List<UserModel>();
+            var userList = new List<UserModel>();
 
             try
             {
-                var dbVendorList = await _dbContext.tblUser.ToListAsync();
-                foreach (var vendor in dbVendorList)
+                var dbUserList = await _dbContext.tblUser.ToListAsync();
+                foreach (var user in dbUserList)
                 {
-                    vendorList.Add(new UserModel
+                    userList.Add(new UserModel
                     {
-                        Id = vendor.Id,
-                        Name = vendor.Name,
-                        Email = vendor.Email,
-                        Mobile = vendor.Mobile,
-                        Pincode = vendor.Pincode,
-                        City = vendor.City,
-                        State = vendor.State,
-                        Country = vendor.Country,
-                        FullAddress = vendor.FullAddress,
-                        Status = vendor.Status,
-                        StatusRemarks = vendor.StatusRemarks,
-                        IsLicensed = vendor.IsLicensed,
-                        LicenseExpiredOn = vendor.LicenseExpiredOn,
+                        Id = user.Id,
+                        Name = user.Name,
+                        Email = user.Email,
+                        Mobile = user.Mobile,
+                        Pincode = user.Pincode,
+                        City = user.City,
+                        State = user.State,
+                        Country = user.Country,
+                        FullAddress = user.FullAddress,
+                        Status = user.Status,
+                        StatusRemarks = user.StatusRemarks,
+                        IsLicensed = user.IsLicensed,
+                        LicenseExpiredOn = user.LicenseExpiredOn,
                     });
                 }
             }
@@ -189,22 +189,22 @@ namespace EasyToBuy.Services.Interactions
             {
                 var msg = ex.Message;
             }
-            return vendorList;
+            return userList;
         }
-        public async Task<ApiResponseModel> VendorStatusUpdate(int vendorId, int userId, string status, string statusRemarks)
+        public async Task<ApiResponseModel> UserStatusUpdate(int userId, int CustomerId, string status, string statusRemarks)
         {
             var apiResponseModel = new ApiResponseModel();
 
             try
             {
-                var dbVendor = await _dbContext.tblUser.Where(x => x.Id == vendorId).FirstOrDefaultAsync();
+                var dbUser = await _dbContext.tblUser.Where(x => x.Id == userId).FirstOrDefaultAsync();
 
-                if (dbVendor != null)
+                if (dbUser != null)
                 {
-                    dbVendor.Status = status;
-                    dbVendor.StatusRemarks = statusRemarks;
-                    dbVendor.UpdatedBy = userId;
-                    dbVendor.UpdatedOn = DateTime.Now;
+                    dbUser.Status = status;
+                    dbUser.StatusRemarks = statusRemarks;
+                    dbUser.UpdatedBy = userId;
+                    dbUser.UpdatedOn = DateTime.Now;
                     await _dbContext.SaveChangesAsync();
 
                     apiResponseModel.Status = true;
@@ -219,36 +219,36 @@ namespace EasyToBuy.Services.Interactions
             return apiResponseModel;
         }
 
-        public async Task<ApiResponseModel> VendorLogin(string mobile, string password)
+        public async Task<ApiResponseModel> UserLogin(string mobile, string password)
         {
             var apiResponseModel = new ApiResponseModel();
 
             try
             {
-                var dbVendor = await _dbContext.tblUser.Where(x => x.Mobile == mobile).FirstOrDefaultAsync();
+                var dbUser = await _dbContext.tblUser.Where(x => x.Mobile == mobile).FirstOrDefaultAsync();
 
-                if (dbVendor != null)
+                if (dbUser != null)
                 {
-                    if (dbVendor.Password != password)
+                    if (dbUser.Password != password)
                     {
                         apiResponseModel.Status = false;
                         apiResponseModel.Message = "Incorrect password";
                     }
-                    else if (dbVendor.Status == "Approved")
+                    else if (dbUser.Status == "Approved")
                     {
                         apiResponseModel.Status = true;
                         apiResponseModel.Message = "User logged in successfully";
-                        apiResponseModel.Response = dbVendor;
+                        apiResponseModel.Response = dbUser;
 
-                        dbVendor.LastLoginDate = DateTime.Now;
+                        dbUser.LastLoginDate = DateTime.Now;
                         await _dbContext.SaveChangesAsync();
                     }
-                    else if (dbVendor.Status == "Rejected")
+                    else if (dbUser.Status == "Rejected")
                     {
                         apiResponseModel.Status = false;
                         apiResponseModel.Message = "Sorry, you are rejected by admin.";
                     }
-                    else if (dbVendor.Status == "Pending")
+                    else if (dbUser.Status == "Pending")
                     {
                         apiResponseModel.Status = false;
                         apiResponseModel.Message = "Your request is pending.";
@@ -274,18 +274,18 @@ namespace EasyToBuy.Services.Interactions
             return apiResponseModel;
         }
 
-        public async Task<IEnumerable<SPGetVendorOrdersCountById_Result>> GetVendorOrdersCount(int vendorId)
+        public async Task<IEnumerable<SPGetVendorOrdersCountById_Result>> GetUserOrdersCount(int userId)
         {
-            var VendorOrdersCount = new List<SPGetVendorOrdersCountById_Result>();
+            var UserOrdersCount = new List<SPGetVendorOrdersCountById_Result>();
 
             try
             {
                 var sqlQuery = "exec SPGetVendorOrdersCountById @VendorId";
 
-                SqlParameter parameter1 = new SqlParameter("@VendorId", (int)vendorId);
+                SqlParameter parameter1 = new SqlParameter("@VendorId", (int)userId);
 
 
-                VendorOrdersCount = await _dbContext.vendorOrdersCountById_Results.FromSqlRaw(sqlQuery, parameter1).ToListAsync();
+                UserOrdersCount = await _dbContext.vendorOrdersCountById_Results.FromSqlRaw(sqlQuery, parameter1).ToListAsync();
 
             }
             catch (Exception ex)
@@ -293,7 +293,7 @@ namespace EasyToBuy.Services.Interactions
                 var msg = ex.Message;
             }
 
-            return VendorOrdersCount;
+            return UserOrdersCount;
         }
     }
 }

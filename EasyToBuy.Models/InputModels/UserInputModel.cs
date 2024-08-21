@@ -2,17 +2,17 @@
 {
     public class UserInputModel
     {
-        public VendorBasicDetailsInputModel vendorBasicDetailsInputModel { get; set; }
-        public VendorCompanyDetailsInputModel vendorCompanyDetailsInputModel { get; set; }
-        public VendorBankDetailsInputModel vendorBankDetailsInputModel { get; set; }
+        public UserBasicDetailsInputModel userBasicDetailsInputModel { get; set; }
+        public UserCompanyDetailsInputModel userCompanyDetailsInputModel { get; set; }
+        public UserBankDetailsInputModel userBankDetailsInputModel { get; set; }
         public UserInputModel()
         {
-            vendorBasicDetailsInputModel = new VendorBasicDetailsInputModel();
-            vendorBankDetailsInputModel = new VendorBankDetailsInputModel();
-            vendorCompanyDetailsInputModel = new VendorCompanyDetailsInputModel();
+            userBasicDetailsInputModel = new UserBasicDetailsInputModel();
+            userBankDetailsInputModel = new UserBankDetailsInputModel();
+            userCompanyDetailsInputModel = new UserCompanyDetailsInputModel();
         }
     }
-    public class VendorBasicDetailsInputModel
+    public class UserBasicDetailsInputModel
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
@@ -34,7 +34,7 @@
         public bool IsActive { get; set; }
 
     }
-    public class VendorCompanyDetailsInputModel
+    public class UserCompanyDetailsInputModel
     {
         public string CompanyName { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
@@ -52,7 +52,7 @@
         public bool IsActive { get; set; }
 
     }
-    public class VendorBankDetailsInputModel
+    public class UserBankDetailsInputModel
     {
         public string AccountHolderName { get; set; } = string.Empty;
         public string AccountNumber { get; set; } = string.Empty;
