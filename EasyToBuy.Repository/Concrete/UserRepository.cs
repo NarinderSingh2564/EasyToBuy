@@ -16,14 +16,14 @@ namespace EasyToBuy.Repository.Concrete
 {
     public class UserRepository : IUserRepository
     {
-        public async Task<ApiResponseModel> VendorRegistration(VendorInputModel vendorInputModel)
+        public async Task<ApiResponseModel> VendorRegistration(UserInputModel vendorInputModel)
         {
             using (UserService vendorService = new UserService())
             {
                 return await vendorService.VendorRegistration(vendorInputModel);
             }
         }
-        public async Task<IEnumerable<VendorModel>> GetVendorList()
+        public async Task<IEnumerable<UserModel>> GetVendorList()
         {
             using (UserService vendorService = new UserService())
             {

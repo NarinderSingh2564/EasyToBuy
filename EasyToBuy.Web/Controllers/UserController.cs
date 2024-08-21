@@ -23,9 +23,9 @@ namespace EasyToBuy.Web.Controllers
         #endregion
 
         [HttpPost("VendorRegistration")]
-        public async Task<ApiResponseModel> VendorRegistration( VendorUIModel vendorUIModel)
+        public async Task<ApiResponseModel> VendorRegistration( UserUIModel vendorUIModel)
         {
-            var vendorInputModel = new VendorInputModel();
+            var vendorInputModel = new UserInputModel();
 
             vendorInputModel.vendorBasicDetailsInputModel.Name = vendorUIModel.vendorBasicDetailsUIModel.Name;
             vendorInputModel.vendorBasicDetailsInputModel.Email = vendorUIModel.vendorBasicDetailsUIModel.Email;
@@ -62,7 +62,7 @@ namespace EasyToBuy.Web.Controllers
         }
 
         [HttpGet("GetVendorList")]
-        public async Task<IEnumerable<VendorModel>> GetVendorList()
+        public async Task<IEnumerable<UserModel>> GetVendorList()
         {
             var response = await _vendorRepository.GetVendorList();
             return response;

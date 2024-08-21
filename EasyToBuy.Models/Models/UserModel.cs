@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EasyToBuy.Models.Models
 {
-    public class VendorModel
+    public class UserModel
     {
         public int Id { get; set; }
         public string Name { get; set; }

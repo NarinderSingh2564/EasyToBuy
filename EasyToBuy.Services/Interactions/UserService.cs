@@ -61,7 +61,7 @@ namespace EasyToBuy.Services.Interactions
 
         #endregion
 
-        public async Task<ApiResponseModel> VendorRegistration(VendorInputModel vendorInputModel)
+        public async Task<ApiResponseModel> VendorRegistration(UserInputModel vendorInputModel)
         {
             var apiResponseModel = new ApiResponseModel();
             var transaction = _dbContext.Database.BeginTransaction();
@@ -158,16 +158,16 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        public async Task<IEnumerable<VendorModel>> GetVendorList()
+        public async Task<IEnumerable<UserModel>> GetVendorList()
         {
-            var vendorList = new List<VendorModel>();
+            var vendorList = new List<UserModel>();
 
             try
             {
                 var dbVendorList = await _dbContext.tblUser.ToListAsync();
                 foreach (var vendor in dbVendorList)
                 {
-                    vendorList.Add(new VendorModel
+                    vendorList.Add(new UserModel
                     {
                         Id = vendor.Id,
                         Name = vendor.Name,

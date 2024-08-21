@@ -1,19 +1,20 @@
-﻿namespace EasyToBuy.Models.UIModels
+﻿namespace EasyToBuy.Models.InputModels
 {
-    public class VendorUIModel
+    public class UserInputModel
     {
-        public VendorBasicDetailsUIModel vendorBasicDetailsUIModel { get; set; }
-        public VendorCompanyDetailsUIModel vendorCompanyDetailsUIModel { get; set; }
-        public VendorBankDetailsUIModel vendorBankDetailsUIModel { get; set; }
-        public VendorUIModel()
+        public VendorBasicDetailsInputModel vendorBasicDetailsInputModel { get; set; }
+        public VendorCompanyDetailsInputModel vendorCompanyDetailsInputModel { get; set; }
+        public VendorBankDetailsInputModel vendorBankDetailsInputModel { get; set; }
+        public UserInputModel()
         {
-            vendorBasicDetailsUIModel = new VendorBasicDetailsUIModel();
-            vendorCompanyDetailsUIModel = new VendorCompanyDetailsUIModel();
-            vendorBankDetailsUIModel = new VendorBankDetailsUIModel();
+            vendorBasicDetailsInputModel = new VendorBasicDetailsInputModel();
+            vendorBankDetailsInputModel = new VendorBankDetailsInputModel();
+            vendorCompanyDetailsInputModel = new VendorCompanyDetailsInputModel();
         }
     }
-    public class VendorBasicDetailsUIModel
+    public class VendorBasicDetailsInputModel
     {
+        public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Mobile { get; set; } = string.Empty;
@@ -26,8 +27,14 @@
         public string State { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
         public string FullAddress { get; set; } = string.Empty;
+        public int CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public int? UpdatedBy { get; set; }
+        public DateTime? UpdatedOn { get; set; }
+        public bool IsActive { get; set; }
+
     }
-    public class VendorCompanyDetailsUIModel
+    public class VendorCompanyDetailsInputModel
     {
         public string CompanyName { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
@@ -38,13 +45,24 @@
         public string State { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
         public string FullAddress { get; set; } = string.Empty;
+        public int CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public int? UpdatedBy { get; set; }
+        public DateTime? UpdatedOn { get; set; }
+        public bool IsActive { get; set; }
+
     }
-    public class VendorBankDetailsUIModel
+    public class VendorBankDetailsInputModel
     {
         public string AccountHolderName { get; set; } = string.Empty;
         public string AccountNumber { get; set; } = string.Empty;
         public string IFSCCode { get; set; } = string.Empty;
         public string BankName { get; set; } = string.Empty;
         public string Branch { get; set; } = string.Empty;
+        public int CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public int? UpdatedBy { get; set; }
+        public DateTime? UpdatedOn { get; set; }
+        public bool IsActive { get; set; }
     }
 }
