@@ -65,7 +65,7 @@ namespace EasyToBuy.Services.Interactions
             {
                 if (cartInputModel.RequestFrom == "Cart")
                 {
-                    var isProductExists = await _dbContext.tblCart.Where(x => x.VariationId == cartInputModel.VariationId && x.CustomerId == cartInputModel.UserId && x.IsPlaced == false).FirstOrDefaultAsync();
+                    var isProductExists = await _dbContext.tblCart.Where(x => x.VariationId == cartInputModel.VariationId && x.CustomerId == cartInputModel.CustomerId && x.IsPlaced == false).FirstOrDefaultAsync();
                     if (isProductExists != null)
                     {
                         isProductExists.Quantity = cartInputModel.Quantity;
@@ -90,7 +90,7 @@ namespace EasyToBuy.Services.Interactions
                     }
                     else
                     {
-                        var isProductExists = await _dbContext.tblCart.Where(x => x.VariationId == cartInputModel.VariationId && x.CustomerId == cartInputModel.UserId && x.IsPlaced == false).FirstOrDefaultAsync();
+                        var isProductExists = await _dbContext.tblCart.Where(x => x.VariationId == cartInputModel.VariationId && x.CustomerId == cartInputModel.CustomerId && x.IsPlaced == false).FirstOrDefaultAsync();
                         if (isProductExists != null)
                         {
                             apiResponseModel.Status = false;
@@ -100,7 +100,7 @@ namespace EasyToBuy.Services.Interactions
                         {
                             var cartObj = new Cart();
 
-                            cartObj.CustomerId = cartInputModel.UserId;
+                            cartObj.CustomerId = cartInputModel.CustomerId;
                             cartObj.VariationId = cartInputModel.VariationId;
                             cartObj.Quantity = cartInputModel.Quantity;
                             cartObj.AddedDate = DateTime.Now;
@@ -147,12 +147,12 @@ namespace EasyToBuy.Services.Interactions
 
             return cartListByCustomerId;
         }
-        public async Task<ApiResponseModel> RemoveProductFromCart(int id)
+        public async Task<ApiResponseModel> RemoveProductFromCart(int cartId)
         {
             var apiResponseModel = new ApiResponseModel();
             try
             {
-                var cartObj = await _dbContext.tblCart.Where(x => x.Id == id).FirstOrDefaultAsync();
+                var cartObj = await _dbContext.tblCart.Where(x => x.Id == cartId).FirstOrDefaultAsync();
                 if (cartObj != null)
                 {
                     _dbContext.tblCart.Remove(cartObj);
@@ -167,13 +167,13 @@ namespace EasyToBuy.Services.Interactions
             }
             return apiResponseModel;
         }
-        public async Task<ApiResponseModel> CheckProductInCart(int variationId, int userId)
+        public async Task<ApiResponseModel> CheckProductInCart(int variationId, int customerId)
         {
             var apiResponseModel = new ApiResponseModel();
 
             try
             {
-                var isProductExist = await _dbContext.tblCart.Where(x => x.VariationId == variationId && x.CustomerId == userId && x.IsPlaced == false).FirstOrDefaultAsync();
+                var isProductExist = await _dbContext.tblCart.Where(x => x.VariationId == variationId && x.CustomerId == customerId && x.IsPlaced == false).FirstOrDefaultAsync();
                 var s = await _dbContext.tblProductVariationAndRate.Where(x => x.Id == variationId).Select(x => x.SetAsDefault).FirstOrDefaultAsync();
                 if (isProductExist != null && s == false)
                 {

@@ -69,22 +69,20 @@ namespace EasyToBuy.Web.Controllers
         }
 
         [HttpPost("UserStatusUpdate")]
-        public async Task<ApiResponseModel> UserStatusUpdate(int userId, int customerId, string status, string statusRemarks)
+        public async Task<ApiResponseModel> UserStatusUpdate(int userId, string status, string statusRemarks)
         {
-            var response = await _userRepository.UserStatusUpdate(userId, customerId, status, statusRemarks);
+            var response = await _userRepository.UserStatusUpdate(userId, status, statusRemarks);
 
             return response;
         }
 
         [HttpPost("UserLogin")]
-
         public async Task<ApiResponseModel> UserLogin(string mobile, string password)
         {
             var response = await _userRepository.UserLogin(mobile, password);
 
             return response;
         }
-
 
         [HttpGet("GetUserOrdersCount")]
         public async Task<IEnumerable<SPGetUserOrdersCountById_Result>> GetUserOrdersCount(int userId)

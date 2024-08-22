@@ -191,7 +191,7 @@ namespace EasyToBuy.Services.Interactions
             }
             return userList;
         }
-        public async Task<ApiResponseModel> UserStatusUpdate(int userId, int CustomerId, string status, string statusRemarks)
+        public async Task<ApiResponseModel> UserStatusUpdate(int userId, string status, string statusRemarks)
         {
             var apiResponseModel = new ApiResponseModel();
 

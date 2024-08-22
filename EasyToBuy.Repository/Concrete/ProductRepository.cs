@@ -32,11 +32,11 @@ namespace EasyToBuy.Repository.Concrete
                 return new ApiResponseModel();// await productService.ProductAddEdit(productInputModel);
             }
         }
-        public async Task<IEnumerable<SPGetProductList_Result>> GetProductList(int categoryId, string? searchText, int vendorId, string role)
+        public async Task<IEnumerable<SPGetProductList_Result>> GetProductList(int productCategoryId, string? searchText, int userId, string role)
         {
             using (ProductService productService = new ProductService())
             {
-                return await productService.GetProductList(categoryId, searchText, vendorId, role);
+                return await productService.GetProductList(productCategoryId, searchText, userId, role);
             }
         }
         public async Task<ApiResponseModel> ProductVariationAndRateAddEdit(ProductVariationAndRateInputModel productVariationAndRateInputModel)
@@ -145,11 +145,11 @@ namespace EasyToBuy.Repository.Concrete
                 return await productService.GetProductSliderItemsByCategoryId(categoryId, productId, dataTypes);
                 }
         }
-        public async Task<ApiResponseModel> DeleteProductVariationImage(int imageId)
+        public async Task<ApiResponseModel> DeleteProductVariationImage(int productImageId)
         {
             using (ProductService productService = new ProductService())
             {
-                return await productService.DeleteProductVariationImage(imageId);
+                return await productService.DeleteProductVariationImage(productImageId);
             }
         }
      

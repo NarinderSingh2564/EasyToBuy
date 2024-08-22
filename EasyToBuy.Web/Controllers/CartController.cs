@@ -28,7 +28,7 @@ namespace EasyToBuy.Web.Controllers
 
             cartInputModel.Id = cartUIModel.Id;
             cartInputModel.ProductId = cartUIModel.ProductId;
-            cartInputModel.UserId = cartUIModel.UserId;
+            cartInputModel.CustomerId = cartUIModel.CustomerId;
             cartInputModel.Quantity = cartUIModel.Quantity;
             cartInputModel.VariationId = cartUIModel.VariationId;
             cartInputModel.RequestFrom = cartUIModel.RequestFrom;
@@ -51,9 +51,9 @@ namespace EasyToBuy.Web.Controllers
         }
 
         [HttpPost("RemoveProductFromCart")]
-        public async Task<ApiResponseModel> RemoveProductFromCart(int id)
+        public async Task<ApiResponseModel> RemoveProductFromCart(int cartid)
         {
-            var response = await _cartRepository.RemoveProductFromCart(id);
+            var response = await _cartRepository.RemoveProductFromCart(cartid);
 
             return response;
         }

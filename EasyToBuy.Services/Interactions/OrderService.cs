@@ -63,23 +63,23 @@ namespace EasyToBuy.Services.Interactions
 
         #endregion
 
-        public async Task<ApiResponseModel> PlaceOrder(int userId)
+        public async Task<ApiResponseModel> PlaceOrder(int customerId)
         {
             var apiResponseModel = new ApiResponseModel();
 
             try
             {
-                var isUserExists = await _dbContext.tblCustomer.Where(x => x.Id == userId && x.IsActive == true).FirstOrDefaultAsync();
+                var isUserExists = await _dbContext.tblCustomer.Where(x => x.Id == customerId && x.IsActive == true).FirstOrDefaultAsync();
 
                 if (isUserExists != null)
                 {
-                    var isDeliveryAddress = await _dbContext.tblAddress.Where(x => x.CustomerId == userId && x.IsDeliveryAddress == true).FirstOrDefaultAsync();
+                    var isDeliveryAddress = await _dbContext.tblAddress.Where(x => x.CustomerId == customerId && x.IsDeliveryAddress == true).FirstOrDefaultAsync();
                     if (isDeliveryAddress != null)
                     {
                         var orderList = (from c in _dbContext.tblCart
                                          join tpv in _dbContext.tblProductVariationAndRate
                                          on c.VariationId equals tpv.Id
-                                         where c.CustomerId == userId && c.IsPlaced == false && tpv.IsActive == true && tpv.IsDeleted == false
+                                         where c.CustomerId == customerId && c.IsPlaced == false && tpv.IsActive == true && tpv.IsDeleted == false
 
                                          select new OrderModel()
                                          {
@@ -103,7 +103,7 @@ namespace EasyToBuy.Services.Interactions
                                     dbVariation.StockQuantity = order.StockQuantity - order.Quantity;
                                 }
 
-                                customerOrderObj.CustomerId = userId;
+                                customerOrderObj.CustomerId = customerId;
                                 customerOrderObj.OrderNumber = "ETB-" + new Random().Next().ToString();
                                 customerOrderObj.OrderDate = DateTime.Now;
                                 customerOrderObj.StatusId = 1;
@@ -121,7 +121,7 @@ namespace EasyToBuy.Services.Interactions
 
                                 customerOrderStatusLog.OrderId = customerOrderObj.Id;
                                 customerOrderStatusLog.StatusId = 1;
-                                customerOrderStatusLog.CreatedBy = userId;
+                                customerOrderStatusLog.CreatedBy = customerId;
                                 customerOrderStatusLog.CreatedOn = DateTime.Now;
                                 await _dbContext.AddAsync(customerOrderStatusLog);
 
@@ -129,7 +129,7 @@ namespace EasyToBuy.Services.Interactions
 
                             }
 
-                            var objCart = await _dbContext.tblCart.Where(x => x.CustomerId == userId && x.IsPlaced == false).ToListAsync();
+                            var objCart = await _dbContext.tblCart.Where(x => x.CustomerId == customerId && x.IsPlaced == false).ToListAsync();
 
                             foreach (var item in objCart)
                             {
@@ -166,7 +166,7 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        public async Task<IEnumerable<SPGetOrderList_Result>> GetOrdersList(int vendorId, int customerId, string? searchText, string? statusId, DateTime? firstDate, DateTime? secondDate)
+        public async Task<IEnumerable<SPGetOrderList_Result>> GetOrdersList(int userId, int customerId, string? searchText, string? statusId, DateTime? firstDate, DateTime? secondDate)
         {
             var orderList = new List<SPGetOrderList_Result>();
 
@@ -175,7 +175,7 @@ namespace EasyToBuy.Services.Interactions
                 var sqlQuery = "exec spGetOrderList @CustomerId,@VendorId,@SearchText,@StatusId,@FirstDate,@SecondDate";
 
                 SqlParameter parameter1 = new SqlParameter("@CustomerId", customerId < 1 ? DBNull.Value : customerId);
-                SqlParameter parameter2 = new SqlParameter("@VendorId", vendorId < 1 ? DBNull.Value : vendorId);
+                SqlParameter parameter2 = new SqlParameter("@VendorId", userId < 1 ? DBNull.Value : userId);
                 SqlParameter parameter3 = new SqlParameter("@SearchText", string.IsNullOrEmpty(searchText) ? DBNull.Value : searchText);
                 SqlParameter parameter4 = new SqlParameter("@StatusId", statusId == "0" ? DBNull.Value : statusId); 
                 SqlParameter parameter5 = new SqlParameter("@FirstDate", firstDate == null ? DBNull.Value : firstDate);

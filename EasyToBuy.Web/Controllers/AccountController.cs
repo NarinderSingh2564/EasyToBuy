@@ -73,7 +73,7 @@ namespace EasyToBuy.Web.Controllers
             var addressInputModel = new AddressInputModel();
             
             addressInputModel.Id = addressUIModel.Id;
-            addressInputModel.UserId = addressUIModel.UserId;
+            addressInputModel.CustomerId = addressUIModel.CustomerId;
             addressInputModel.FullAddress = addressUIModel.FullAddress;
             addressInputModel.Pincode = addressUIModel.Pincode;
             addressInputModel.City = addressUIModel.City;
@@ -89,21 +89,21 @@ namespace EasyToBuy.Web.Controllers
         }
 
         [HttpPost("SetDeliveryAddress")]
-        public async Task<ApiResponseModel> SetDeliveryAddress(int id, int userId)
+        public async Task<ApiResponseModel> SetDeliveryAddress(int addressId, int CustomerId)
         {
-            var response = await _accountRepository.SetDeliveryAddress(id, userId);
+            var response = await _accountRepository.SetDeliveryAddress(addressId, CustomerId);
 
             return response;
         }
 
         [HttpGet("GetCustomerAccountProfile")]
-        public async Task<CustomerModel> GetCustomerAccountProfile(int userId)
+        public async Task<CustomerModel> GetCustomerAccountProfile(int customerId)
         {
             var objectUser = new CustomerUIModel();
 
-            var response = await _accountRepository.GetCustomerAccountProfile(userId);
+            var response = await _accountRepository.GetCustomerAccountProfile(customerId);
 
-            var result = await _accountRepository.GetAddressUserByUserId(userId);
+            var result = await _accountRepository.GetAddressUserByUserId(customerId);
 
             //objectUserUI.address.City = userAddress.City;
             //objectUserUI.address.State = userAddress.State;

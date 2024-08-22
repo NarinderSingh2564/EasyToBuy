@@ -6,7 +6,7 @@ namespace EasyToBuy.Models.UIModels
     public class ProductUIModel
     {
         public int Id { get; set; }
-        public int VendorId { get; set; }
+        public int UserId { get; set; }
         public string ProductName { get; set; }
         public string ProductDescription { get; set; }
         public IFormFile? ProductImage { get; set; }

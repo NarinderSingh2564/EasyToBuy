@@ -9,6 +9,6 @@ namespace EasyToBuy.Repository.Abstract
         Task<ApiResponseModel> AddToCart(CartInputModel cartInputModel);
         Task<ApiResponseModel> CheckProductInCart(int variationIdId, int customerId);
         Task<GetCartDetailsByCustomerId> GetCartDetailsByCustomerId(int customerId);
-        Task<ApiResponseModel> RemoveProductFromCart(int id);
+        Task<ApiResponseModel> RemoveProductFromCart(int cartId);
     }
 }

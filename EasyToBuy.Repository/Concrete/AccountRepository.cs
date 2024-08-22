@@ -48,19 +48,19 @@ namespace EasyToBuy.Repository.Concrete
 
             }
         }
-        public async Task<ApiResponseModel> SetDeliveryAddress(int id, int userId)
+        public async Task<ApiResponseModel> SetDeliveryAddress(int addressId, int CustomerId)
         {
             using (AccountService accountService = new AccountService())
             {
-                return await accountService.SetDeliveryAddress(id, userId);
+                return await accountService.SetDeliveryAddress(addressId, CustomerId);
 
             }
         }
-        public async Task<CustomerModel> GetCustomerAccountProfile(int userId)
+        public async Task<CustomerModel> GetCustomerAccountProfile(int CustomerId)
         {
             using (AccountService accountService = new AccountService())
             {
-                return await accountService.GetCustomerAccountProfile(userId);
+                return await accountService.GetCustomerAccountProfile(CustomerId);
             }
         }
         public async Task<AddressModel> GetAddressUserByUserId(int userId)

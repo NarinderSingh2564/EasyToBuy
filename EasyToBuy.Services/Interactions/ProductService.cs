@@ -116,7 +116,7 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var checkProductDuplicacy = await _dbContext.tblProduct.Where(x => x.ProductName == productInputModel.ProductName && x.UserId == productInputModel.VendorId && x.Id != productInputModel.Id).FirstOrDefaultAsync();
+                var checkProductDuplicacy = await _dbContext.tblProduct.Where(x => x.ProductName == productInputModel.ProductName && x.UserId == productInputModel.UserId && x.Id != productInputModel.Id).FirstOrDefaultAsync();
 
                 if (checkProductDuplicacy != null)
                 {
@@ -143,7 +143,7 @@ namespace EasyToBuy.Services.Interactions
                     {
                         var productObj = new Product();
 
-                        productObj.UserId = productInputModel.VendorId;
+                        productObj.UserId = productInputModel.UserId;
                         productObj.ProductName = productInputModel.ProductName;
                         productObj.ProductDescription = productInputModel.ProductDescription;
                         productObj.ProductImage = productInputModel.ProductImage;
@@ -171,7 +171,7 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        public async Task<IEnumerable<SPGetProductList_Result>> GetProductList(int categoryId, string? searchText, int vendorId, string role)
+        public async Task<IEnumerable<SPGetProductList_Result>> GetProductList(int productCategoryId, string? searchText, int userId, string role)
         {
             var productList = new List<SPGetProductList_Result>();
 
@@ -179,9 +179,9 @@ namespace EasyToBuy.Services.Interactions
             {
                 var sqlQuery = "exec spGetProductList @CategoryId,@SearchText,@VendorId,@Role";
 
-                SqlParameter parameter1 = new SqlParameter("@CategoryId", categoryId != 0 ? categoryId : "0");
+                SqlParameter parameter1 = new SqlParameter("@CategoryId", productCategoryId != 0 ? productCategoryId : "0");
                 SqlParameter parameter2 = new SqlParameter("@SearchText", string.IsNullOrEmpty(searchText) ? DBNull.Value : searchText);
-                SqlParameter parameter3 = new SqlParameter("@VendorId", vendorId < 1 ? DBNull.Value : vendorId);
+                SqlParameter parameter3 = new SqlParameter("@VendorId", userId < 1 ? DBNull.Value : userId);
                 SqlParameter parameter4 = new SqlParameter("@Role", string.IsNullOrEmpty(role) ? DBNull.Value : role);
 
                 productList = await _dbContext.productList_Results.FromSqlRaw(sqlQuery, parameter1, parameter2, parameter3, parameter4).ToListAsync();
@@ -227,9 +227,7 @@ namespace EasyToBuy.Services.Interactions
                         if (dbTotalVolume == productObject.TotalVolume)
                         {
                             apiResponseModel.Status = false;
-                            apiResponseModel.Message = "Sorr" +
-                                "" +
-                                "y, you can not add more variations of this product.";
+                            apiResponseModel.Message = "Sorry, you can not add more variations of this product.";
                         }
                         else
                         {
@@ -537,7 +535,7 @@ namespace EasyToBuy.Services.Interactions
             {
                 var sqlQuery = "exec spGetProductDescriptionById @ProductId";
                 SqlParameter parameter = new SqlParameter("@ProductId", productId);
-                productDescription = _dbContext.productDescriptionById_Results.FromSqlRaw(sqlQuery, parameter).ToList().FirstOrDefault();
+                productDescription =  _dbContext.productDescriptionById_Results.FromSqlRaw(sqlQuery, parameter).ToList().FirstOrDefault();
             }
             catch (Exception ex)
             {
@@ -686,13 +684,13 @@ namespace EasyToBuy.Services.Interactions
             return productSliderItems;
         }
         
-        public async Task<ApiResponseModel> DeleteProductVariationImage(int imageId)
+        public async Task<ApiResponseModel> DeleteProductVariationImage(int productImageId)
         {
             var apiResponseModel = new ApiResponseModel();
 
             try
             {
-                var dbImage = await _dbContext.tblProductImages.Where(x => x.Id == imageId).FirstOrDefaultAsync();
+                var dbImage = await _dbContext.tblProductImages.Where(x => x.Id == productImageId).FirstOrDefaultAsync();
 
                 if (dbImage != null)
                 {

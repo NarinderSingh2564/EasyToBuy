@@ -252,7 +252,7 @@ namespace EasyToBuy.Services.Interactions
                 {
                     var addressObj = new Address();
 
-                    addressObj.CustomerId = addressInputModel.UserId;
+                    addressObj.CustomerId = addressInputModel.CustomerId;
                     addressObj.FullAddress = addressInputModel.FullAddress;
                     addressObj.Pincode = addressInputModel.Pincode;
                     addressObj.CreatedBy = addressInputModel.CreatedBy;
@@ -281,13 +281,13 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        public async Task<ApiResponseModel> SetDeliveryAddress(int id, int userId)
+        public async Task<ApiResponseModel> SetDeliveryAddress(int addressId, int CustomerId)
         {
             var apiResponseModel = new ApiResponseModel();
 
             try
             {
-                var dbAdressByUserId = await _dbContext.tblAddress.Where(x => x.CustomerId == userId).ToListAsync();
+                var dbAdressByUserId = await _dbContext.tblAddress.Where(x => x.CustomerId == CustomerId).ToListAsync();
 
                 if (dbAdressByUserId.Count > 0)
                 {
@@ -297,7 +297,7 @@ namespace EasyToBuy.Services.Interactions
                     }
                 }
 
-                var deliveryAddress = await _dbContext.tblAddress.Where(x => x.Id == id).FirstOrDefaultAsync();
+                var deliveryAddress = await _dbContext.tblAddress.Where(x => x.Id == addressId).FirstOrDefaultAsync();
                 if (deliveryAddress != null)
                 {
                     deliveryAddress.IsDeliveryAddress = true;
@@ -314,13 +314,13 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        public async Task<CustomerModel> GetCustomerAccountProfile(int userId)
+        public async Task<CustomerModel> GetCustomerAccountProfile(int CustomerId)
         {
             var userModel = new CustomerModel();
 
             try
             {
-                var userDetail = _dbContext.tblCustomer.Where(x => x.Id == userId).FirstOrDefault();
+                var userDetail = _dbContext.tblCustomer.Where(x => x.Id == CustomerId).FirstOrDefault();
                 if (userDetail != null)
                 {
                     userModel.Id = userDetail.Id;

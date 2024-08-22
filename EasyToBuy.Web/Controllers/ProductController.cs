@@ -52,7 +52,7 @@ namespace EasyToBuy.Web.Controllers
             }
 
             productInputModel.Id = productUIModel.Id;
-            productInputModel.VendorId = productUIModel.VendorId;
+            productInputModel.UserId = productUIModel.UserId;
             productInputModel.ProductName = productUIModel.ProductName;
             productInputModel.ProductDescription = productUIModel.ProductDescription;
             productInputModel.ProductImage = productUIModel.ProductImageName != null ? productUIModel.ProductImageName : "";
@@ -100,9 +100,9 @@ namespace EasyToBuy.Web.Controllers
         }
 
         [HttpGet("GetProductList")]
-        public async Task<IEnumerable<SPGetProductList_Result>> GetProductList(int categoryId, string? searchText, int vendorId, string role)
+        public async Task<IEnumerable<SPGetProductList_Result>> GetProductList(int productCategoryId, string? searchText, int userId, string role)
         {
-            var response = await _productRepository.GetProductList(categoryId, searchText, vendorId, role);
+            var response = await _productRepository.GetProductList(productCategoryId, searchText, userId, role);
 
             return response;
         }
@@ -295,9 +295,9 @@ namespace EasyToBuy.Web.Controllers
         }
       
         [HttpDelete("DeleteProductVariationImage")]
-        public async Task<ApiResponseModel> DeleteProductVariationImage(int imageId)
+        public async Task<ApiResponseModel> DeleteProductVariationImage(int productImageId)
         {
-            var response = await _productRepository.DeleteProductVariationImage(imageId);
+            var response = await _productRepository.DeleteProductVariationImage(productImageId);
 
             return response;
         }

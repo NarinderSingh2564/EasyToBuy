@@ -10,7 +10,7 @@ namespace EasyToBuy.Repository.Abstract
         Task<IEnumerable<ProductWeightModel>> GetProductWeightList();
         Task<IEnumerable<ProductPackingModel>> GetProductPackingList();
         Task<ApiResponseModel> ProductAddEdit(ProductInputModel productInputModel);
-        Task<IEnumerable<SPGetProductList_Result>> GetProductList(int categoryId, string? searchText, int vendorId, string role);
+        Task<IEnumerable<SPGetProductList_Result>> GetProductList(int productCategoryId, string? searchText, int userId, string role);
         Task<SPGetProductDescriptionById_Result> GetProductDescriptionById(int productId);
         Task<ApiResponseModel> ProductVariationAndRateAddEdit(ProductVariationAndRateInputModel productVariationAndRateInputModel);
         Task<ApiResponseModel> SetShowProductWeight(int variationId, bool showProductWeight);
@@ -26,6 +26,6 @@ namespace EasyToBuy.Repository.Abstract
         void ProductVariationImagesAdd(ProductVariationImagesInputModel productVariationImagesInputModel);
         Task<IEnumerable<ProductVariationImagesModel>> GetVariationImagesListByProductId(int productId);
         Task<IEnumerable<SPGetProductSliderItemsByCategoryId_Result>> GetProductSliderItemsByCategoryId(int categoryId , int productId, string dataTypes);
-        Task<ApiResponseModel> DeleteProductVariationImage(int imageId);
+        Task<ApiResponseModel> DeleteProductVariationImage(int productImageId);
     }
 }
