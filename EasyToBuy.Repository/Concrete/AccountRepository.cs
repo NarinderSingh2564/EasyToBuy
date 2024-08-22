@@ -17,19 +17,19 @@ namespace EasyToBuy.Repository.Concrete
                 return await accountService.CheckUser(mobile, password, role);
             }
         }
-        public async Task<ApiResponseModel> UserRegistration(UserInputModel userInputModel)
+        public async Task<ApiResponseModel> CustomerRegistration(CustomerInputModel customerInputModel)
         {
             using (AccountService accountService = new AccountService())
             {
-                return await accountService.UserRegistration(userInputModel);
+                return await accountService.CustomerRegistration(customerInputModel);
 
             }
         }
-        public async Task<IEnumerable<AddressModel>> GetAddressListByUserId(int userID)
+        public async Task<IEnumerable<AddressModel>> GetAddressListByCustomerId(int customerId)
         {
             using (AccountService accountService = new AccountService())
             {
-                return await accountService.GetAddressListByUserId(userID);
+                return await accountService.GetAddressListByCustomerId(customerId);
             }
         }
         public async Task<IEnumerable<AddressTypeModel>> GetAddressTypeList()
@@ -48,19 +48,19 @@ namespace EasyToBuy.Repository.Concrete
 
             }
         }
-        public async Task<ApiResponseModel> SetDeliveryAddress(int id, int userId)
+        public async Task<ApiResponseModel> SetDeliveryAddress(int addressId, int CustomerId)
         {
             using (AccountService accountService = new AccountService())
             {
-                return await accountService.SetDeliveryAddress(id, userId);
+                return await accountService.SetDeliveryAddress(addressId, CustomerId);
 
             }
         }
-        public async Task<UserModel> GetCustomerAccountProfile(int userId)
+        public async Task<CustomerModel> GetCustomerAccountProfile(int CustomerId)
         {
             using (AccountService accountService = new AccountService())
             {
-                return await accountService.GetCustomerAccountProfile(userId);
+                return await accountService.GetCustomerAccountProfile(CustomerId);
             }
         }
         public async Task<AddressModel> GetAddressUserByUserId(int userId)

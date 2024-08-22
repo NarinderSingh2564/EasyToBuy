@@ -69,13 +69,13 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                if (role == "Vendor")
+                if (role == "User")
                 {
-                    dbUser = await _dbContext.tblVendor.Where(x => x.Mobile == mobile || x.Email == mobile).FirstOrDefaultAsync();
+                    dbUser = await _dbContext.tblUser.Where(x => x.Mobile == mobile || x.Email == mobile).FirstOrDefaultAsync();
                 }
                 if (role == "Customer")
                 {
-                    dbUser = await _dbContext.tblUser.Where(x => x.Mobile == mobile || x.Email == mobile).FirstOrDefaultAsync();
+                    dbUser = await _dbContext.tblCustomer.Where(x => x.Mobile == mobile || x.Email == mobile).FirstOrDefaultAsync();
                 }
 
                 if (dbUser != null)
@@ -129,16 +129,16 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        public async Task<ApiResponseModel> UserRegistration(UserInputModel userInputModel)
+        public async Task<ApiResponseModel> CustomerRegistration(CustomerInputModel customerInputModel)
 
         {
             var apiResponseModel = new ApiResponseModel();
 
             try
             {
-                var isUserExists = await _dbContext.tblUser.Where(x => x.Mobile == userInputModel.Mobile).FirstOrDefaultAsync();
+                var isCustomerExists = await _dbContext.tblCustomer.Where(x => x.Mobile == customerInputModel.Mobile).FirstOrDefaultAsync();
 
-                if (isUserExists != null)
+                if (isCustomerExists != null)
                 {
                     apiResponseModel.Status = false;
                     apiResponseModel.Message = "This mobile number is already registered.";
@@ -146,21 +146,21 @@ namespace EasyToBuy.Services.Interactions
 
                 else
                 {
-                    var dbUser = new User();
+                    var dbCustomer = new Customer();
 
-                    dbUser.Name = userInputModel.Name;
-                    dbUser.Email = userInputModel.Email;
-                    dbUser.Mobile = userInputModel.Mobile;
-                    dbUser.Password = userInputModel.Password;
-                    dbUser.CreatedBy = userInputModel.CreatedBy;
-                    dbUser.CreatedOn = DateTime.Now;
-                    dbUser.IsActive = true;
+                    dbCustomer.Name = customerInputModel.Name;
+                    dbCustomer.Email = customerInputModel.Email;
+                    dbCustomer.Mobile = customerInputModel.Mobile;
+                    dbCustomer.Password = customerInputModel.Password;
+                    dbCustomer.CreatedBy = customerInputModel.CreatedBy;
+                    dbCustomer.CreatedOn = DateTime.Now;
+                    dbCustomer.IsActive = true;
 
-                    await _dbContext.tblUser.AddAsync(dbUser);
+                    await _dbContext.tblCustomer.AddAsync(dbCustomer);
                     await _dbContext.SaveChangesAsync();
 
                     apiResponseModel.Status = true;
-                    apiResponseModel.Message = "User registered successfully.";
+                    apiResponseModel.Message = "Customer registered successfully.";
                 }
 
             }
@@ -171,7 +171,7 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        public async Task<IEnumerable<AddressModel>> GetAddressListByUserId(int userID)
+        public async Task<IEnumerable<AddressModel>> GetAddressListByCustomerId(int customerId)
         {
             var addressList = new List<AddressModel>();
 
@@ -180,7 +180,7 @@ namespace EasyToBuy.Services.Interactions
                 var query = (from a in _dbContext.tblAddress
                              join at in _dbContext.tblAddressType
                              on a.AddressTypeId equals at.Id
-                             where a.UserId == userID
+                             where a.CustomerId == customerId
 
                              select new AddressModel
                              {
@@ -252,7 +252,7 @@ namespace EasyToBuy.Services.Interactions
                 {
                     var addressObj = new Address();
 
-                    addressObj.UserId = addressInputModel.UserId;
+                    addressObj.CustomerId = addressInputModel.CustomerId;
                     addressObj.FullAddress = addressInputModel.FullAddress;
                     addressObj.Pincode = addressInputModel.Pincode;
                     addressObj.CreatedBy = addressInputModel.CreatedBy;
@@ -281,13 +281,13 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        public async Task<ApiResponseModel> SetDeliveryAddress(int id, int userId)
+        public async Task<ApiResponseModel> SetDeliveryAddress(int addressId, int CustomerId)
         {
             var apiResponseModel = new ApiResponseModel();
 
             try
             {
-                var dbAdressByUserId = await _dbContext.tblAddress.Where(x => x.UserId == userId).ToListAsync();
+                var dbAdressByUserId = await _dbContext.tblAddress.Where(x => x.CustomerId == CustomerId).ToListAsync();
 
                 if (dbAdressByUserId.Count > 0)
                 {
@@ -297,7 +297,7 @@ namespace EasyToBuy.Services.Interactions
                     }
                 }
 
-                var deliveryAddress = await _dbContext.tblAddress.Where(x => x.Id == id).FirstOrDefaultAsync();
+                var deliveryAddress = await _dbContext.tblAddress.Where(x => x.Id == addressId).FirstOrDefaultAsync();
                 if (deliveryAddress != null)
                 {
                     deliveryAddress.IsDeliveryAddress = true;
@@ -314,13 +314,13 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        public async Task<UserModel> GetCustomerAccountProfile(int userId)
+        public async Task<CustomerModel> GetCustomerAccountProfile(int CustomerId)
         {
-            var userModel = new UserModel();
+            var userModel = new CustomerModel();
 
             try
             {
-                var userDetail = _dbContext.tblUser.Where(x => x.Id == userId).ToList().FirstOrDefault();
+                var userDetail = _dbContext.tblCustomer.Where(x => x.Id == CustomerId).FirstOrDefault();
                 if (userDetail != null)
                 {
                     userModel.Id = userDetail.Id;
@@ -343,10 +343,10 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var userAddressDetail = _dbContext.tblAddress.Where(x => x.UserId == userId && x.IsDeliveryAddress == true).ToList().FirstOrDefault();
+                var userAddressDetail = _dbContext.tblAddress.Where(x => x.CustomerId == userId && x.IsDeliveryAddress == true).ToList().FirstOrDefault();
                 if (userAddressDetail != null)
                 {
-                    addressModel.Id = userAddressDetail.UserId;
+                    addressModel.Id = userAddressDetail.CustomerId;
                     addressModel.City = userAddressDetail.City;
                     addressModel.State = userAddressDetail.State;
                     addressModel.Country = userAddressDetail.Country;

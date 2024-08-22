@@ -32,11 +32,11 @@ namespace EasyToBuy.Repository.Concrete
                 return await cartService.GetCartDetailsByCustomerId(customerId);
             }
         }
-        public async Task<ApiResponseModel> RemoveProductFromCart(int id)
+        public async Task<ApiResponseModel> RemoveProductFromCart(int cartId)
         {
             using (CartService cartService = new CartService())
             {
-                return await cartService.RemoveProductFromCart(id);
+                return await cartService.RemoveProductFromCart(cartId);
             }
         }
     }

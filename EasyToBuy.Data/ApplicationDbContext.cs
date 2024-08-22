@@ -12,10 +12,10 @@ namespace EasyToBuy.Data
         }
         public DbSet<Address> tblAddress  { get; set; }
         public DbSet<AddressType> tblAddressType { get; set; }
-        public DbSet<Vendor> tblVendor { get; set; }
-        public DbSet<VendorCompanyDetails> tblVendorCompanyDetails { get; set; }
-        public DbSet<VendorBankDetails> tblVendorBankDetails { get; set; }
         public DbSet<User> tblUser { get; set; }
+        public DbSet<UserCompanyDetails> tblUserCompanyDetails { get; set; }
+        public DbSet<UserBankDetails> tblUserBankDetails { get; set; }
+        public DbSet<Customer> tblCustomer { get; set; }
         public DbSet<Category> tblCategory { get; set; }
         public DbSet<Product> tblProduct { get; set; }
         public DbSet<ProductWeights> tblProductWeight { get; set; } 
@@ -42,7 +42,7 @@ namespace EasyToBuy.Data
         public DbSet<SPGetProductVariationListById_Result> productVariationListById_Results { get; set; }
         public DbSet<SPGetProductVariationImageById_Result> productVariationImageById_Results { get; set; }
         public DbSet<SPGetProductDescriptionById_Result> productDescriptionById_Results { get; set; }
-        public DbSet<SPGetVendorOrdersCountById_Result> vendorOrdersCountById_Results { get; set; }
+        public DbSet<SPGetUserOrdersCountById_Result> userOrdersCountById_Results { get; set; }
         public DbSet<SPGetOrderList_Result> orderList_Results { get; set; }
         public DbSet<SPGetTrackingStatusListByOrderId_Result> getTrackingStatusListByOrderId_Results { get; set; }
         public DbSet<SPGetProductSliderItemsByCategoryId_Result> productSliderItemsByCategoryId_Results { get; set; }

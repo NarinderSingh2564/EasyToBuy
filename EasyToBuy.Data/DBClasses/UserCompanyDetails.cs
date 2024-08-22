@@ -3,14 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EasyToBuy.Data.DBClasses
 {
-    public class VendorCompanyDetails
+    public class UserCompanyDetails
     {
         [Key]
         public int Id { get; set; }
 
-        [ForeignKey("Vendor")]
-        public int VendorId { get; set; }
-        public virtual Vendor Vendor { get; set; }
+        [ForeignKey("User")]
+        public int UserId { get; set; }
+        public virtual User User { get; set; }
 
         [StringLength(30)]
         public string CompanyName { get; set; }

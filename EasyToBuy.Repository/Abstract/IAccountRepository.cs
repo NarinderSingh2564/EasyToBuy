@@ -7,12 +7,12 @@ namespace EasyToBuy.Repository.Abstract
     public interface IAccountRepository
     {
         Task<ApiResponseModel> CheckUser(string mobile, string password,string role);
-        Task<ApiResponseModel> UserRegistration(UserInputModel userInputModel);
-        Task<IEnumerable<AddressModel>> GetAddressListByUserId(int userID);
+        Task<ApiResponseModel> CustomerRegistration(CustomerInputModel customerInputModel);
+        Task<IEnumerable<AddressModel>> GetAddressListByCustomerId(int customerId);
         Task<IEnumerable<AddressTypeModel>> GetAddressTypeList();
         Task<ApiResponseModel> AddressAddEdit(AddressInputModel addressInputModel);
-        Task<ApiResponseModel> SetDeliveryAddress(int id, int userId);
-        Task<UserModel>GetCustomerAccountProfile(int userId);
+        Task<ApiResponseModel> SetDeliveryAddress(int addressId, int CustomerId);
+        Task<CustomerModel>GetCustomerAccountProfile(int customerId);
         Task<AddressModel> GetAddressUserByUserId(int userId);
 
     }
