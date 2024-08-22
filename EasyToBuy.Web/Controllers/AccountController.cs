@@ -33,28 +33,28 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
-        [HttpPost("UserRegistration")]
-        public async Task<ApiResponseModel> UserRegistration(CustomerUIModel userUIModel)
+        [HttpPost("CustomerRegistration")]
+        public async Task<ApiResponseModel> CustomerRegistration(CustomerUIModel customerUIModel)
         {
-            var userInputModel = new CustomerInputModel();
+            var customerInputModel = new CustomerInputModel();
 
-            userInputModel.Id = userUIModel.Id;
-            userInputModel.Name = userUIModel.Name;
-            userInputModel.Email = userUIModel.Email;
-            userInputModel.Mobile = userUIModel.Mobile;
-            userInputModel.Password = userUIModel.Password;
-            userInputModel.CreatedBy = 1;
+            customerInputModel.Id = customerUIModel.Id;
+            customerInputModel.Name = customerUIModel.Name;
+            customerInputModel.Email = customerUIModel.Email;
+            customerInputModel.Mobile = customerUIModel.Mobile;
+            customerInputModel.Password = customerUIModel.Password;
+            customerInputModel.CreatedBy = 1;
 
-            var response = await _accountRepository.UserRegistration(userInputModel);
+            var response = await _accountRepository.CustomerRegistration(customerInputModel);
 
             return response;
             
         }
 
-        [HttpGet("GetAddressListByUserId")]
-        public async Task<IEnumerable<AddressModel>> GetAddressListByUserId(int userID)
+        [HttpGet("GetAddressListByCustomerId")]
+        public async Task<IEnumerable<AddressModel>> GetAddressListByCustomerId(int customerId)
         {
-            var response = await _accountRepository.GetAddressListByUserId(userID);
+            var response = await _accountRepository.GetAddressListByCustomerId(customerId);
 
             return response;
         }

@@ -17,19 +17,19 @@ namespace EasyToBuy.Repository.Concrete
                 return await accountService.CheckUser(mobile, password, role);
             }
         }
-        public async Task<ApiResponseModel> UserRegistration(CustomerInputModel userInputModel)
+        public async Task<ApiResponseModel> CustomerRegistration(CustomerInputModel customerInputModel)
         {
             using (AccountService accountService = new AccountService())
             {
-                return await accountService.UserRegistration(userInputModel);
+                return await accountService.CustomerRegistration(customerInputModel);
 
             }
         }
-        public async Task<IEnumerable<AddressModel>> GetAddressListByUserId(int userID)
+        public async Task<IEnumerable<AddressModel>> GetAddressListByCustomerId(int customerId)
         {
             using (AccountService accountService = new AccountService())
             {
-                return await accountService.GetAddressListByUserId(userID);
+                return await accountService.GetAddressListByCustomerId(customerId);
             }
         }
         public async Task<IEnumerable<AddressTypeModel>> GetAddressTypeList()
