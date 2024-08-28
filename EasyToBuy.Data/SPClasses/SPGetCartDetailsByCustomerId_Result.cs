@@ -18,7 +18,7 @@ namespace EasyToBuy.Data.SPClasses
         public int Id { get; set; }
         public int VariationId { get; set; }
         public string ProductName { get; set; } = string.Empty;
-        public string VendorName { get; set; } = string.Empty;
+        public string UserName { get; set; } = string.Empty;
         public string ProductDescription { get; set; } = string.Empty;
         public string ProductImage { get; set; } = string.Empty;
         public string ProductWeight { get; set; } = string.Empty;

@@ -10,11 +10,11 @@ namespace EasyToBuy.Repository.Concrete
 {
     public class AccountRepository : IAccountRepository
     {
-        public async Task<ApiResponseModel> CheckUser(string mobile, string password, string role)
+        public async Task<ApiResponseModel> CheckUser(string username, string password)
         {
             using (AccountService accountService = new AccountService())
             {
-                return await accountService.CheckUser(mobile, password, role);
+                return await accountService.CheckUser(username, password);
             }
         }
         public async Task<ApiResponseModel> CustomerRegistration(CustomerInputModel customerInputModel)
@@ -48,11 +48,11 @@ namespace EasyToBuy.Repository.Concrete
 
             }
         }
-        public async Task<ApiResponseModel> SetDeliveryAddress(int addressId, int CustomerId)
+        public async Task<ApiResponseModel> SetDeliveryAddress(int addressId, int customerId)
         {
             using (AccountService accountService = new AccountService())
             {
-                return await accountService.SetDeliveryAddress(addressId, CustomerId);
+                return await accountService.SetDeliveryAddress(addressId, customerId);
 
             }
         }

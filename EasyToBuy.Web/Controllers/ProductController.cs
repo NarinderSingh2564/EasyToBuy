@@ -107,7 +107,7 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
-        [HttpGet("GetProductDescriptionById")]
+        [HttpGet("GetProductDescriptionById")] 
         public async Task<SPGetProductDescriptionById_Result> GetProductDescriptionById(int productId)
         {
             var response = await _productRepository.GetProductDescriptionById(productId);

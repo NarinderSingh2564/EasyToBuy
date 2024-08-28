@@ -28,7 +28,7 @@ namespace EasyToBuy.Web.Controllers
         [HttpPost("CheckUser")]
         public async Task<ApiResponseModel> CheckUser(LoginModel loginModel)
         {
-            var response = await _accountRepository.CheckUser(loginModel.Mobile, loginModel.Password,loginModel.Role);      
+            var response = await _accountRepository.CheckUser(loginModel.Username, loginModel.Password);      
 
             return response;
         }
@@ -38,7 +38,6 @@ namespace EasyToBuy.Web.Controllers
         {
             var customerInputModel = new CustomerInputModel();
 
-            customerInputModel.Id = customerUIModel.Id;
             customerInputModel.Name = customerUIModel.Name;
             customerInputModel.Email = customerUIModel.Email;
             customerInputModel.Mobile = customerUIModel.Mobile;
@@ -89,9 +88,9 @@ namespace EasyToBuy.Web.Controllers
         }
 
         [HttpPost("SetDeliveryAddress")]
-        public async Task<ApiResponseModel> SetDeliveryAddress(int addressId, int CustomerId)
+        public async Task<ApiResponseModel> SetDeliveryAddress(int addressId, int customerId)
         {
-            var response = await _accountRepository.SetDeliveryAddress(addressId, CustomerId);
+            var response = await _accountRepository.SetDeliveryAddress(addressId, customerId);
 
             return response;
         }

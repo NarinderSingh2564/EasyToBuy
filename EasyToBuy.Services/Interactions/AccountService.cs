@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Reflection;
 using EasyToBuy.Data;
 using EasyToBuy.Data.DBClasses;
@@ -61,7 +63,7 @@ namespace EasyToBuy.Services.Interactions
         }
 
         #endregion
-        public async Task<ApiResponseModel> CheckUser(string mobile, string password, string role)
+        public async Task<ApiResponseModel> CheckUser(string username, string password)
         {
             var apiResponseModel = new ApiResponseModel();
 
@@ -69,57 +71,71 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                if (role == "User")
+                var checkUser = await _dbContext.tblUser.Where(x => x.Mobile == username || x.Email == username).FirstOrDefaultAsync();
+                if (checkUser != null)
                 {
-                    dbUser = await _dbContext.tblUser.Where(x => x.Mobile == mobile || x.Email == mobile).FirstOrDefaultAsync();
-                }
-                if (role == "Customer")
-                {
-                    dbUser = await _dbContext.tblCustomer.Where(x => x.Mobile == mobile || x.Email == mobile).FirstOrDefaultAsync();
-                }
+                    dbUser = checkUser;
 
-                if (dbUser != null)
-                {
-                    if (dbUser.Password != password)
+                    if (dbUser != null)
                     {
-                        apiResponseModel.Status = false;
-                        apiResponseModel.Message = "Incorrect password.";
-                    }
-                    else if (role == "Vendor" && dbUser.Status != "Approved")
-                    {
-                        apiResponseModel.Status = false;
-                        apiResponseModel.Message = "User is not active.";
-                    }
-                    else if (role == "Customer" && !dbUser.IsActive)
-                    {
-                        apiResponseModel.Status = false;
-                        apiResponseModel.Message = "User is not active.";
-                    }
-                    else
-                    {
-                        var userDetails = new UserDetailsModel()
+                        if (dbUser.Password != password)
                         {
-                            Id = dbUser.Id,
-                            Name = dbUser.Name,
-                            Email = dbUser.Email,
-                            Mobile = dbUser.Mobile,
-                            Role = role,
-                        };
-                        if (role == "Vendor")
-                        {
-                            dbUser.LastLoginDate = DateTime.Now;
-                            await _dbContext.SaveChangesAsync();
+                            apiResponseModel.Status = false;
+                            apiResponseModel.Message = "Incorrect password.";
                         }
-                        apiResponseModel.Status = true;
-                        apiResponseModel.Message = "User logged in successfully.";
-                        apiResponseModel.Response = userDetails;
-
+                        else if (dbUser.Status != "Approved")
+                        {
+                            apiResponseModel.Status = false;
+                            apiResponseModel.Message = "User account is not Approved.";
+                        }
                     }
                 }
                 else
                 {
+                    var checkCustomer = await _dbContext.tblCustomer.Where(x => x.Mobile == username || x.Email == username).FirstOrDefaultAsync();
+                    if (checkCustomer != null)
+                    {
+                        dbUser = checkCustomer;
+
+                        if (dbUser != null)
+                        {
+                            if (dbUser.Password != password)
+                            {
+                                apiResponseModel.Status = false;
+                                apiResponseModel.Message = "Incorrect password.";
+                            }
+                            else if (!dbUser.IsActive)
+                            {
+                                apiResponseModel.Status = false;
+                                apiResponseModel.Message = "User is not active.";
+                            }
+                        }
+                    }
+                }
+
+                if (dbUser != null)
+                {
+                    var userDetails = new UserDetailsModel()
+                    {
+                        Id = dbUser.Id,
+                        Name = dbUser.Name,
+                        Email = dbUser.Email,
+                        Mobile = dbUser.Mobile,
+                    };
+                    if (dbUser.Role == "Vendor")
+                    {
+                        dbUser.LastLoginDate = DateTime.Now;
+                        await _dbContext.SaveChangesAsync();
+                    }
+
+                    apiResponseModel.Status = true;
+                    apiResponseModel.Message = "User logged in successfully.";
+                    apiResponseModel.Response = userDetails;
+                }
+                else
+                {
                     apiResponseModel.Status = false;
-                    apiResponseModel.Message = "User not found.";
+                    apiResponseModel.Message = "User is not found.";
                 }
             }
             catch (Exception ex)
@@ -281,13 +297,13 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        public async Task<ApiResponseModel> SetDeliveryAddress(int addressId, int CustomerId)
+        public async Task<ApiResponseModel> SetDeliveryAddress(int addressId, int customerId)
         {
             var apiResponseModel = new ApiResponseModel();
 
             try
             {
-                var dbAdressByUserId = await _dbContext.tblAddress.Where(x => x.CustomerId == CustomerId).ToListAsync();
+                var dbAdressByUserId = await _dbContext.tblAddress.Where(x => x.CustomerId == customerId).ToListAsync();
 
                 if (dbAdressByUserId.Count > 0)
                 {
