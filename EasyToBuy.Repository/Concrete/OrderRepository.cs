@@ -17,11 +17,11 @@ namespace EasyToBuy.Repository.Concrete
             }
         }
 
-        public async Task<IEnumerable<SPGetOrderList_Result>> GetOrdersList(int userId, int customerId, string? searchText, string? statusId, DateTime? firstDate, DateTime? secondDate)
+        public async Task<IEnumerable<SPGetOrderList_Result>> GetOrdersList( int customerId, int userId, string? searchText, string? statusId, DateTime? firstDate, DateTime? secondDate)
         {
             using (OrderService orderService = new OrderService())
             {
-                return await orderService.GetOrdersList(userId, customerId, searchText, statusId, firstDate, secondDate);
+                return await orderService.GetOrdersList(customerId, userId, searchText, statusId, firstDate, secondDate);
             }
         }
         public async Task<IEnumerable<SPGetTrackingStatusListByOrderId_Result>> GetOrderStatusTrackingList(int orderId)

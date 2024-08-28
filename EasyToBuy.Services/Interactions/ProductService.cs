@@ -378,7 +378,7 @@ namespace EasyToBuy.Services.Interactions
                     else
                     {
                         apiResponseModel.Status = false;
-                        apiResponseModel.Message = "Sorry, You can not delete this variation until the order is not delivered.";
+                        apiResponseModel.Message = "Sorry, you can not delete this variation until the order is not delivered.";
                     }
                 }
                 else

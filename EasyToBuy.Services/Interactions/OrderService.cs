@@ -166,16 +166,16 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        public async Task<IEnumerable<SPGetOrderList_Result>> GetOrdersList(int userId, int customerId, string? searchText, string? statusId, DateTime? firstDate, DateTime? secondDate)
+        public async Task<IEnumerable<SPGetOrderList_Result>> GetOrdersList(int customerId, int userId, string? searchText, string? statusId, DateTime? firstDate, DateTime? secondDate)
         {
             var orderList = new List<SPGetOrderList_Result>();
 
             try
             {
-                var sqlQuery = "exec spGetOrderList @CustomerId,@VendorId,@SearchText,@StatusId,@FirstDate,@SecondDate";
+                var sqlQuery = "exec spGetOrderList @CustomerId,@UserId,@SearchText,@StatusId,@FirstDate,@SecondDate";
 
                 SqlParameter parameter1 = new SqlParameter("@CustomerId", customerId < 1 ? DBNull.Value : customerId);
-                SqlParameter parameter2 = new SqlParameter("@VendorId", userId < 1 ? DBNull.Value : userId);
+                SqlParameter parameter2 = new SqlParameter("@UserId", userId < 1 ? DBNull.Value : userId);
                 SqlParameter parameter3 = new SqlParameter("@SearchText", string.IsNullOrEmpty(searchText) ? DBNull.Value : searchText);
                 SqlParameter parameter4 = new SqlParameter("@StatusId", statusId == "0" ? DBNull.Value : statusId); 
                 SqlParameter parameter5 = new SqlParameter("@FirstDate", firstDate == null ? DBNull.Value : firstDate);

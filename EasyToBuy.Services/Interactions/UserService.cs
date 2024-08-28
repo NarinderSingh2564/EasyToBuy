@@ -88,7 +88,7 @@ namespace EasyToBuy.Services.Interactions
                     userObj.Email = userInputModel.userBasicDetailsInputModel.Email;
                     userObj.Password = userInputModel.userBasicDetailsInputModel.Password;
                     userObj.Mobile = userInputModel.userBasicDetailsInputModel.Mobile;
-                    userObj.Role = userInputModel.userBasicDetailsInputModel.Type;
+                    userObj.Role = userInputModel.userBasicDetailsInputModel.Role;
                     userObj.IdentificationType = userInputModel.userBasicDetailsInputModel.IdentificationType;
                     userObj.IdentificationNumber = userInputModel.userBasicDetailsInputModel.IdentificationNumber;
                     userObj.Pincode = userInputModel.userBasicDetailsInputModel.Pincode;
@@ -218,72 +218,15 @@ namespace EasyToBuy.Services.Interactions
             }
             return apiResponseModel;
         }
-
-        public async Task<ApiResponseModel> UserLogin(string mobile, string password)
-        {
-            var apiResponseModel = new ApiResponseModel();
-
-            try
-            {
-                var dbUser = await _dbContext.tblUser.Where(x => x.Mobile == mobile).FirstOrDefaultAsync();
-
-                if (dbUser != null)
-                {
-                    if (dbUser.Password != password)
-                    {
-                        apiResponseModel.Status = false;
-                        apiResponseModel.Message = "Incorrect password";
-                    }
-                    else if (dbUser.Status == "Approved")
-                    {
-                        apiResponseModel.Status = true;
-                        apiResponseModel.Message = "User logged in successfully";
-                        apiResponseModel.Response = dbUser;
-
-                        dbUser.LastLoginDate = DateTime.Now;
-                        await _dbContext.SaveChangesAsync();
-                    }
-                    else if (dbUser.Status == "Rejected")
-                    {
-                        apiResponseModel.Status = false;
-                        apiResponseModel.Message = "Sorry, you are rejected by admin.";
-                    }
-                    else if (dbUser.Status == "Pending")
-                    {
-                        apiResponseModel.Status = false;
-                        apiResponseModel.Message = "Your request is pending.";
-                    }
-                    else
-                    {
-                        apiResponseModel.Status = false;
-                        apiResponseModel.Message = "You are blocked.";
-                    }
-                }
-                else
-                {
-                    apiResponseModel.Status = false;
-                    apiResponseModel.Message = "User not found";
-                }
-            }
-
-            catch (Exception ex)
-            {
-                var msg = ex.Message;
-            }
-
-            return apiResponseModel;
-        }
-
         public async Task<IEnumerable<SPGetUserOrdersCountById_Result>> GetUserOrdersCount(int userId)
         {
             var UserOrdersCount = new List<SPGetUserOrdersCountById_Result>();
 
             try
             {
-                var sqlQuery = "exec SPGetUserOrdersCountById @UserId";
+                var sqlQuery = "exec spGetUserOrdersCountById @UserId";
 
                 SqlParameter parameter1 = new SqlParameter("@UserId", (int)userId);
-
 
                 UserOrdersCount = await _dbContext.userOrdersCountById_Results.FromSqlRaw(sqlQuery, parameter1).ToListAsync();
 
