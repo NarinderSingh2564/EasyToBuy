@@ -13,5 +13,6 @@ namespace EasyToBuy.Models.CommonModels
         public string Mobile { get; set; }
         public string Email { get; set; }
         public string Role { get; set; }
+        public string Redirect { get; set; }
     }
 }
