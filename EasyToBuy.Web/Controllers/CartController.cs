@@ -51,9 +51,9 @@ namespace EasyToBuy.Web.Controllers
         }
 
         [HttpPost("RemoveProductFromCart")]
-        public async Task<ApiResponseModel> RemoveProductFromCart(int cartid)
+        public async Task<ApiResponseModel> RemoveProductFromCart(int cartId)
         {
-            var response = await _cartRepository.RemoveProductFromCart(cartid);
+            var response = await _cartRepository.RemoveProductFromCart(cartId);
 
             return response;
         }

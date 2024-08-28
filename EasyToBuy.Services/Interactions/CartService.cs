@@ -72,12 +72,12 @@ namespace EasyToBuy.Services.Interactions
 
                         await _dbContext.SaveChangesAsync();
                         apiResponseModel.Status = true;
-                        apiResponseModel.Message = "Quantity is successfully updated";
+                        apiResponseModel.Message = "Quantity is successfully updated.";
                     }
                     else
                     {
                         apiResponseModel.Status = false;
-                        apiResponseModel.Message = " This Product is not exist in cart List";
+                        apiResponseModel.Message = "This product does not exist in cart.";
                     }
                 }
                 else
@@ -86,7 +86,7 @@ namespace EasyToBuy.Services.Interactions
                     if (checkStockQuantity == 0)
                     {
                         apiResponseModel.Status = false;
-                        apiResponseModel.Message = "Product is out of stock.";
+                        apiResponseModel.Message = "This product is out of stock.";
                     }
                     else
                     {
@@ -94,7 +94,7 @@ namespace EasyToBuy.Services.Interactions
                         if (isProductExists != null)
                         {
                             apiResponseModel.Status = false;
-                            apiResponseModel.Message = "This Product is already exist in your cart.";
+                            apiResponseModel.Message = "This product already exists in your cart.";
                         }
                         else
                         {
@@ -174,8 +174,9 @@ namespace EasyToBuy.Services.Interactions
             try
             {
                 var isProductExist = await _dbContext.tblCart.Where(x => x.VariationId == variationId && x.CustomerId == customerId && x.IsPlaced == false).FirstOrDefaultAsync();
-                var s = await _dbContext.tblProductVariationAndRate.Where(x => x.Id == variationId).Select(x => x.SetAsDefault).FirstOrDefaultAsync();
-                if (isProductExist != null && s == false)
+                var isDefault = await _dbContext.tblProductVariationAndRate.Where(x => x.Id == variationId).Select(x => x.SetAsDefault).FirstOrDefaultAsync();
+
+                if (isProductExist != null && isDefault == false)
                 {
                     apiResponseModel.Status = true;
                 }

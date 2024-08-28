@@ -31,7 +31,7 @@ namespace EasyToBuy.Web.Controllers
             userInputModel.userBasicDetailsInputModel.Email = userUIModel.userBasicDetailsUIModel.Email;
             userInputModel.userBasicDetailsInputModel.Password = userUIModel.userBasicDetailsUIModel.Password;
             userInputModel.userBasicDetailsInputModel.Mobile = userUIModel.userBasicDetailsUIModel.Mobile;
-            userInputModel.userBasicDetailsInputModel.Type = userUIModel.userBasicDetailsUIModel.Type;
+            userInputModel.userBasicDetailsInputModel.Role = userUIModel.userBasicDetailsUIModel.Role;
             userInputModel.userBasicDetailsInputModel.IdentificationType = userUIModel.userBasicDetailsUIModel.IdentificationType;
             userInputModel.userBasicDetailsInputModel.IdentificationNumber = userUIModel.userBasicDetailsUIModel.IdentificationNumber;
             userInputModel.userBasicDetailsInputModel.Pincode = userUIModel.userBasicDetailsUIModel.Pincode;
@@ -72,14 +72,6 @@ namespace EasyToBuy.Web.Controllers
         public async Task<ApiResponseModel> UserStatusUpdate(int userId, string status, string statusRemarks)
         {
             var response = await _userRepository.UserStatusUpdate(userId, status, statusRemarks);
-
-            return response;
-        }
-
-        [HttpPost("UserLogin")]
-        public async Task<ApiResponseModel> UserLogin(string mobile, string password)
-        {
-            var response = await _userRepository.UserLogin(mobile, password);
 
             return response;
         }

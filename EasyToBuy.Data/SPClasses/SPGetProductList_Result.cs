@@ -11,8 +11,8 @@
         public int PackingModeId { get; set; }
         public string PackingMode { get; set; } = string.Empty;
         public bool IsActive { get; set; }
-        public int VendorId { get; set; }
-        public string VendorName { get; set; } = string.Empty;
+        public int UserId { get; set; }
+        public string UserName { get; set; } = string.Empty;
         public decimal MRP { get; set; }
         public decimal Discount { get; set; }
         public decimal DiscountPrice { get; set; }

@@ -61,7 +61,7 @@ namespace EasyToBuy.Services.Interactions
         }
 
         #endregion
-        public async Task<ApiResponseModel> CheckUser(string mobile, string password, string role)
+        public async Task<ApiResponseModel> CheckUser(string username, string password, string role)
         {
             var apiResponseModel = new ApiResponseModel();
 
@@ -71,11 +71,11 @@ namespace EasyToBuy.Services.Interactions
             {
                 if (role == "User")
                 {
-                    dbUser = await _dbContext.tblUser.Where(x => x.Mobile == mobile || x.Email == mobile).FirstOrDefaultAsync();
+                    dbUser = await _dbContext.tblUser.Where(x => x.Mobile == username || x.Email == username).FirstOrDefaultAsync();
                 }
                 if (role == "Customer")
                 {
-                    dbUser = await _dbContext.tblCustomer.Where(x => x.Mobile == mobile || x.Email == mobile).FirstOrDefaultAsync();
+                    dbUser = await _dbContext.tblCustomer.Where(x => x.Mobile == username || x.Email == username).FirstOrDefaultAsync();
                 }
 
                 if (dbUser != null)
@@ -103,7 +103,7 @@ namespace EasyToBuy.Services.Interactions
                             Name = dbUser.Name,
                             Email = dbUser.Email,
                             Mobile = dbUser.Mobile,
-                            Role = role,
+                            Role = role == "Customer" ? role : dbUser.Role,
                         };
                         if (role == "Vendor")
                         {
@@ -113,7 +113,6 @@ namespace EasyToBuy.Services.Interactions
                         apiResponseModel.Status = true;
                         apiResponseModel.Message = "User logged in successfully.";
                         apiResponseModel.Response = userDetails;
-
                     }
                 }
                 else
@@ -130,18 +129,17 @@ namespace EasyToBuy.Services.Interactions
             return apiResponseModel;
         }
         public async Task<ApiResponseModel> CustomerRegistration(CustomerInputModel customerInputModel)
-
         {
             var apiResponseModel = new ApiResponseModel();
 
             try
             {
-                var isCustomerExists = await _dbContext.tblCustomer.Where(x => x.Mobile == customerInputModel.Mobile).FirstOrDefaultAsync();
+                var isCustomerExists = await _dbContext.tblCustomer.Where(x => x.Mobile == customerInputModel.Mobile && x.Email == customerInputModel.Email && x.Id != customerInputModel.Id).FirstOrDefaultAsync();
 
                 if (isCustomerExists != null)
                 {
                     apiResponseModel.Status = false;
-                    apiResponseModel.Message = "This mobile number is already registered.";
+                    apiResponseModel.Message = "This mobile number and email is already registered, please try with new.";
                 }
 
                 else
@@ -152,7 +150,7 @@ namespace EasyToBuy.Services.Interactions
                     dbCustomer.Email = customerInputModel.Email;
                     dbCustomer.Mobile = customerInputModel.Mobile;
                     dbCustomer.Password = customerInputModel.Password;
-                    dbCustomer.CreatedBy = customerInputModel.CreatedBy;
+                    dbCustomer.CreatedBy = 1;
                     dbCustomer.CreatedOn = DateTime.Now;
                     dbCustomer.IsActive = true;
 
@@ -281,13 +279,13 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        public async Task<ApiResponseModel> SetDeliveryAddress(int addressId, int CustomerId)
+        public async Task<ApiResponseModel> SetDeliveryAddress(int addressId, int customerId)
         {
             var apiResponseModel = new ApiResponseModel();
 
             try
             {
-                var dbAdressByUserId = await _dbContext.tblAddress.Where(x => x.CustomerId == CustomerId).ToListAsync();
+                var dbAdressByUserId = await _dbContext.tblAddress.Where(x => x.CustomerId == customerId).ToListAsync();
 
                 if (dbAdressByUserId.Count > 0)
                 {
@@ -314,13 +312,13 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        public async Task<CustomerModel> GetCustomerAccountProfile(int CustomerId)
+        public async Task<CustomerModel> GetCustomerAccountProfile(int customerId)
         {
             var userModel = new CustomerModel();
 
             try
             {
-                var userDetail = _dbContext.tblCustomer.Where(x => x.Id == CustomerId).FirstOrDefault();
+                var userDetail = _dbContext.tblCustomer.Where(x => x.Id == customerId).FirstOrDefault();
                 if (userDetail != null)
                 {
                     userModel.Id = userDetail.Id;

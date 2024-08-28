@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace EasyToBuy.Data.SPClasses
 {
@@ -13,10 +8,8 @@ namespace EasyToBuy.Data.SPClasses
         public int Id { get; set; }
         public int ProductId { get; set; }
         public int UserId { get; set; }
-        public int VendorId { get; set; }
         public int StatusId { get; set; }
         public string UserName { get; set; }
-        public string VendorName { get; set; }
         public string OrderNumber { get; set; }
         public DateTime OrderDate { get; set; }
         public string Status { get; set; }
