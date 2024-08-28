@@ -17,7 +17,7 @@
         public decimal Discount { get; set; }
         public decimal DiscountPrice { get; set; }
         public decimal PriceAfterDiscount { get; set; }
-        public int VariationId {  get; set; }
+        public int VariationId { get; set; }
         public string ProductWeight { get; set; } = string.Empty;
         public bool ShowProductWeight { get; set; }
         public int Quantity { get; set; }

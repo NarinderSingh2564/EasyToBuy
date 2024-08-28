@@ -1,15 +1,10 @@
-﻿using System.Diagnostics.Metrics;
-using System.Globalization;
-using EasyToBuy.Data.DBClasses;
-using EasyToBuy.Models.CommonModel;
+﻿using EasyToBuy.Models.CommonModel;
 using EasyToBuy.Models.CommonModels;
 using EasyToBuy.Models.InputModels;
 using EasyToBuy.Models.Models;
 using EasyToBuy.Models.UIModels;
 using EasyToBuy.Repository.Abstract;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EasyToBuy.Web.Controllers
 {
@@ -29,7 +24,6 @@ namespace EasyToBuy.Web.Controllers
         public async Task<ApiResponseModel> CheckUser(LoginModel loginModel)
         {
             var response = await _accountRepository.CheckUser(loginModel.Username, loginModel.Password);      
-
             return response;
         }
 
@@ -47,7 +41,7 @@ namespace EasyToBuy.Web.Controllers
             var response = await _accountRepository.CustomerRegistration(customerInputModel);
 
             return response;
-            
+
         }
 
         [HttpGet("GetAddressListByCustomerId")]
@@ -70,7 +64,7 @@ namespace EasyToBuy.Web.Controllers
         public async Task<ApiResponseModel> AddressAddEdit(AddressUIModel addressUIModel)
         {
             var addressInputModel = new AddressInputModel();
-            
+
             addressInputModel.Id = addressUIModel.Id;
             addressInputModel.CustomerId = addressUIModel.CustomerId;
             addressInputModel.FullAddress = addressUIModel.FullAddress;
@@ -83,7 +77,7 @@ namespace EasyToBuy.Web.Controllers
             addressInputModel.UpdatedBy = addressUIModel.UpdatedBy;
 
             var response = await _accountRepository.AddressAddEdit(addressInputModel);
-           
+
             return response;
         }
 

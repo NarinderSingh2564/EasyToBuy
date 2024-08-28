@@ -14,6 +14,5 @@ namespace EasyToBuy.Repository.Abstract
         Task<ApiResponseModel> SetDeliveryAddress(int addressId, int customerId);
         Task<CustomerModel>GetCustomerAccountProfile(int customerId);
         Task<AddressModel> GetAddressUserByUserId(int userId);
-
     }
 }

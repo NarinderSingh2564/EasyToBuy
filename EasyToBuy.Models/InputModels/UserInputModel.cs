@@ -3,8 +3,8 @@
     public class UserInputModel
     {
         public UserBasicDetailsInputModel userBasicDetailsInputModel { get; set; }
-        public UserCompanyDetailsInputModel userCompanyDetailsInputModel { get; set; }
         public UserBankDetailsInputModel userBankDetailsInputModel { get; set; }
+        public UserCompanyDetailsInputModel userCompanyDetailsInputModel { get; set; }
         public UserInputModel()
         {
             userBasicDetailsInputModel = new UserBasicDetailsInputModel();
@@ -19,7 +19,7 @@
         public string Email { get; set; } = string.Empty;
         public string Mobile { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
-        public string Type { get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
         public string IdentificationType { get; set; } = string.Empty;
         public string IdentificationNumber { get; set; } = string.Empty;
         public int Pincode { get; set; }

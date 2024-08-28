@@ -37,14 +37,6 @@ namespace EasyToBuy.Repository.Concrete
                 return await userService.UserStatusUpdate(userId, status, statusRemarks);
             }
         }
-        public async Task<ApiResponseModel> UserLogin(string mobile, string password)
-        {
-            using (UserService userService = new UserService())
-            {
-                return await userService.UserLogin(mobile,password);
-            }
-        }
-
         public async Task<IEnumerable<SPGetUserOrdersCountById_Result>> GetUserOrdersCount(int userId)
         {
             using (UserService userService = new UserService())

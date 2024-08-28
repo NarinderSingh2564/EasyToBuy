@@ -121,6 +121,7 @@ namespace EasyToBuy.Services.Interactions
                         Name = dbUser.Name,
                         Email = dbUser.Email,
                         Mobile = dbUser.Mobile,
+                        Redirect = "AllProducts"
                     };
                     if (dbUser.Role == "Vendor")
                     {

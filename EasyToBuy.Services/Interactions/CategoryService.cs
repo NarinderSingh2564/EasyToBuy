@@ -68,7 +68,7 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var dbCategoryList = await _dbContext.tblCategory.Include(x=>x.ProductPackingMode).Where(x => x.IsActive == true).ToListAsync();
+                var dbCategoryList = await _dbContext.tblCategory.Include(x=>x.ProductPackingMode).ToListAsync();
                 foreach (var category in dbCategoryList)
                 {
                     categoryList.Add(new CategoryModel
