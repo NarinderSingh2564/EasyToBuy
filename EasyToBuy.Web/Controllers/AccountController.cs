@@ -23,8 +23,7 @@ namespace EasyToBuy.Web.Controllers
         [HttpPost("CheckUser")]
         public async Task<ApiResponseModel> CheckUser(LoginModel loginModel)
         {
-            var response = await _accountRepository.CheckUser(loginModel.Username, loginModel.Password);
-
+            var response = await _accountRepository.CheckUser(loginModel.Username, loginModel.Password);      
             return response;
         }
 

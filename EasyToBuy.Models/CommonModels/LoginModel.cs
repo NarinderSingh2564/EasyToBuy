@@ -10,6 +10,5 @@ namespace EasyToBuy.Models.CommonModels
     {
         public string Username{ get; set; }
         public string Password{ get; set; }
-      
     }
 }

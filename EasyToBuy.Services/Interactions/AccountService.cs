@@ -122,13 +122,12 @@ namespace EasyToBuy.Services.Interactions
                         Email = dbUser.Email,
                         Mobile = dbUser.Mobile,
                         Redirect = "AllProducts"
-
                     };
-                    //if (dbUser.Role == "Vendor")
-                    //{
-                    //    dbUser.LastLoginDate = DateTime.Now;
-                    //    await _dbContext.SaveChangesAsync();
-                    //}
+                    if (dbUser.Role == "Vendor")
+                    {
+                        dbUser.LastLoginDate = DateTime.Now;
+                        await _dbContext.SaveChangesAsync();
+                    }
 
                     apiResponseModel.Status = true;
                     apiResponseModel.Message = "User logged in successfully.";

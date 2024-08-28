@@ -16,7 +16,6 @@ namespace EasyToBuy.Data.SPClasses
         public int OrderStatusId { get; set; }
         public string OrderStatus { get; set; }
         public int OrderCount { get; set; }
-
         public string IconClass {  get; set; }
     }
 }

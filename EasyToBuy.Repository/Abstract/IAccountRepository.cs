@@ -12,8 +12,7 @@ namespace EasyToBuy.Repository.Abstract
         Task<IEnumerable<AddressTypeModel>> GetAddressTypeList();
         Task<ApiResponseModel> AddressAddEdit(AddressInputModel addressInputModel);
         Task<ApiResponseModel> SetDeliveryAddress(int addressId, int customerId);
-        Task<CustomerModel> GetCustomerAccountProfile(int customerId);
+        Task<CustomerModel>GetCustomerAccountProfile(int customerId);
         Task<AddressModel> GetAddressUserByUserId(int userId);
-
     }
 }
