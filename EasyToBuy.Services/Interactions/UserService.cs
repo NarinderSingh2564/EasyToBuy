@@ -64,6 +64,7 @@ namespace EasyToBuy.Services.Interactions
         public async Task<ApiResponseModel> UserRegistration(UserInputModel userInputModel)
         {
             var apiResponseModel = new ApiResponseModel();
+
             var transaction = _dbContext.Database.BeginTransaction();
             var errorArea = string.Empty;
 
@@ -88,7 +89,7 @@ namespace EasyToBuy.Services.Interactions
                     userObj.Email = userInputModel.userBasicDetailsInputModel.Email;
                     userObj.Password = userInputModel.userBasicDetailsInputModel.Password;
                     userObj.Mobile = userInputModel.userBasicDetailsInputModel.Mobile;
-                    userObj.Role = userInputModel.userBasicDetailsInputModel.Role;
+                    //userObj.Role = userInputModel.userBasicDetailsInputModel.Role;
                     userObj.IdentificationType = userInputModel.userBasicDetailsInputModel.IdentificationType;
                     userObj.IdentificationNumber = userInputModel.userBasicDetailsInputModel.IdentificationNumber;
                     userObj.Pincode = userInputModel.userBasicDetailsInputModel.Pincode;
@@ -96,7 +97,7 @@ namespace EasyToBuy.Services.Interactions
                     userObj.State = userInputModel.userBasicDetailsInputModel.State;
                     userObj.Country = userInputModel.userBasicDetailsInputModel.Country;
                     userObj.FullAddress = userInputModel.userBasicDetailsInputModel.FullAddress;
-                    userObj.Status = "Pending";
+                    //userObj.Status = "Pending";
                     userObj.StatusRemarks = "Your request has been sent to admin.";
                     userObj.CreatedBy = 1;
                     userObj.CreatedOn = DateTime.Now;
@@ -165,6 +166,7 @@ namespace EasyToBuy.Services.Interactions
             try
             {
                 var dbUserList = await _dbContext.tblUser.ToListAsync();
+
                 foreach (var user in dbUserList)
                 {
                     userList.Add(new UserModel
@@ -178,7 +180,7 @@ namespace EasyToBuy.Services.Interactions
                         State = user.State,
                         Country = user.Country,
                         FullAddress = user.FullAddress,
-                        Status = user.Status,
+                        //Status = user.Status,
                         StatusRemarks = user.StatusRemarks,
                         IsLicensed = user.IsLicensed,
                         LicenseExpiredOn = user.LicenseExpiredOn,
@@ -201,7 +203,7 @@ namespace EasyToBuy.Services.Interactions
 
                 if (dbUser != null)
                 {
-                    dbUser.Status = status;
+                    //dbUser.Status = status;
                     dbUser.StatusRemarks = statusRemarks;
                     dbUser.UpdatedBy = userId;
                     dbUser.UpdatedOn = DateTime.Now;

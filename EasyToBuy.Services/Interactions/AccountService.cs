@@ -72,23 +72,10 @@ namespace EasyToBuy.Services.Interactions
             try
             {
                 var checkUser = await _dbContext.tblUser.Where(x => x.Mobile == username || x.Email == username).FirstOrDefaultAsync();
+
                 if (checkUser != null)
                 {
                     dbUser = checkUser;
-
-                    if (dbUser != null)
-                    {
-                        if (dbUser.Password != password)
-                        {
-                            apiResponseModel.Status = false;
-                            apiResponseModel.Message = "Incorrect password.";
-                        }
-                        else if (dbUser.Status != "Approved")
-                        {
-                            apiResponseModel.Status = false;
-                            apiResponseModel.Message = "User account is not Approved.";
-                        }
-                    }
                 }
                 else
                 {
@@ -96,47 +83,49 @@ namespace EasyToBuy.Services.Interactions
                     if (checkCustomer != null)
                     {
                         dbUser = checkCustomer;
-
-                        if (dbUser != null)
-                        {
-                            if (dbUser.Password != password)
-                            {
-                                apiResponseModel.Status = false;
-                                apiResponseModel.Message = "Incorrect password.";
-                            }
-                            else if (!dbUser.IsActive)
-                            {
-                                apiResponseModel.Status = false;
-                                apiResponseModel.Message = "User is not active.";
-                            }
-                        }
                     }
                 }
 
                 if (dbUser != null)
                 {
-                    var userDetails = new UserDetailsModel()
+                    if (dbUser.Password != password)
                     {
-                        Id = dbUser.Id,
-                        Name = dbUser.Name,
-                        Email = dbUser.Email,
-                        Mobile = dbUser.Mobile,
-                        Redirect = "AllProducts"
-                    };
-                    if (dbUser.Role == "Vendor")
+                        apiResponseModel.Status = false;
+                        apiResponseModel.Message = "Incorrect password.";
+                    }
+                    else if (!dbUser.IsActive)
                     {
+                        apiResponseModel.Status = false;
+                        apiResponseModel.Message = "User is not active.";
+                    }
+                    else
+                    {
+                        Int16 roleId = Convert.ToInt16(dbUser.RoleId);
+
+                        var role = _dbContext.tblRole.Where(x => x.Id == roleId).FirstOrDefault();
+
+                        var userDetails = new UserDetailsModel()
+                        {
+                            Id = dbUser.Id,
+                            Name = dbUser.Name,
+                            Email = dbUser.Email,
+                            Mobile = dbUser.Mobile,
+                            Redirect = role.RedirectTo,
+                            Role = role.RoleName
+                        };
+
                         dbUser.LastLoginDate = DateTime.Now;
                         await _dbContext.SaveChangesAsync();
-                    }
 
-                    apiResponseModel.Status = true;
-                    apiResponseModel.Message = "User logged in successfully.";
-                    apiResponseModel.Response = userDetails;
+                        apiResponseModel.Status = true;
+                        apiResponseModel.Message = "User logged in successfully.";
+                        apiResponseModel.Response = userDetails;
+                    }
                 }
                 else
                 {
                     apiResponseModel.Status = false;
-                    apiResponseModel.Message = "User is not found.";
+                    apiResponseModel.Message = "User not found.";
                 }
             }
             catch (Exception ex)
