@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,9 +27,10 @@ namespace EasyToBuy.Data.DBClasses
 
         [StringLength(12)]
         public string Mobile { get; set; }
-
-        [StringLength(20)]
-        public string Role { get; set; }
+      
+        [ForeignKey("Role")]
+        public int RoleId { get; set; }
+        public virtual Role Role { get; set; }
         public int Pincode { get; set; }
 
         [StringLength(30)]
@@ -48,9 +50,7 @@ namespace EasyToBuy.Data.DBClasses
 
         [StringLength(30)]
         public string IdentificationNumber { get; set; }
-
-        [StringLength(15)]
-        public string Status { get; set; }
+        public bool IsActive { get; set; }
 
         [StringLength(100)]
         public string StatusRemarks { get; set; }

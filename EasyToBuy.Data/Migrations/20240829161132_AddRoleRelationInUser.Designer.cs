@@ -4,6 +4,7 @@ using EasyToBuy.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyToBuy.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240829161132_AddRoleRelationInUser")]
+    partial class AddRoleRelationInUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -228,9 +231,6 @@ namespace EasyToBuy.Data.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("int");
 
@@ -238,8 +238,6 @@ namespace EasyToBuy.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
 
                     b.ToTable("tblCustomer", "dbo");
                 });
@@ -771,9 +769,6 @@ namespace EasyToBuy.Data.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsLicensed")
                         .HasColumnType("bit");
 
@@ -808,6 +803,11 @@ namespace EasyToBuy.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("StatusRemarks")
                         .IsRequired()
@@ -1475,17 +1475,6 @@ namespace EasyToBuy.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("ProductPackingMode");
-                });
-
-            modelBuilder.Entity("EasyToBuy.Data.DBClasses.Customer", b =>
-                {
-                    b.HasOne("EasyToBuy.Data.DBClasses.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("EasyToBuy.Data.DBClasses.CustomerOrder", b =>
