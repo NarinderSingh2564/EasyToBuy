@@ -7,7 +7,7 @@ namespace EasyToBuy.Repository.Abstract
     public interface ICategoryRepository
     {
         Task<IEnumerable<CategoryModel>> GetCategoryList();
-        Task<IEnumerable<CategoryModel>> GetCategoryById(int Id);
+        //Task<IEnumerable<CategoryModel>> GetCategoryById(int Id);
         Task<ApiResponseModel> CategoryAddEdit(CategoryInputModel categoryInputModel);
     }
 }

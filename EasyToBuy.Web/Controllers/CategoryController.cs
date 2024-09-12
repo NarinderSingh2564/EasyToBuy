@@ -28,13 +28,13 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
-        [HttpGet("GetCategoryById")]
-        public async Task<IEnumerable<CategoryModel>> GetCategoryById(int Id)
-        {
-            var response = await _categoryRepository.GetCategoryById(Id);
+        //[HttpGet("GetCategoryById")]
+        //public async Task<IEnumerable<CategoryModel>> GetCategoryById(int Id)
+        //{
+        //    var response = await _categoryRepository.GetCategoryById(Id);
 
-            return response;
-        }
+        //    return response;
+        //}
 
         [HttpPost("CategoryAddEdit")]
         public async Task<ApiResponseModel> CategoryAddEdit(CategoryUIModel categoryUIModel)

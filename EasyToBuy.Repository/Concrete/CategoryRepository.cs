@@ -15,13 +15,13 @@ namespace EasyToBuy.Repository.Concrete
                 return await categoryService.GetCategoryList();
             }
         }
-        public async Task<IEnumerable<CategoryModel>> GetCategoryById(int Id)
-        {
-            using (CategoryService categoryService = new CategoryService())
-            {
-                return await categoryService.GetCategoryById(Id);
-            }
-        }
+        //public async Task<IEnumerable<CategoryModel>> GetCategoryById(int Id)
+        //{
+        //    using (CategoryService categoryService = new CategoryService())
+        //    {
+        //        return await categoryService.GetCategoryById(Id);
+        //    }
+        //}
         public async Task<ApiResponseModel> CategoryAddEdit(CategoryInputModel categoryInputModel)
         {
             using (CategoryService categoryService = new CategoryService())

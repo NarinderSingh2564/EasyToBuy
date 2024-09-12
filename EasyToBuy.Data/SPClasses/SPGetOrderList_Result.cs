@@ -13,7 +13,7 @@ namespace EasyToBuy.Data.SPClasses
         public string UserName { get; set; }
         public string CustomerName { get; set; }
         public string OrderNumber { get; set; }
-        public DateTime OrderDate { get; set; }
+        public string OrderDate { get; set; }
         public string Status { get; set; }
         public string ProductName { get; set; }
         public string ProductImage { get; set; }

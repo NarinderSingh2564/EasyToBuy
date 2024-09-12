@@ -30,7 +30,15 @@ namespace EasyToBuy.Web.Controllers
         [HttpGet("GetOrdersList")]
         public async Task<IEnumerable<SPGetOrderList_Result>> GetOrdersList(int customerId, int userId, string? searchText, string? statusId, DateTime? firstDate, DateTime? secondDate)
         {
-            var response = await _orderRepository.GetOrdersList( customerId, userId, searchText, statusId, firstDate, secondDate);
+            var response = await _orderRepository.GetOrdersList(customerId, userId, searchText, statusId, firstDate, secondDate);
+
+            return response;
+        }
+
+        [HttpGet("CustomerOrderStatusUpdate")]
+        public async Task<ApiResponseModel> CustomerOrderStatusUpdate(int userId, int orderId, int statusId)
+        {
+            var response = await _orderRepository.CustomerOrderStatusUpdate(userId, orderId, statusId);
 
             return response;
         }
