@@ -201,28 +201,34 @@ namespace EasyToBuy.Services.Interactions
 
                 if (dbUser != null)
                 {
-                    var dbOrder = await _dbContext.tblCustomerOrder.Where(x => x.Id == orderId).FirstOrDefaultAsync();
-
+                    var dbOrder = await _dbContext.tblCustomerOrder.Include(x => x.OrderStatus).Where(x => x.Id == orderId).FirstOrDefaultAsync();
+                    
                     if (dbOrder != null)
                     {
-                        dbOrder.StatusId = statusId;
-                        dbOrder.UpdatedBy = userId;
-                        dbOrder.UpdatedOn = DateTime.Now;
+                        if (dbOrder.StatusId == statusId)
+                        {
+                            apiResponseModel.Status = false;
+                            apiResponseModel.Message = "This order is already " + dbOrder.OrderStatus.Status.ToLower() + ".";
+                        }
+                        else
+                        {
+                            dbOrder.StatusId = statusId;
+                            dbOrder.UpdatedBy = userId;
+                            dbOrder.UpdatedOn = DateTime.Now;
 
-                        var orderStatus = await _dbContext.tblOrderStatus.Where(x=> x.Id == statusId).Select(x=>x.Status).FirstOrDefaultAsync();
+                            var objCustomerOrderStatusLog = new CustomerOrderStatusLog();
 
-                        var objCustomerOrderStatusLog = new CustomerOrderStatusLog();
+                            objCustomerOrderStatusLog.OrderId = orderId;
+                            objCustomerOrderStatusLog.StatusId = statusId;
+                            objCustomerOrderStatusLog.CreatedBy = userId;
+                            objCustomerOrderStatusLog.CreatedOn = DateTime.Now;
 
-                        objCustomerOrderStatusLog.OrderId = orderId;
-                        objCustomerOrderStatusLog.StatusId = statusId;
-                        objCustomerOrderStatusLog.CreatedBy = userId;
-                        objCustomerOrderStatusLog.CreatedOn = DateTime.Now;
+                            await _dbContext.tblCustomerOrderStatusLog.AddAsync(objCustomerOrderStatusLog);
+                            await _dbContext.SaveChangesAsync();
 
-                        await _dbContext.tblCustomerOrderStatusLog.AddAsync(objCustomerOrderStatusLog);
-                        await _dbContext.SaveChangesAsync();
-                     
-                        apiResponseModel.Status = true;
-                        apiResponseModel.Message = "Order status successfully changed to " + orderStatus.ToLower() + ".";
+                            apiResponseModel.Status = true;
+                            apiResponseModel.Message = "Order status updated successfully.";
+                        }
                     }
                     else
                     {
