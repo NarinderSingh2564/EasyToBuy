@@ -98,9 +98,10 @@ namespace EasyToBuy.Services.Interactions
                                 var customerOrderObj = new CustomerOrder();
 
                                 var dbVariation = _dbContext.tblProductVariationAndRate.Where(x => x.Id == order.VariationId).FirstOrDefault();
+
                                 if (dbVariation != null)
                                 {
-                                    dbVariation.StockQuantity = order.StockQuantity - order.Quantity;
+                                    dbVariation.StockQuantity = dbVariation.StockQuantity <= 0 ? 0 : order.StockQuantity - order.Quantity;
                                 }
 
                                 customerOrderObj.CustomerId = customerId;
@@ -177,7 +178,7 @@ namespace EasyToBuy.Services.Interactions
                 SqlParameter parameter1 = new SqlParameter("@CustomerId", customerId < 1 ? DBNull.Value : customerId);
                 SqlParameter parameter2 = new SqlParameter("@UserId", userId < 1 ? DBNull.Value : userId);
                 SqlParameter parameter3 = new SqlParameter("@SearchText", string.IsNullOrEmpty(searchText) ? DBNull.Value : searchText);
-                SqlParameter parameter4 = new SqlParameter("@StatusId", statusId == "0" ? DBNull.Value : statusId); 
+                SqlParameter parameter4 = new SqlParameter("@StatusId", statusId == "0" ? DBNull.Value : statusId);
                 SqlParameter parameter5 = new SqlParameter("@FirstDate", firstDate == null ? DBNull.Value : firstDate);
                 SqlParameter parameter6 = new SqlParameter("@SecondDate", secondDate == null ? DBNull.Value : secondDate);
 
@@ -189,6 +190,65 @@ namespace EasyToBuy.Services.Interactions
             }
 
             return orderList;
+        }
+        public async Task<ApiResponseModel> CustomerOrderStatusUpdate(int userId, int orderId, int statusId)
+        {
+            var apiResponseModel = new ApiResponseModel();
+
+            try
+            {
+                var dbUser = await _dbContext.tblUser.Where(x => x.Id == userId && x.IsActive == true).FirstOrDefaultAsync();
+
+                if (dbUser != null)
+                {
+                    var dbOrder = await _dbContext.tblCustomerOrder.Include(x => x.OrderStatus).Where(x => x.Id == orderId).FirstOrDefaultAsync();
+                    
+                    if (dbOrder != null)
+                    {
+                        if (dbOrder.StatusId == statusId)
+                        {
+                            apiResponseModel.Status = false;
+                            apiResponseModel.Message = "This order is already " + dbOrder.OrderStatus.Status.ToLower() + ".";
+                        }
+                        else
+                        {
+                            dbOrder.StatusId = statusId;
+                            dbOrder.UpdatedBy = userId;
+                            dbOrder.UpdatedOn = DateTime.Now;
+
+                            var objCustomerOrderStatusLog = new CustomerOrderStatusLog();
+
+                            objCustomerOrderStatusLog.OrderId = orderId;
+                            objCustomerOrderStatusLog.StatusId = statusId;
+                            objCustomerOrderStatusLog.CreatedBy = userId;
+                            objCustomerOrderStatusLog.CreatedOn = DateTime.Now;
+
+                            await _dbContext.tblCustomerOrderStatusLog.AddAsync(objCustomerOrderStatusLog);
+                            await _dbContext.SaveChangesAsync();
+
+                            apiResponseModel.Status = true;
+                            apiResponseModel.Message = "Order status updated successfully.";
+                        }
+                    }
+                    else
+                    {
+                        apiResponseModel.Status = false;
+                        apiResponseModel.Message = "Order not found.";
+                    }
+                }
+                else
+                {
+                    apiResponseModel.Status = false;
+                    apiResponseModel.Message = "Sorry, you can not update order status as you are not an active user.";
+                }
+            }
+
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return apiResponseModel;
         }
         public async Task<IEnumerable<SPGetTrackingStatusListByOrderId_Result>> GetOrderStatusTrackingList(int orderId)
         {

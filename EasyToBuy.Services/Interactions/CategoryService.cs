@@ -88,32 +88,32 @@ namespace EasyToBuy.Services.Interactions
 
             return categoryList;
         }
-        public async Task<IEnumerable<CategoryModel>> GetCategoryById(int Id)
-        {
-            var categoryById = new List<CategoryModel>();
+        //public async Task<IEnumerable<CategoryModel>> GetCategoryById(int Id)
+        //{
+        //    var categoryById = new List<CategoryModel>();
 
-            try
-            {
-                var dbCategoryById = await _dbContext.tblCategory.Include(x => x.ProductPackingMode).Where(x => x.Id == Id && x.IsActive == true).ToListAsync();
-                foreach (var category in dbCategoryById)
-                {
-                    categoryById.Add(new CategoryModel
-                    {
-                        Id = category.Id,
-                        CategoryName = category.CategoryName,
-                        PackingModeId = category.PackingModeId,
-                        PackingMode = category.ProductPackingMode.PackingMode,
-                        IsActive = category.IsActive,
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                var msg = ex.Message;
-            }
+        //    try
+        //    {
+        //        var dbCategoryById = await _dbContext.tblCategory.Include(x => x.ProductPackingMode).Where(x => x.Id == Id && x.IsActive == true).ToListAsync();
+        //        foreach (var category in dbCategoryById)
+        //        {
+        //            categoryById.Add(new CategoryModel
+        //            {
+        //                Id = category.Id,
+        //                CategoryName = category.CategoryName,
+        //                PackingModeId = category.PackingModeId,
+        //                PackingMode = category.ProductPackingMode.PackingMode,
+        //                IsActive = category.IsActive,
+        //            });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        var msg = ex.Message;
+        //    }
 
-            return categoryById;
-        }
+        //    return categoryById;
+        //}
         public async Task<ApiResponseModel> CategoryAddEdit(CategoryInputModel categoryInputModel)
         {
             var apiResponseModel = new ApiResponseModel();
