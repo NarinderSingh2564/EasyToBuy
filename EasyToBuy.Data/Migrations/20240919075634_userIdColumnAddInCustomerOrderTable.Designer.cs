@@ -4,6 +4,7 @@ using EasyToBuy.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyToBuy.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240919075634_userIdColumnAddInCustomerOrderTable")]
+    partial class userIdColumnAddInCustomerOrderTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -287,10 +290,10 @@ namespace EasyToBuy.Data.Migrations
                     b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("VariationId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("VendorId")
+                    b.Property<int>("VariationId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -299,9 +302,9 @@ namespace EasyToBuy.Data.Migrations
 
                     b.HasIndex("StatusId");
 
-                    b.HasIndex("VariationId");
+                    b.HasIndex("UserId");
 
-                    b.HasIndex("VendorId");
+                    b.HasIndex("VariationId");
 
                     b.ToTable("tblCustomerOrder", "dbo");
                 });
@@ -1516,15 +1519,15 @@ namespace EasyToBuy.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EasyToBuy.Data.DBClasses.ProductVariationAndRate", "ProductVariationAndRate")
+                    b.HasOne("EasyToBuy.Data.DBClasses.User", "User")
                         .WithMany()
-                        .HasForeignKey("VariationId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EasyToBuy.Data.DBClasses.User", "User")
+                    b.HasOne("EasyToBuy.Data.DBClasses.ProductVariationAndRate", "ProductVariationAndRate")
                         .WithMany()
-                        .HasForeignKey("VendorId")
+                        .HasForeignKey("VariationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
