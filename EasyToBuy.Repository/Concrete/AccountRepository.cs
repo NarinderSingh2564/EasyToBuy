@@ -25,7 +25,7 @@ namespace EasyToBuy.Repository.Concrete
 
             }
         }
-        public async Task<IEnumerable<AddressModel>> GetAddressListByCustomerId(int customerId)
+        public async Task<IEnumerable<CustomerAddressModel>> GetAddressListByCustomerId(int customerId)
         {
             using (AccountService accountService = new AccountService())
             {
@@ -40,11 +40,11 @@ namespace EasyToBuy.Repository.Concrete
 
             }
         }
-        public async Task<ApiResponseModel> AddressAddEdit(AddressInputModel addressInputModel)
+        public async Task<ApiResponseModel> AddressAddEdit(CustomerAddressInputModel customerAddressInputModel)
         {
             using (AccountService accountService = new AccountService())
             {
-                return await accountService.AddressAddEdit(addressInputModel);
+                return await accountService.AddressAddEdit(customerAddressInputModel);
 
             }
         }
@@ -63,7 +63,7 @@ namespace EasyToBuy.Repository.Concrete
                 return await accountService.GetCustomerAccountProfile(CustomerId);
             }
         }
-        public async Task<AddressModel> GetAddressUserByUserId(int userId)
+        public async Task<CustomerAddressModel> GetAddressUserByUserId(int userId)
         {
             using (AccountService accountService = new AccountService())
             {

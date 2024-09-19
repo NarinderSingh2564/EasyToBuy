@@ -75,6 +75,7 @@ namespace EasyToBuy.Services.Interactions
                         apiResponseModel.Message = "Quantity is successfully updated.";
                     }
                     else
+
                     {
                         apiResponseModel.Status = false;
                         apiResponseModel.Message = "This product does not exist in cart.";
@@ -124,6 +125,7 @@ namespace EasyToBuy.Services.Interactions
             return apiResponseModel;
         }
         public async Task<GetCartDetailsByCustomerId> GetCartDetailsByCustomerId(int customerId)
+        
         {
             var cartListByCustomerId = new GetCartDetailsByCustomerId();
 

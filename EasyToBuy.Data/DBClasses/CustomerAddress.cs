@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EasyToBuy.Data.DBClasses
 {
-    public class Address
+    public class CustomerAddress
     {
 
         [Key]
