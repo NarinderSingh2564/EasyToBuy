@@ -9,23 +9,25 @@ namespace EasyToBuy.Data.DBClasses
         [Key]
         public int Id { get; set; }
 
+        [ForeignKey("ProductVariationAndRate")]
+        public int VariationId { get; set; }
+        public virtual ProductVariationAndRate ProductVariationAndRate { get; set; }
+
         [ForeignKey("Customer")]
         public int CustomerId { get; set; }
         public virtual Customer Customer { get; set; }
+
+        [ForeignKey("User")]
+        public int VendorId { get; set; }
+        public virtual User User { get; set; }
 
         [StringLength(20)]
         public string OrderNumber { get; set; } = string.Empty;
         public DateTime OrderDate { get; set; }
 
-
         [ForeignKey("OrderStatus")]
         public int StatusId { get; set; }
         public virtual OrderStatus OrderStatus { get; set; }
-
-        [ForeignKey("ProductVariationAndRate")]
-        public int VariationId { get; set; }
-        public virtual ProductVariationAndRate ProductVariationAndRate { get; set; }
-
         public int Quantity { get; set; }
 
         [Column(TypeName = "Decimal(7,2)")]
