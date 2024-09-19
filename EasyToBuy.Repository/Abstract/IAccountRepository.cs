@@ -8,11 +8,11 @@ namespace EasyToBuy.Repository.Abstract
     {
         Task<ApiResponseModel> CheckUser(string username, string password);
         Task<ApiResponseModel> CustomerRegistration(CustomerInputModel customerInputModel);
-        Task<IEnumerable<AddressModel>> GetAddressListByCustomerId(int customerId);
+        Task<IEnumerable<CustomerAddressModel>> GetAddressListByCustomerId(int customerId);
         Task<IEnumerable<AddressTypeModel>> GetAddressTypeList();
-        Task<ApiResponseModel> AddressAddEdit(AddressInputModel addressInputModel);
+        Task<ApiResponseModel> AddressAddEdit(CustomerAddressInputModel customerAddressInputModel);
         Task<ApiResponseModel> SetDeliveryAddress(int addressId, int customerId);
         Task<CustomerModel>GetCustomerAccountProfile(int customerId);
-        Task<AddressModel> GetAddressUserByUserId(int userId);
+        Task<CustomerAddressModel> GetAddressUserByUserId(int userId);
     }
 }

@@ -177,11 +177,11 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var sqlQuery = "exec spGetProductList @CategoryId,@SearchText,@VendorId,@Role";
+                var sqlQuery = "exec spGetProductList @CategoryId,@SearchText,@UserId,@Role";
 
                 SqlParameter parameter1 = new SqlParameter("@CategoryId", productCategoryId != 0 ? productCategoryId : "0");
                 SqlParameter parameter2 = new SqlParameter("@SearchText", string.IsNullOrEmpty(searchText) ? DBNull.Value : searchText);
-                SqlParameter parameter3 = new SqlParameter("@VendorId", userId < 1 ? DBNull.Value : userId);
+                SqlParameter parameter3 = new SqlParameter("@UserId", userId < 1 ? DBNull.Value : userId);
                 SqlParameter parameter4 = new SqlParameter("@Role", string.IsNullOrEmpty(role) ? DBNull.Value : role);
 
                 productList = await _dbContext.productList_Results.FromSqlRaw(sqlQuery, parameter1, parameter2, parameter3, parameter4).ToListAsync();
@@ -336,6 +336,7 @@ namespace EasyToBuy.Services.Interactions
                 {
                     dbVariation.IsActive = isActive;
                     dbVariation.SetAsDefault = isActive == false ? false : dbVariation.SetAsDefault;
+
                     apiResponseModel.Status = true;
                     _dbContext.SaveChanges();
                 }
@@ -371,6 +372,7 @@ namespace EasyToBuy.Services.Interactions
                     {
                         dbVariation.IsDeleted = true;
                         dbVariation.IsActive = false;
+
                         _dbContext.SaveChanges();
                         apiResponseModel.Status = true;
 
@@ -663,7 +665,6 @@ namespace EasyToBuy.Services.Interactions
             }
             return variationImagesList;
         }
-        
         public async Task<IEnumerable<SPGetProductSliderItemsByCategoryId_Result>> GetProductSliderItemsByCategoryId(int categoryId, int productId, string dataTypes)
         {
             var productSliderItems = new List<SPGetProductSliderItemsByCategoryId_Result>();
@@ -683,7 +684,6 @@ namespace EasyToBuy.Services.Interactions
             }
             return productSliderItems;
         }
-        
         public async Task<ApiResponseModel> DeleteProductVariationImage(int productImageId)
         {
             var apiResponseModel = new ApiResponseModel();

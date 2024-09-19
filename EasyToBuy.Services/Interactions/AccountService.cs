@@ -168,7 +168,6 @@ namespace EasyToBuy.Services.Interactions
                     apiResponseModel.Status = true;
                     apiResponseModel.Message = "Customer registered successfully.";
                 }
-
             }
             catch (Exception ex)
             {
@@ -177,18 +176,18 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        public async Task<IEnumerable<AddressModel>> GetAddressListByCustomerId(int customerId)
+        public async Task<IEnumerable<CustomerAddressModel>> GetAddressListByCustomerId(int customerId)
         {
-            var addressList = new List<AddressModel>();
+            var addressList = new List<CustomerAddressModel>();
 
             try
             {
-                var query = (from a in _dbContext.tblAddress
+                var query = (from a in _dbContext.tblCustomerAddress
                              join at in _dbContext.tblAddressType
                              on a.AddressTypeId equals at.Id
                              where a.CustomerId == customerId
 
-                             select new AddressModel
+                             select new CustomerAddressModel
                              {
                                  Id = a.Id,
                                  City = a.City,
@@ -204,7 +203,6 @@ namespace EasyToBuy.Services.Interactions
                 addressList = await query.ConfigureAwait(false);
 
             }
-
             catch (Exception ex)
             {
                 var message = ex.Message;
@@ -234,40 +232,40 @@ namespace EasyToBuy.Services.Interactions
             }
             return addressTypeList;
         }
-        public async Task<ApiResponseModel> AddressAddEdit(AddressInputModel addressInputModel)
+        public async Task<ApiResponseModel> AddressAddEdit(CustomerAddressInputModel customerAddressInputModel)
         {
             var apiResponseModel = new ApiResponseModel();
 
             try
             {
-                var dbAddress = await _dbContext.tblAddress.Where(x => x.Id == addressInputModel.Id).FirstOrDefaultAsync();
+                var dbAddress = await _dbContext.tblCustomerAddress.Where(x => x.Id == customerAddressInputModel.Id).FirstOrDefaultAsync();
 
                 if (dbAddress != null)
                 {
-                    dbAddress.FullAddress = addressInputModel.FullAddress;
-                    dbAddress.Pincode = addressInputModel.Pincode;
-                    dbAddress.City = addressInputModel.City;
-                    dbAddress.Country = addressInputModel.Country;
-                    dbAddress.State = addressInputModel.State;
-                    dbAddress.AddressTypeId = addressInputModel.AddressTypeId;
+                    dbAddress.FullAddress = customerAddressInputModel.FullAddress;
+                    dbAddress.Pincode = customerAddressInputModel.Pincode;
+                    dbAddress.City = customerAddressInputModel.City;
+                    dbAddress.Country = customerAddressInputModel.Country;
+                    dbAddress.State = customerAddressInputModel.State;
+                    dbAddress.AddressTypeId = customerAddressInputModel.AddressTypeId;
                     dbAddress.IsDeliveryAddress = false;
-                    dbAddress.UpdatedBy = addressInputModel.UpdatedBy;
+                    dbAddress.UpdatedBy = customerAddressInputModel.UpdatedBy;
                     dbAddress.UpdatedOn = DateTime.Now;
                 }
                 else
                 {
-                    var addressObj = new Address();
+                    var addressObj = new CustomerAddress();
 
-                    addressObj.CustomerId = addressInputModel.CustomerId;
-                    addressObj.FullAddress = addressInputModel.FullAddress;
-                    addressObj.Pincode = addressInputModel.Pincode;
-                    addressObj.CreatedBy = addressInputModel.CreatedBy;
+                    addressObj.CustomerId = customerAddressInputModel.CustomerId;
+                    addressObj.FullAddress = customerAddressInputModel.FullAddress;
+                    addressObj.Pincode = customerAddressInputModel.Pincode;
+                    addressObj.CreatedBy = customerAddressInputModel.CreatedBy;
                     addressObj.CreatedOn = DateTime.Now;
                     addressObj.IsActive = true;
-                    addressObj.City = addressInputModel.City;
-                    addressObj.State = addressInputModel.State;
-                    addressObj.Country = addressInputModel.Country;
-                    addressObj.AddressTypeId = addressInputModel.AddressTypeId;
+                    addressObj.City = customerAddressInputModel.City;
+                    addressObj.State = customerAddressInputModel.State;
+                    addressObj.Country = customerAddressInputModel.Country;
+                    addressObj.AddressTypeId = customerAddressInputModel.AddressTypeId;
                     addressObj.IsDeliveryAddress = false;
 
                     await _dbContext.AddAsync(addressObj);
@@ -276,7 +274,7 @@ namespace EasyToBuy.Services.Interactions
                 await _dbContext.SaveChangesAsync();
 
                 apiResponseModel.Status = true;
-                apiResponseModel.Message = addressInputModel.Id > 0 ? "Address updated successfully." : "Address added successfully.";
+                apiResponseModel.Message = customerAddressInputModel.Id > 0 ? "Address updated successfully." : "Address added successfully.";
 
             }
 
@@ -293,7 +291,7 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var dbAdressByUserId = await _dbContext.tblAddress.Where(x => x.CustomerId == customerId).ToListAsync();
+                var dbAdressByUserId = await _dbContext.tblCustomerAddress.Where(x => x.CustomerId == customerId).ToListAsync();
 
                 if (dbAdressByUserId.Count > 0)
                 {
@@ -303,13 +301,14 @@ namespace EasyToBuy.Services.Interactions
                     }
                 }
 
-                var deliveryAddress = await _dbContext.tblAddress.Where(x => x.Id == addressId).FirstOrDefaultAsync();
+                var deliveryAddress = await _dbContext.tblCustomerAddress.Where(x => x.Id == addressId).FirstOrDefaultAsync();
                 if (deliveryAddress != null)
                 {
                     deliveryAddress.IsDeliveryAddress = true;
                     apiResponseModel.Status = true;
                     apiResponseModel.Message = "Delivery address updated successfully";
                 }
+
                 await _dbContext.SaveChangesAsync();
             }
 
@@ -343,13 +342,13 @@ namespace EasyToBuy.Services.Interactions
             }
             return userModel;
         }
-        public async Task<AddressModel> GetAddressUserByUserId(int userId)
+        public async Task<CustomerAddressModel> GetAddressUserByUserId(int userId)
         {
-            var addressModel = new AddressModel();
+            var addressModel = new CustomerAddressModel();
 
             try
             {
-                var userAddressDetail = _dbContext.tblAddress.Where(x => x.CustomerId == userId && x.IsDeliveryAddress == true).ToList().FirstOrDefault();
+                var userAddressDetail = _dbContext.tblCustomerAddress.Where(x => x.CustomerId == userId && x.IsDeliveryAddress == true).ToList().FirstOrDefault();
                 if (userAddressDetail != null)
                 {
                     addressModel.Id = userAddressDetail.CustomerId;

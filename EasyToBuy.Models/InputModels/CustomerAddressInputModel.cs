@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EasyToBuy.Models.InputModels
 {
-    public class AddressInputModel
+    public class CustomerAddressInputModel
     {
         public int Id { get; set; }
         public int CustomerId { get; set; }

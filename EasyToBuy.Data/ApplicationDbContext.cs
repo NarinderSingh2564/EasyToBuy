@@ -15,7 +15,7 @@ namespace EasyToBuy.Data
         public DbSet<UserCompanyDetails> tblUserCompanyDetails { get; set; }
         public DbSet<UserBankDetails> tblUserBankDetails { get; set; }
         public DbSet<Customer> tblCustomer { get; set; }
-        public DbSet<Address> tblAddress  { get; set; }
+        public DbSet<CustomerAddress> tblCustomerAddress { get; set; }
         public DbSet<AddressType> tblAddressType { get; set; }
         
         public DbSet<Product> tblProduct { get; set; }
@@ -26,6 +26,8 @@ namespace EasyToBuy.Data
         public DbSet<ProductVariationAndRate> tblProductVariationAndRate { get; set; }
         public DbSet<ProductImages> tblProductImages { get; set; }
         public DbSet<ProductSpecification> tblProductSpecification { get; set; }
+        public DbSet<ProductRating> tblProductRating { get; set; }
+        public DbSet<ProductRatingImages> tblProductRatingImages { get; set; }
 
         public DbSet<CustomerOrder> tblCustomerOrder { get; set; }     
         public DbSet<OrderStatus> tblOrderStatus { get; set; }

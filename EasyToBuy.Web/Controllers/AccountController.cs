@@ -46,7 +46,7 @@ namespace EasyToBuy.Web.Controllers
         }
 
         [HttpGet("GetAddressListByCustomerId")]
-        public async Task<IEnumerable<AddressModel>> GetAddressListByCustomerId(int customerId)
+        public async Task<IEnumerable<CustomerAddressModel>> GetAddressListByCustomerId(int customerId)
         {
             var response = await _accountRepository.GetAddressListByCustomerId(customerId);
 
@@ -62,22 +62,22 @@ namespace EasyToBuy.Web.Controllers
         }
 
         [HttpPost("AddressAddEdit")]
-        public async Task<ApiResponseModel> AddressAddEdit(AddressUIModel addressUIModel)
+        public async Task<ApiResponseModel> AddressAddEdit(CustomerAddressUIModel customerAddressUIModel)
         {
-            var addressInputModel = new AddressInputModel();
+            var customerAddressInputModel = new CustomerAddressInputModel();
 
-            addressInputModel.Id = addressUIModel.Id;
-            addressInputModel.CustomerId = addressUIModel.CustomerId;
-            addressInputModel.FullAddress = addressUIModel.FullAddress;
-            addressInputModel.Pincode = addressUIModel.Pincode;
-            addressInputModel.City = addressUIModel.City;
-            addressInputModel.State = addressUIModel.State;
-            addressInputModel.Country = addressUIModel.Country;
-            addressInputModel.AddressTypeId = addressUIModel.AddressTypeId;
-            addressInputModel.CreatedBy = addressUIModel.CreatedBy;
-            addressInputModel.UpdatedBy = addressUIModel.UpdatedBy;
+            customerAddressInputModel.Id = customerAddressUIModel.Id;
+            customerAddressInputModel.CustomerId = customerAddressUIModel.CustomerId;
+            customerAddressInputModel.FullAddress = customerAddressUIModel.FullAddress;
+            customerAddressInputModel.Pincode = customerAddressUIModel.Pincode;
+            customerAddressInputModel.City = customerAddressUIModel.City;
+            customerAddressInputModel.State = customerAddressUIModel.State;
+            customerAddressInputModel.Country = customerAddressUIModel.Country;
+            customerAddressInputModel.AddressTypeId = customerAddressUIModel.AddressTypeId;
+            customerAddressInputModel.CreatedBy = customerAddressUIModel.CreatedBy;
+            customerAddressInputModel.UpdatedBy = customerAddressUIModel.UpdatedBy;
 
-            var response = await _accountRepository.AddressAddEdit(addressInputModel);
+            var response = await _accountRepository.AddressAddEdit(customerAddressInputModel);
 
             return response;
         }
