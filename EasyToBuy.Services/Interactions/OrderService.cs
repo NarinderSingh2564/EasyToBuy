@@ -76,15 +76,16 @@ namespace EasyToBuy.Services.Interactions
                     var isDeliveryAddress = await _dbContext.tblCustomerAddress.Where(x => x.CustomerId == customerId && x.IsDeliveryAddress == true).FirstOrDefaultAsync();
                     if (isDeliveryAddress != null)
                     {
-                        var orderList = (from c in _dbContext.tblCart
-                                         join tpv in _dbContext.tblProductVariationAndRate
-                                         on c.VariationId equals tpv.Id
-                                         where c.CustomerId == customerId && c.IsPlaced == false && tpv.IsActive == true && tpv.IsDeleted == false
+                        var orderList = (from tc in _dbContext.tblCart
+                                         join tpv in _dbContext.tblProductVariationAndRate on tc.VariationId equals tpv.Id
+                                         join tp in _dbContext.tblProduct on tpv.ProductId equals tp.Id
+                                         where tc.CustomerId == customerId && tc.IsPlaced == false && tpv.IsActive == true && tpv.IsDeleted == false
 
                                          select new OrderModel()
                                          {
-                                             VariationId = c.VariationId,
-                                             Quantity = c.Quantity,
+                                             VariationId = tc.VariationId,
+                                             VendorId = tp.UserId,
+                                             Quantity = tc.Quantity,
                                              MRP = tpv.MRP,
                                              Discount = tpv.Discount,
                                              DiscountPrice = tpv.DiscountPrice,
@@ -93,20 +94,23 @@ namespace EasyToBuy.Services.Interactions
 
                         if (orderList != null && orderList.Count > 0)
                         {
+                            var orderNumber = "ETB-" + new Random().Next().ToString();
+
                             foreach (var order in orderList)
                             {
                                 var customerOrderObj = new CustomerOrder();
 
-                                var dbVariation = _dbContext.tblProductVariationAndRate.Where(x => x.Id == order.VariationId).FirstOrDefault();
+                                var dbVariation = await _dbContext.tblProductVariationAndRate.Where(x => x.Id == order.VariationId).FirstOrDefaultAsync();
 
                                 if (dbVariation != null)
                                 {
-                                    dbVariation.StockQuantity = dbVariation.StockQuantity <= 0 ? 0 : order.StockQuantity - order.Quantity;
+                                    dbVariation.StockQuantity =  dbVariation.StockQuantity - order.Quantity ;
                                 }
 
                                 customerOrderObj.CustomerId = customerId;
-                                customerOrderObj.OrderNumber = "ETB-" + new Random().Next().ToString();
-                                customerOrderObj.OrderDate = DateTime.Now;
+                                customerOrderObj.VendorId = order.VendorId;
+                                customerOrderObj.OrderNumber = orderNumber;
+                                customerOrderObj.OrderDate = (DateTime.Now).Date;
                                 customerOrderObj.StatusId = 1;
                                 customerOrderObj.VariationId = order.VariationId;
                                 customerOrderObj.Quantity = order.Quantity;
@@ -190,6 +194,50 @@ namespace EasyToBuy.Services.Interactions
             }
 
             return orderList;
+        }
+        public async Task<IEnumerable<SPGetUserOrdersListByUserId_Result>> GetUserOrdersListByUserId(int userId, string? searchText, int statusId)
+        {
+            var orderList = new List<SPGetUserOrdersListByUserId_Result>();
+
+            try
+            {
+                var sqlQuery = "exec spGetUserOrdersListByUserId @UserId,@SearchText,@StatusId";
+
+                SqlParameter parameter1 = new SqlParameter("@UserId", userId == 0 ? DBNull.Value : userId);
+                SqlParameter parameter2 = new SqlParameter("@SearchText", string.IsNullOrEmpty(searchText) ? DBNull.Value : searchText);
+                SqlParameter parameter3 = new SqlParameter("@StatusId", statusId == 0 ? DBNull.Value : statusId);
+
+                orderList = await _dbContext.userOrdersListByUserId_Result.FromSqlRaw(sqlQuery,parameter1,parameter2,parameter3).ToListAsync();
+            }
+
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return orderList;
+        }
+
+        public async Task<IEnumerable<SPGetProductDetailsByOrderNumberAndUserId_Result>> GetProductDetailsByOrderNumberAndUserId(string orderNumber, int userId)
+        {
+            var productDetails = new List<SPGetProductDetailsByOrderNumberAndUserId_Result>();
+
+            try
+            {
+                var sqlQuery = "exec spGetProductDetailsByOrderNumberAndUserId @OrderNumber,@UserId";
+
+                SqlParameter parameter1 = new SqlParameter("@OrderNumber", string.IsNullOrEmpty(orderNumber) ? DBNull.Value : orderNumber);
+                SqlParameter parameter2 = new SqlParameter("@UserId", userId == 0 ? DBNull.Value : userId);
+
+                productDetails = await _dbContext.productDetailsByOrderNumberAndUserId_Result.FromSqlRaw(sqlQuery, parameter1,parameter2).ToListAsync();
+            }
+
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return productDetails;
         }
         public async Task<ApiResponseModel> CustomerOrderStatusUpdate(int userId, int orderId, int statusId)
         {

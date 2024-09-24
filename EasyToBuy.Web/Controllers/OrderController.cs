@@ -24,6 +24,7 @@ namespace EasyToBuy.Web.Controllers
         public async Task<ApiResponseModel> PlaceOrder(int customerId)
         {
             var response =  await _orderRepository.PlaceOrder(customerId);
+
             return response;
         }
 
@@ -31,6 +32,23 @@ namespace EasyToBuy.Web.Controllers
         public async Task<IEnumerable<SPGetOrderList_Result>> GetOrdersList(int customerId, int userId, string? searchText, string? statusId, DateTime? firstDate, DateTime? secondDate)
         {
             var response = await _orderRepository.GetOrdersList(customerId, userId, searchText, statusId, firstDate, secondDate);
+
+            return response;
+        }
+
+        [HttpGet("GetUserOrdersListByUserId")]
+        public async Task<IEnumerable<SPGetUserOrdersListByUserId_Result>> GetUserOrdersListByUserId(int userId, string? searchText, int statusId)
+        {
+            var response = await _orderRepository.GetUserOrdersListByUserId(userId,searchText,statusId);
+
+            return response;
+        }
+
+        [HttpGet("GetProductDetailsByOrderNumberAndUserId")]
+
+        public async Task<IEnumerable<SPGetProductDetailsByOrderNumberAndUserId_Result>> GetProductDetailsByOrderNumberAndUserId(string orderNumber, int userId)
+        {
+            var response = await _orderRepository.GetProductDetailsByOrderNumberAndUserId(orderNumber, userId);
 
             return response;
         }
