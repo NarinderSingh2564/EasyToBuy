@@ -8,10 +8,10 @@ namespace EasyToBuy.Data.DBClasses
         [Key]
         public int Id { get; set; }
 
-        [ForeignKey("CustomerOrder")]
-        public int OrderId { get; set; }
-        public virtual CustomerOrder CustomerOrder { get; set; }
-
+        [StringLength(20)]
+        public string OrderNumber { get; set; }
+        public int VendorId { get; set; }
+      
         [ForeignKey("OrderStatus")]
         public int StatusId { get; set; }
         public virtual OrderStatus OrderStatus { get; set; }

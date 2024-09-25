@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Data;
+using System.Linq;
 using EasyToBuy.Data;
 using EasyToBuy.Data.DBClasses;
 using EasyToBuy.Data.Migrations;
@@ -94,7 +95,8 @@ namespace EasyToBuy.Services.Interactions
 
                         if (orderList != null && orderList.Count > 0)
                         {
-                            var orderNumber = "ETB-" + new Random().Next().ToString();
+                            var maxOrderNumber = _dbContext.tblCustomerOrder.ToList().Max(x=>x.OrderNumber);
+                            
 
                             foreach (var order in orderList)
                             {
@@ -104,12 +106,12 @@ namespace EasyToBuy.Services.Interactions
 
                                 if (dbVariation != null)
                                 {
-                                    dbVariation.StockQuantity =  dbVariation.StockQuantity - order.Quantity ;
+                                    dbVariation.StockQuantity =  dbVariation.StockQuantity - order.Quantity;
                                 }
 
                                 customerOrderObj.CustomerId = customerId;
                                 customerOrderObj.VendorId = order.VendorId;
-                                customerOrderObj.OrderNumber = orderNumber;
+                                customerOrderObj.OrderNumber = maxOrderNumber == null ? "ETB-10000" : "ETB-" + (Convert.ToUInt16(maxOrderNumber.Substring(4)) + 1).ToString();
                                 customerOrderObj.OrderDate = (DateTime.Now).Date;
                                 customerOrderObj.StatusId = 1;
                                 customerOrderObj.VariationId = order.VariationId;
@@ -124,7 +126,8 @@ namespace EasyToBuy.Services.Interactions
 
                                 var customerOrderStatusLog = new CustomerOrderStatusLog();
 
-                                customerOrderStatusLog.OrderId = customerOrderObj.Id;
+                                customerOrderStatusLog.OrderNumber = customerOrderObj.OrderNumber;
+                                customerOrderStatusLog.VendorId = order.VendorId;
                                 customerOrderStatusLog.StatusId = 1;
                                 customerOrderStatusLog.CreatedBy = customerId;
                                 customerOrderStatusLog.CreatedOn = DateTime.Now;
@@ -217,7 +220,6 @@ namespace EasyToBuy.Services.Interactions
 
             return orderList;
         }
-
         public async Task<IEnumerable<SPGetProductDetailsByOrderNumberAndUserId_Result>> GetProductDetailsByOrderNumberAndUserId(string orderNumber, int userId)
         {
             var productDetails = new List<SPGetProductDetailsByOrderNumberAndUserId_Result>();
@@ -266,7 +268,7 @@ namespace EasyToBuy.Services.Interactions
 
                             var objCustomerOrderStatusLog = new CustomerOrderStatusLog();
 
-                            objCustomerOrderStatusLog.OrderId = orderId;
+                            //objCustomerOrderStatusLog.OrderId = orderId;
                             objCustomerOrderStatusLog.StatusId = statusId;
                             objCustomerOrderStatusLog.CreatedBy = userId;
                             objCustomerOrderStatusLog.CreatedOn = DateTime.Now;
