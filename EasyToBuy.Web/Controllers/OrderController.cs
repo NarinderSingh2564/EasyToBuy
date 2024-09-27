@@ -24,6 +24,7 @@ namespace EasyToBuy.Web.Controllers
         public async Task<ApiResponseModel> PlaceOrder(int customerId)
         {
             var response =  await _orderRepository.PlaceOrder(customerId);
+
             return response;
         }
 
@@ -35,10 +36,27 @@ namespace EasyToBuy.Web.Controllers
             return response;
         }
 
-        [HttpGet("CustomerOrderStatusUpdate")]
-        public async Task<ApiResponseModel> CustomerOrderStatusUpdate(int userId, int orderId, int statusId)
+        [HttpGet("GetUserOrdersListByUserId")]
+        public async Task<IEnumerable<SPGetUserOrdersListByUserId_Result>> GetUserOrdersListByUserId(int userId, string? searchText, int statusId)
         {
-            var response = await _orderRepository.CustomerOrderStatusUpdate(userId, orderId, statusId);
+            var response = await _orderRepository.GetUserOrdersListByUserId(userId,searchText,statusId);
+
+            return response;
+        }
+
+        [HttpGet("GetProductDetailsByOrderNumberAndUserId")]
+
+        public async Task<IEnumerable<SPGetProductDetailsByOrderNumberAndUserId_Result>> GetProductDetailsByOrderNumberAndUserId(string orderNumber, int userId)
+        {
+            var response = await _orderRepository.GetProductDetailsByOrderNumberAndUserId(orderNumber, userId);
+
+            return response;
+        }
+
+        [HttpGet("CustomerOrderStatusUpdate")]
+        public async Task<ApiResponseModel> CustomerOrderStatusUpdate(int userId, string orderNumber, int statusId)
+        {
+            var response = await _orderRepository.CustomerOrderStatusUpdate(userId, orderNumber, statusId);
 
             return response;
         }

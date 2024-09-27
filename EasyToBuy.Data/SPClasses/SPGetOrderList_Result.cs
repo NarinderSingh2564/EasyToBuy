@@ -12,6 +12,8 @@ namespace EasyToBuy.Data.SPClasses
         public int StatusId { get; set; }
         public string UserName { get; set; }
         public string CustomerName { get; set; }
+        public string Mobile { get; set; }
+        public string CustomerAddress { get; set; }
         public string OrderNumber { get; set; }
         public string OrderDate { get; set; }
         public string Status { get; set; }

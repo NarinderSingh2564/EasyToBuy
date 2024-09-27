@@ -17,7 +17,6 @@ namespace EasyToBuy.Data
         public DbSet<Customer> tblCustomer { get; set; }
         public DbSet<CustomerAddress> tblCustomerAddress { get; set; }
         public DbSet<AddressType> tblAddressType { get; set; }
-        
         public DbSet<Product> tblProduct { get; set; }
         public DbSet<Category> tblCategory { get; set; }
         public DbSet<ProductWeights> tblProductWeight { get; set; } 
@@ -28,7 +27,6 @@ namespace EasyToBuy.Data
         public DbSet<ProductSpecification> tblProductSpecification { get; set; }
         public DbSet<ProductRating> tblProductRating { get; set; }
         public DbSet<ProductRatingImages> tblProductRatingImages { get; set; }
-
         public DbSet<CustomerOrder> tblCustomerOrder { get; set; }     
         public DbSet<OrderStatus> tblOrderStatus { get; set; }
         public DbSet<CustomerOrderStatusLog> tblCustomerOrderStatusLog { get; set; }     
@@ -52,6 +50,8 @@ namespace EasyToBuy.Data
         public DbSet<SPGetOrderList_Result> orderList_Results { get; set; }
         public DbSet<SPGetTrackingStatusListByOrderId_Result> getTrackingStatusListByOrderId_Results { get; set; }
         public DbSet<SPGetProductSliderItemsByCategoryId_Result> productSliderItemsByCategoryId_Results { get; set; }
+        public DbSet<SPGetUserOrdersListByUserId_Result> userOrdersListByUserId_Result { get; set; }
+        public DbSet<SPGetProductDetailsByOrderNumberAndUserId_Result> productDetailsByOrderNumberAndUserId_Result { get; set; }
 
     }
 }
