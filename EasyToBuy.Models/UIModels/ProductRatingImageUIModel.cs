@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,8 @@ namespace EasyToBuy.Models.UIModels
 {
     public class ProductRatingImageUIModel
     {
-        public int Id { get; set; }
         public int ProductRatingId { get; set; }
-        public string ProductImage { get; set; }
+        public List<IFormFile>? ProductRatingImage { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public bool IsActive { get; set; }

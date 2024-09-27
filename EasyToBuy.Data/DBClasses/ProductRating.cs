@@ -22,7 +22,7 @@ namespace EasyToBuy.Data.DBClasses
         public string ReviewTitle { get; set; }
 
         [Column(TypeName = "varchar(150)")]
-        public string ReviewDescription { get; set; }
+        public string? ReviewDescription { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
         public bool IsActive {  get; set; }

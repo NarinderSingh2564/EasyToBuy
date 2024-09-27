@@ -22,4 +22,8 @@
     <ProjectReference Include="..\EasyToBuy.Repository\EasyToBuy.Repository.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Images\ProductReviewImage\" />
+  </ItemGroup>
+
 </Project>

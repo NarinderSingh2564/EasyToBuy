@@ -29,9 +29,9 @@ namespace EasyToBuy.Web.Controllers
         }
 
         [HttpGet("GetOrdersList")]
-        public async Task<IEnumerable<SPGetOrderList_Result>> GetOrdersList(int customerId, int userId, string? searchText, string? statusId, DateTime? firstDate, DateTime? secondDate)
+        public async Task<IEnumerable<SPGetOrderList_Result>> GetOrdersList(int customerId, string? searchText, string? statusId, DateTime? firstDate, DateTime? secondDate)
         {
-            var response = await _orderRepository.GetOrdersList(customerId, userId, searchText, statusId, firstDate, secondDate);
+            var response = await _orderRepository.GetOrdersList(customerId, searchText, statusId, firstDate, secondDate);
 
             return response;
         }
@@ -62,7 +62,7 @@ namespace EasyToBuy.Web.Controllers
         }
 
         [HttpGet("GetOrderStatusTrackingList")]
-        public async Task<IEnumerable<SPGetTrackingStatusListByOrderId_Result>> GetOrderStatusTrackingList(int orderId)
+        public async Task<IEnumerable<SPGetTrackingStatusListByOrderId_Result>> GetOrderStatusTrackingList(string orderId)
         {
             var response = await _orderRepository.GetOrderStatusTrackingList(orderId);
 
