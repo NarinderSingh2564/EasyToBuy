@@ -14,6 +14,7 @@ namespace EasyToBuy.Models.Models
         }
         public int Id { get; set; }
         public int CustomerId { get; set; }
+        public int VendorId { get; set; }
         public string OrderNumber { get; set; }
         public int NumberOfProducts { get; set; }
         public DateTime OrderDate { get; set; }

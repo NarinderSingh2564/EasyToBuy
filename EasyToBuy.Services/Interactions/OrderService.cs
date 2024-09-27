@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Data;
+using System.Linq;
 using EasyToBuy.Data;
 using EasyToBuy.Data.DBClasses;
 using EasyToBuy.Data.Migrations;
@@ -69,95 +70,109 @@ namespace EasyToBuy.Services.Interactions
 
             try
             {
-                var isUserExists = await _dbContext.tblCustomer.Where(x => x.Id == customerId && x.IsActive == true).FirstOrDefaultAsync();
+                var dbCustomer = await _dbContext.tblCustomer.Where(x => x.Id == customerId).FirstOrDefaultAsync();
 
-                if (isUserExists != null)
+                if (dbCustomer != null)
                 {
-                    var isDeliveryAddress = await _dbContext.tblCustomerAddress.Where(x => x.CustomerId == customerId && x.IsDeliveryAddress == true).FirstOrDefaultAsync();
-                    if (isDeliveryAddress != null)
+                    if (dbCustomer.IsActive)
                     {
-                        var orderList = (from c in _dbContext.tblCart
-                                         join tpv in _dbContext.tblProductVariationAndRate
-                                         on c.VariationId equals tpv.Id
-                                         where c.CustomerId == customerId && c.IsPlaced == false && tpv.IsActive == true && tpv.IsDeleted == false
+                        var isDeliveryAddress = await _dbContext.tblCustomerAddress.Where(x => x.CustomerId == customerId && x.IsDeliveryAddress == true).FirstOrDefaultAsync();
 
-                                         select new OrderModel()
-                                         {
-                                             VariationId = c.VariationId,
-                                             Quantity = c.Quantity,
-                                             MRP = tpv.MRP,
-                                             Discount = tpv.Discount,
-                                             DiscountPrice = tpv.DiscountPrice,
-                                             PriceAfterDiscount = tpv.PriceAfterDiscount,
-                                         }).ToList();
-
-                        if (orderList != null && orderList.Count > 0)
+                        if (isDeliveryAddress != null)
                         {
-                            foreach (var order in orderList)
+                            var orderList = (from tc in _dbContext.tblCart
+                                             join tpv in _dbContext.tblProductVariationAndRate on tc.VariationId equals tpv.Id
+                                             join tp in _dbContext.tblProduct on tpv.ProductId equals tp.Id
+                                             where tc.CustomerId == customerId && tc.IsPlaced == false && tpv.IsActive == true && tpv.IsDeleted == false
+
+                                             select new OrderModel()
+                                             {
+                                                 VariationId = tc.VariationId,
+                                                 VendorId = tp.UserId,
+                                                 Quantity = tc.Quantity,
+                                                 MRP = tpv.MRP,
+                                                 Discount = tpv.Discount,
+                                                 DiscountPrice = tpv.DiscountPrice,
+                                                 PriceAfterDiscount = tpv.PriceAfterDiscount,
+                                             }).ToList();
+
+                            if (orderList != null && orderList.Count > 0)
                             {
-                                var customerOrderObj = new CustomerOrder();
+                                var maxOrderNumber = _dbContext.tblCustomerOrder.ToList().Max(x => x.OrderNumber);
 
-                                var dbVariation = _dbContext.tblProductVariationAndRate.Where(x => x.Id == order.VariationId).FirstOrDefault();
-
-                                if (dbVariation != null)
+                                foreach (var order in orderList.Select((item,i)=> new {item,i}) )
                                 {
-                                    dbVariation.StockQuantity = dbVariation.StockQuantity <= 0 ? 0 : order.StockQuantity - order.Quantity;
+                                    var customerOrderObj = new CustomerOrder();
+
+                                    var dbVariation = await _dbContext.tblProductVariationAndRate.Where(x => x.Id == order.item.VariationId).FirstOrDefaultAsync();
+
+                                    if (dbVariation != null)
+                                    {
+                                        dbVariation.StockQuantity = dbVariation.StockQuantity - order.item.Quantity;
+                                    }
+
+                                    customerOrderObj.CustomerId = customerId;
+                                    customerOrderObj.VendorId = order.item.VendorId;
+                                    customerOrderObj.OrderNumber = maxOrderNumber == null ? "ETB-10000" : "ETB-" + (Convert.ToUInt16(maxOrderNumber.Substring(4)) + 1).ToString();
+                                    customerOrderObj.OrderDate = (DateTime.Now).Date;
+                                    customerOrderObj.StatusId = 1;
+                                    customerOrderObj.VariationId = order.item.VariationId;
+                                    customerOrderObj.Quantity = order.item.Quantity;
+                                    customerOrderObj.MRP = order.item.MRP;
+                                    customerOrderObj.Discount = order.item.Discount;
+                                    customerOrderObj.DiscountPrice = order.item.DiscountPrice;
+                                    customerOrderObj.AmountToBePaid = order.item.Quantity * order.item.PriceAfterDiscount;
+
+                                    await _dbContext.AddAsync(customerOrderObj);
+
+                                    if (order.i == 0)
+                                    {
+                                        var customerOrderStatusLog = new CustomerOrderStatusLog();
+
+                                        customerOrderStatusLog.OrderNumber = customerOrderObj.OrderNumber;
+                                        customerOrderStatusLog.VendorId = order.item.VendorId;
+                                        customerOrderStatusLog.StatusId = 1;
+                                        customerOrderStatusLog.CreatedBy = customerId;
+                                        customerOrderStatusLog.CreatedOn = DateTime.Now;
+
+                                        await _dbContext.AddAsync(customerOrderStatusLog);
+                                    }
                                 }
 
-                                customerOrderObj.CustomerId = customerId;
-                                customerOrderObj.OrderNumber = "ETB-" + new Random().Next().ToString();
-                                customerOrderObj.OrderDate = DateTime.Now;
-                                customerOrderObj.StatusId = 1;
-                                customerOrderObj.VariationId = order.VariationId;
-                                customerOrderObj.Quantity = order.Quantity;
-                                customerOrderObj.MRP = order.MRP;
-                                customerOrderObj.Discount = order.Discount;
-                                customerOrderObj.DiscountPrice = order.DiscountPrice;
-                                customerOrderObj.AmountToBePaid = order.Quantity * order.PriceAfterDiscount;
+                                var objCart = await _dbContext.tblCart.Where(x => x.CustomerId == customerId && x.IsPlaced == false).ToListAsync();
 
-                                await _dbContext.AddAsync(customerOrderObj);
-                                await _dbContext.SaveChangesAsync();
-
-                                var customerOrderStatusLog = new CustomerOrderStatusLog();
-
-                                customerOrderStatusLog.OrderId = customerOrderObj.Id;
-                                customerOrderStatusLog.StatusId = 1;
-                                customerOrderStatusLog.CreatedBy = customerId;
-                                customerOrderStatusLog.CreatedOn = DateTime.Now;
-                                await _dbContext.AddAsync(customerOrderStatusLog);
+                                foreach (var item in objCart)
+                                {
+                                    item.IsPlaced = true;
+                                }
 
                                 await _dbContext.SaveChangesAsync();
 
+                                apiResponseModel.Status = true;
+                                apiResponseModel.Message = "Order placed successfully.";
                             }
-
-                            var objCart = await _dbContext.tblCart.Where(x => x.CustomerId == customerId && x.IsPlaced == false).ToListAsync();
-
-                            foreach (var item in objCart)
+                            else
                             {
-                                item.IsPlaced = true;
+                                apiResponseModel.Status = false;
+                                apiResponseModel.Message = "Kindly add products to cart to place order.";
                             }
-
-                            await _dbContext.SaveChangesAsync();
-
-                            apiResponseModel.Status = true;
-                            apiResponseModel.Message = "Order placed successfully.";
                         }
                         else
                         {
                             apiResponseModel.Status = false;
-                            apiResponseModel.Message = "Kindly add products to cart to place order.";
+                            apiResponseModel.Message = "Kindly set your delivery address to place order.";
                         }
                     }
                     else
                     {
                         apiResponseModel.Status = false;
-                        apiResponseModel.Message = "Kindly set your delivery address to place order.";
+                        apiResponseModel.Message = "Customer is not active.";
                     }
                 }
                 else
                 {
                     apiResponseModel.Status = false;
-                    apiResponseModel.Message = "User does not exists.";
+                    apiResponseModel.Message = "Customer does not exists.";
                 }
             }
             catch (Exception ex)
@@ -191,7 +206,50 @@ namespace EasyToBuy.Services.Interactions
 
             return orderList;
         }
-        public async Task<ApiResponseModel> CustomerOrderStatusUpdate(int userId, int orderId, int statusId)
+        public async Task<IEnumerable<SPGetUserOrdersListByUserId_Result>> GetUserOrdersListByUserId(int userId, string? searchText, int statusId)
+        {
+            var orderList = new List<SPGetUserOrdersListByUserId_Result>();
+
+            try
+            {
+                var sqlQuery = "exec spGetUserOrdersListByUserId @UserId,@SearchText,@StatusId";
+
+                SqlParameter parameter1 = new SqlParameter("@UserId", userId == 0 ? DBNull.Value : userId);
+                SqlParameter parameter2 = new SqlParameter("@SearchText", string.IsNullOrEmpty(searchText) ? DBNull.Value : searchText);
+                SqlParameter parameter3 = new SqlParameter("@StatusId", statusId == 0 ? DBNull.Value : statusId);
+
+                orderList = await _dbContext.userOrdersListByUserId_Result.FromSqlRaw(sqlQuery, parameter1, parameter2, parameter3).ToListAsync();
+            }
+
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return orderList;
+        }
+        public async Task<IEnumerable<SPGetProductDetailsByOrderNumberAndUserId_Result>> GetProductDetailsByOrderNumberAndUserId(string orderNumber, int userId)
+        {
+            var productDetails = new List<SPGetProductDetailsByOrderNumberAndUserId_Result>();
+
+            try
+            {
+                var sqlQuery = "exec spGetProductDetailsByOrderNumberAndUserId @OrderNumber,@UserId";
+
+                SqlParameter parameter1 = new SqlParameter("@OrderNumber", string.IsNullOrEmpty(orderNumber) ? DBNull.Value : orderNumber);
+                SqlParameter parameter2 = new SqlParameter("@UserId", userId == 0 ? DBNull.Value : userId);
+
+                productDetails = await _dbContext.productDetailsByOrderNumberAndUserId_Result.FromSqlRaw(sqlQuery, parameter1, parameter2).ToListAsync();
+            }
+
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return productDetails;
+        }
+        public async Task<ApiResponseModel> CustomerOrderStatusUpdate(int userId, string orderNumber, int statusId)
         {
             var apiResponseModel = new ApiResponseModel();
 
@@ -201,33 +259,40 @@ namespace EasyToBuy.Services.Interactions
 
                 if (dbUser != null)
                 {
-                    var dbOrder = await _dbContext.tblCustomerOrder.Include(x => x.OrderStatus).Where(x => x.Id == orderId).FirstOrDefaultAsync();
-                    
-                    if (dbOrder != null)
+                    var dbOrdersList = await _dbContext.tblCustomerOrder.Include(x => x.OrderStatus).Where(x => x.OrderNumber == orderNumber && x.VendorId == userId).ToListAsync();
+
+                    if (dbOrdersList.Count > 0)
                     {
-                        if (dbOrder.StatusId == statusId)
+                        foreach (var order in dbOrdersList.Select((item,index)=>(item,index)))
                         {
-                            apiResponseModel.Status = false;
-                            apiResponseModel.Message = "This order is already " + dbOrder.OrderStatus.Status.ToLower() + ".";
-                        }
-                        else
-                        {
-                            dbOrder.StatusId = statusId;
-                            dbOrder.UpdatedBy = userId;
-                            dbOrder.UpdatedOn = DateTime.Now;
+                            if (order.item.StatusId == statusId)
+                            {
+                                apiResponseModel.Status = false;
+                                apiResponseModel.Message = "This order is already " + order.item.OrderStatus.Status.ToLower() + ".";
+                            }
+                            else
+                            {
+                                order.item.StatusId = statusId;
+                                order.item.UpdatedBy = userId;
+                                order.item.UpdatedOn = DateTime.Now;
 
-                            var objCustomerOrderStatusLog = new CustomerOrderStatusLog();
+                                if (order.index == 0)
+                                {
+                                    var objCustomerOrderStatusLog = new CustomerOrderStatusLog();
 
-                            objCustomerOrderStatusLog.OrderId = orderId;
-                            objCustomerOrderStatusLog.StatusId = statusId;
-                            objCustomerOrderStatusLog.CreatedBy = userId;
-                            objCustomerOrderStatusLog.CreatedOn = DateTime.Now;
+                                    objCustomerOrderStatusLog.OrderNumber = orderNumber;
+                                    objCustomerOrderStatusLog.VendorId = order.item.VendorId;
+                                    objCustomerOrderStatusLog.StatusId = statusId;
+                                    objCustomerOrderStatusLog.CreatedBy = userId;
+                                    objCustomerOrderStatusLog.CreatedOn = DateTime.Now;
 
-                            await _dbContext.tblCustomerOrderStatusLog.AddAsync(objCustomerOrderStatusLog);
-                            await _dbContext.SaveChangesAsync();
+                                    await _dbContext.tblCustomerOrderStatusLog.AddAsync(objCustomerOrderStatusLog);
+                                }
+                                await _dbContext.SaveChangesAsync();
 
-                            apiResponseModel.Status = true;
-                            apiResponseModel.Message = "Order status updated successfully.";
+                                apiResponseModel.Status = true;
+                                apiResponseModel.Message = "Order status updated successfully.";
+                            }
                         }
                     }
                     else

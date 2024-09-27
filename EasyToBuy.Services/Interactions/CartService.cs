@@ -75,7 +75,6 @@ namespace EasyToBuy.Services.Interactions
                         apiResponseModel.Message = "Quantity is successfully updated.";
                     }
                     else
-
                     {
                         apiResponseModel.Status = false;
                         apiResponseModel.Message = "This product does not exist in cart.";
@@ -84,7 +83,7 @@ namespace EasyToBuy.Services.Interactions
                 else
                 {
                     var checkStockQuantity = await _dbContext.tblProductVariationAndRate.Where(x => x.Id == cartInputModel.VariationId).Select(x => x.StockQuantity).FirstOrDefaultAsync();
-                    if (checkStockQuantity == 0)
+                    if (checkStockQuantity <= 0)
                     {
                         apiResponseModel.Status = false;
                         apiResponseModel.Message = "This product is out of stock.";
