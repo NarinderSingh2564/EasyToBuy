@@ -27,5 +27,7 @@ namespace EasyToBuy.Repository.Abstract
         Task<IEnumerable<ProductVariationImagesModel>> GetVariationImagesListByProductId(int productId);
         Task<IEnumerable<SPGetProductSliderItemsByCategoryId_Result>> GetProductSliderItemsByCategoryId(int categoryId , int productId, string dataTypes);
         Task<ApiResponseModel> DeleteProductVariationImage(int productImageId);
+        Task<ApiResponseModel> ProductRatingAdd(ProductRatingInputModel productRatingInputModel);
+        void ProductRatingImageAdd(ProductRatingImageInputModel productRatingImagesInputModel);
     }
 }

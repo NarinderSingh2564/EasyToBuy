@@ -41,6 +41,11 @@ app.UseStaticFiles(new StaticFileOptions
     FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "Images/ProductVariations")),
     RequestPath = "/ProductVariationImages",
 });
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "Images/ProductReviewImage")),
+    RequestPath = "/ProductRatingImages",
+});
 app.UseCors(option => option.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.UseHttpsRedirection();

@@ -8,9 +8,8 @@ namespace EasyToBuy.Models.InputModels
 {
     public class ProductRatingImageInputModel
     {
-        public int Id { get; set; }
         public int ProductRatingId { get; set; }
-        public string ProductImage { get; set; }
+        public string ProductRatingImage { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public bool IsActive { get; set; }

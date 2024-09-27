@@ -152,6 +152,19 @@ namespace EasyToBuy.Repository.Concrete
                 return await productService.DeleteProductVariationImage(productImageId);
             }
         }
-     
+        public async Task<ApiResponseModel> ProductRatingAdd(ProductRatingInputModel productRatingInputModel)
+        {
+            using (ProductService productService = new ProductService())
+            {
+                return await productService.ProductRatingAdd(productRatingInputModel);
+            }
+        }
+        public void ProductRatingImageAdd(ProductRatingImageInputModel productRatingImagesInputModel)
+        {
+            using (ProductService productService = new ProductService())
+            {
+                productService.ProductRatingImageAdd(productRatingImagesInputModel);
+            }
+        }
     }
 }

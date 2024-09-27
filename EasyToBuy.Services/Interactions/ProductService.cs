@@ -724,5 +724,55 @@ namespace EasyToBuy.Services.Interactions
             }
             return apiResponseModel;
         }
+        public async Task<ApiResponseModel> ProductRatingAdd(ProductRatingInputModel productRatingInputModel)
+        {
+          var apiResponseModel = new ApiResponseModel();
+
+            try
+            {
+                var productRatingObj = new ProductRating();
+
+                productRatingObj.ProductId = productRatingInputModel.ProductId;
+                productRatingObj.Rating = productRatingInputModel.Rating;
+                productRatingObj.ReviewTitle = productRatingInputModel.ReviewTitle;
+                productRatingObj.ReviewDescription = productRatingInputModel.ReviewDescription;
+                productRatingObj.CreatedBy = productRatingInputModel.CreatedBy;
+                productRatingObj.CreatedDate = DateTime.Now;
+                productRatingObj.IsActive = productRatingInputModel.IsActive;
+
+                await _dbContext.AddAsync(productRatingObj);
+
+                await _dbContext.SaveChangesAsync();
+
+                apiResponseModel.Status = true;
+                apiResponseModel.Message = "Product RatingAndReview Add successfully.";
+            }
+            catch(Exception ex)
+            {
+                var msg = ex.Message;
+            }
+            return apiResponseModel;
+        }
+        public void ProductRatingImageAdd(ProductRatingImageInputModel productRatingImagesInputModel)
+        {
+            try
+            {
+                var ratingImagesObj = new ProductRatingImages();
+
+                ratingImagesObj.ProductRatingId = productRatingImagesInputModel.ProductRatingId;
+                ratingImagesObj.ProductImage = productRatingImagesInputModel.ProductRatingImage;
+                ratingImagesObj.CreatedBy = productRatingImagesInputModel.CreatedBy;
+                ratingImagesObj.CreatedOn = DateTime.Now;
+                ratingImagesObj.IsActive = true;
+
+                _dbContext.tblProductRatingImages.Add(ratingImagesObj);
+                _dbContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+        }
     }
 }
