@@ -39,11 +39,11 @@ namespace EasyToBuy.Repository.Concrete
                 return await orderService.GetProductDetailsByOrderNumberAndUserId(orderNumber, userId);
             }
         }
-        public async Task<ApiResponseModel> CustomerOrderStatusUpdate(int userId, int orderId, int statusId)
+        public async Task<ApiResponseModel> CustomerOrderStatusUpdate(int userId, string orderNumber, int statusId)
         {
             using (OrderService orderService = new OrderService())
             {
-                return await orderService.CustomerOrderStatusUpdate(userId, orderId, statusId);
+                return await orderService.CustomerOrderStatusUpdate(userId, orderNumber, statusId);
             }
         }
         public async Task<IEnumerable<SPGetTrackingStatusListByOrderId_Result>> GetOrderStatusTrackingList(int orderId)

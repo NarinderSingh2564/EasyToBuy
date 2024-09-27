@@ -54,7 +54,7 @@ namespace EasyToBuy.Web.Controllers
         }
 
         [HttpGet("CustomerOrderStatusUpdate")]
-        public async Task<ApiResponseModel> CustomerOrderStatusUpdate(int userId, int orderNumber, int statusId)
+        public async Task<ApiResponseModel> CustomerOrderStatusUpdate(int userId, string orderNumber, int statusId)
         {
             var response = await _orderRepository.CustomerOrderStatusUpdate(userId, orderNumber, statusId);
 

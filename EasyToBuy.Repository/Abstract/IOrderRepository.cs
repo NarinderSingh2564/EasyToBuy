@@ -10,7 +10,7 @@ namespace EasyToBuy.Repository.Abstract
         Task<ApiResponseModel> PlaceOrder(int CustomerId);
         Task<IEnumerable<SPGetUserOrdersListByUserId_Result>> GetUserOrdersListByUserId(int userId, string? searchText, int statusId);
         Task<IEnumerable<SPGetProductDetailsByOrderNumberAndUserId_Result>> GetProductDetailsByOrderNumberAndUserId(string orderNumber, int userId);
-        Task<ApiResponseModel> CustomerOrderStatusUpdate(int userId, int orderId, int statusId);
+        Task<ApiResponseModel> CustomerOrderStatusUpdate(int userId, string orderNumber, int statusId);
         Task<IEnumerable<SPGetTrackingStatusListByOrderId_Result>> GetOrderStatusTrackingList(int orderId);
     }
 }
