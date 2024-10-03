@@ -10,6 +10,10 @@ namespace EasyToBuy.Data.DBClasses
 
         [StringLength(20)]
         public string OrderNumber { get; set; }
+
+        [ForeignKey("ProductVariationAndRate")]
+        public int VariationId { get; set; }
+        public virtual ProductVariationAndRate ProductVariationAndRate { get; set; }
         public int VendorId { get; set; }
       
         [ForeignKey("OrderStatus")]

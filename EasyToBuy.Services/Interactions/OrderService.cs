@@ -130,6 +130,7 @@ namespace EasyToBuy.Services.Interactions
                                         var customerOrderStatusLog = new CustomerOrderStatusLog();
 
                                         customerOrderStatusLog.OrderNumber = customerOrderObj.OrderNumber;
+                                        customerOrderStatusLog.VariationId = customerOrderObj.VariationId;
                                         customerOrderStatusLog.VendorId = order.item.VendorId;
                                         customerOrderStatusLog.StatusId = 1;
                                         customerOrderStatusLog.CreatedBy = customerId;
@@ -306,7 +307,6 @@ namespace EasyToBuy.Services.Interactions
                     apiResponseModel.Message = "Sorry, you can not update order status as you are not an active user.";
                 }
             }
-
             catch (Exception ex)
             {
                 var msg = ex.Message;
@@ -326,7 +326,6 @@ namespace EasyToBuy.Services.Interactions
 
                 orderStatusTrackingList = await _dbContext.getTrackingStatusListByOrderId_Results.FromSqlRaw(sqlQuery, parameter1).ToListAsync();
             }
-
             catch (Exception ex)
             {
                 var msg = ex.Message;
