@@ -100,44 +100,41 @@ namespace EasyToBuy.Services.Interactions
                             {
                                 var maxOrderNumber = _dbContext.tblCustomerOrder.ToList().Max(x => x.OrderNumber);
 
-                                foreach (var order in orderList.Select((item,i)=> new {item,i}) )
+                                foreach (var order in orderList)
                                 {
                                     var customerOrderObj = new CustomerOrder();
 
-                                    var dbVariation = await _dbContext.tblProductVariationAndRate.Where(x => x.Id == order.item.VariationId).FirstOrDefaultAsync();
+                                    var dbVariation = await _dbContext.tblProductVariationAndRate.Where(x => x.Id == order.VariationId).FirstOrDefaultAsync();
 
                                     if (dbVariation != null)
                                     {
-                                        dbVariation.StockQuantity = dbVariation.StockQuantity - order.item.Quantity;
+                                        dbVariation.StockQuantity = dbVariation.StockQuantity - order.Quantity;
                                     }
 
                                     customerOrderObj.CustomerId = customerId;
-                                    customerOrderObj.VendorId = order.item.VendorId;
+                                    customerOrderObj.VendorId = order.VendorId;
                                     customerOrderObj.OrderNumber = maxOrderNumber == null ? "ETB-10000" : "ETB-" + (Convert.ToUInt16(maxOrderNumber.Substring(4)) + 1).ToString();
                                     customerOrderObj.OrderDate = (DateTime.Now).Date;
                                     customerOrderObj.StatusId = 1;
-                                    customerOrderObj.VariationId = order.item.VariationId;
-                                    customerOrderObj.Quantity = order.item.Quantity;
-                                    customerOrderObj.MRP = order.item.MRP;
-                                    customerOrderObj.Discount = order.item.Discount;
-                                    customerOrderObj.DiscountPrice = order.item.DiscountPrice;
-                                    customerOrderObj.AmountToBePaid = order.item.Quantity * order.item.PriceAfterDiscount;
+                                    customerOrderObj.VariationId = order.VariationId;
+                                    customerOrderObj.Quantity = order.Quantity;
+                                    customerOrderObj.MRP = order.MRP;
+                                    customerOrderObj.Discount = order.Discount;
+                                    customerOrderObj.DiscountPrice = order.DiscountPrice;
+                                    customerOrderObj.AmountToBePaid = order.Quantity * order.PriceAfterDiscount;
 
                                     await _dbContext.AddAsync(customerOrderObj);
 
-                                    if (order.i == 0)
-                                    {
-                                        var customerOrderStatusLog = new CustomerOrderStatusLog();
+                                    var customerOrderStatusLog = new CustomerOrderStatusLog();
 
-                                        customerOrderStatusLog.OrderNumber = customerOrderObj.OrderNumber;
-                                        customerOrderStatusLog.VariationId = customerOrderObj.VariationId;
-                                        customerOrderStatusLog.VendorId = order.item.VendorId;
-                                        customerOrderStatusLog.StatusId = 1;
-                                        customerOrderStatusLog.CreatedBy = customerId;
-                                        customerOrderStatusLog.CreatedOn = DateTime.Now;
+                                    customerOrderStatusLog.OrderNumber = customerOrderObj.OrderNumber;
+                                    customerOrderStatusLog.VariationId = customerOrderObj.VariationId;
+                                    customerOrderStatusLog.VendorId = order.VendorId;
+                                    customerOrderStatusLog.StatusId = 1;
+                                    customerOrderStatusLog.CreatedBy = customerId;
+                                    customerOrderStatusLog.CreatedOn = DateTime.Now;
 
-                                        await _dbContext.AddAsync(customerOrderStatusLog);
-                                    }
+                                    await _dbContext.AddAsync(customerOrderStatusLog);
                                 }
 
                                 var objCart = await _dbContext.tblCart.Where(x => x.CustomerId == customerId && x.IsPlaced == false).ToListAsync();
@@ -263,31 +260,29 @@ namespace EasyToBuy.Services.Interactions
 
                     if (dbOrdersList.Count > 0)
                     {
-                        foreach (var order in dbOrdersList.Select((item,index)=>(item,index)))
+                        foreach (var order in dbOrdersList)
                         {
-                            if (order.item.StatusId == statusId)
+                            if (order.StatusId == statusId)
                             {
                                 apiResponseModel.Status = false;
-                                apiResponseModel.Message = "This order is already " + order.item.OrderStatus.Status.ToLower() + ".";
+                                apiResponseModel.Message = "This order is already " + order.OrderStatus.Status.ToLower() + ".";
                             }
                             else
                             {
-                                order.item.StatusId = statusId;
-                                order.item.UpdatedBy = userId;
-                                order.item.UpdatedOn = DateTime.Now;
+                                order.StatusId = statusId;
+                                order.UpdatedBy = userId;
+                                order.UpdatedOn = DateTime.Now;
 
-                                if (order.index == 0)
-                                {
-                                    var objCustomerOrderStatusLog = new CustomerOrderStatusLog();
+                                var objCustomerOrderStatusLog = new CustomerOrderStatusLog();
 
-                                    objCustomerOrderStatusLog.OrderNumber = orderNumber;
-                                    objCustomerOrderStatusLog.VendorId = order.item.VendorId;
-                                    objCustomerOrderStatusLog.StatusId = statusId;
-                                    objCustomerOrderStatusLog.CreatedBy = userId;
-                                    objCustomerOrderStatusLog.CreatedOn = DateTime.Now;
+                                objCustomerOrderStatusLog.OrderNumber = orderNumber;
+                                objCustomerOrderStatusLog.VendorId = order.VendorId;
+                                objCustomerOrderStatusLog.StatusId = statusId;
+                                objCustomerOrderStatusLog.CreatedBy = userId;
+                                objCustomerOrderStatusLog.VariationId = order.VariationId;
+                                objCustomerOrderStatusLog.CreatedOn = DateTime.Now;
 
-                                    await _dbContext.tblCustomerOrderStatusLog.AddAsync(objCustomerOrderStatusLog);
-                                }
+                                await _dbContext.tblCustomerOrderStatusLog.AddAsync(objCustomerOrderStatusLog);
                                 await _dbContext.SaveChangesAsync();
 
                                 apiResponseModel.Status = true;
