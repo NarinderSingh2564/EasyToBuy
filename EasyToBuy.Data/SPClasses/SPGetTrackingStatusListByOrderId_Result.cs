@@ -5,6 +5,6 @@
         public int Id { get; set; }
         public string Status { get; set; }
         public bool IsPending { get; set; }
-        public string? StatusDate { get; set; }
+        public string? statusDate { get; set; }
     }
 }
