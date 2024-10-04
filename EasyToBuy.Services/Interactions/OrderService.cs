@@ -200,7 +200,6 @@ namespace EasyToBuy.Services.Interactions
             {
                 var msg = ex.Message;
             }
-
             return orderList;
         }
         public async Task<IEnumerable<SPGetUserOrdersListByUserId_Result>> GetUserOrdersListByUserId(int userId, string? searchText, int statusId)
@@ -309,23 +308,23 @@ namespace EasyToBuy.Services.Interactions
 
             return apiResponseModel;
         }
-        public async Task<IEnumerable<SPGetTrackingStatusListByOrderId_Result>> GetOrderStatusTrackingList(string orderId)
+        public async Task<IEnumerable<SPGetTrackingStatusListByOrderId_Result>> GetOrderStatusTrackingList(string orderNumber, int variationId)
         {
             var orderStatusTrackingList = new List<SPGetTrackingStatusListByOrderId_Result>();
 
             try
             {
-                var sqlQuery = "exec spGetTrackingStatusListByOrderId @OrderId";
+                var sqlQuery = "exec spGetTrackingStatusListByOrderId @OrderNumber, @VariationId";
 
-                SqlParameter parameter1 = new SqlParameter("@OrderId", orderId);
+                SqlParameter parameter1 = new SqlParameter("@OrderNumber", orderNumber);
+                SqlParameter parameter2 = new SqlParameter("@VariationId", variationId);
 
-                orderStatusTrackingList = await _dbContext.getTrackingStatusListByOrderId_Results.FromSqlRaw(sqlQuery, parameter1).ToListAsync();
+                orderStatusTrackingList = await _dbContext.getTrackingStatusListByOrderId_Results.FromSqlRaw(sqlQuery, parameter1, parameter2).ToListAsync();
             }
             catch (Exception ex)
             {
                 var msg = ex.Message;
             }
-
             return orderStatusTrackingList;
         }
     }

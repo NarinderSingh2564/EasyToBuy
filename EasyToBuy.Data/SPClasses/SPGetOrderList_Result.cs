@@ -10,6 +10,7 @@ namespace EasyToBuy.Data.SPClasses
         public int CustomerId { get; set; }
         public int UserId { get; set; }
         public int StatusId { get; set; }
+        public int VariationId { get; set; }
         public string UserName { get; set; }
         public string CustomerName { get; set; }
         public string Mobile { get; set; }

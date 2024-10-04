@@ -45,7 +45,6 @@ namespace EasyToBuy.Web.Controllers
         }
 
         [HttpGet("GetProductDetailsByOrderNumberAndUserId")]
-
         public async Task<IEnumerable<SPGetProductDetailsByOrderNumberAndUserId_Result>> GetProductDetailsByOrderNumberAndUserId(string orderNumber, int userId)
         {
             var response = await _orderRepository.GetProductDetailsByOrderNumberAndUserId(orderNumber, userId);
@@ -62,9 +61,9 @@ namespace EasyToBuy.Web.Controllers
         }
 
         [HttpGet("GetOrderStatusTrackingList")]
-        public async Task<IEnumerable<SPGetTrackingStatusListByOrderId_Result>> GetOrderStatusTrackingList(string orderId)
+        public async Task<IEnumerable<SPGetTrackingStatusListByOrderId_Result>> GetOrderStatusTrackingList(string orderNumber, int variationId)
         {
-            var response = await _orderRepository.GetOrderStatusTrackingList(orderId);
+            var response = await _orderRepository.GetOrderStatusTrackingList(orderNumber, variationId);
 
             return response;
         }
