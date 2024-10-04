@@ -8,9 +8,7 @@ namespace EasyToBuy.Repository.Abstract
     {
         Task<IEnumerable<SPGetOrderList_Result>> GetOrdersList( int customerId, string? searchText, string? statusId, DateTime? firstDate, DateTime? secondDate);
         Task<ApiResponseModel> PlaceOrder(int CustomerId);
-
-        Task<IEnumerable<SPGetTrackingStatusListByOrderId_Result>> GetOrderStatusTrackingList(string orderId);
-
+        Task<IEnumerable<SPGetTrackingStatusListByOrderId_Result>> GetOrderStatusTrackingList(string orderNumber, int variationId);
         Task<IEnumerable<SPGetUserOrdersListByUserId_Result>> GetUserOrdersListByUserId(int userId, string? searchText, int statusId);
         Task<IEnumerable<SPGetProductDetailsByOrderNumberAndUserId_Result>> GetProductDetailsByOrderNumberAndUserId(string orderNumber, int userId);
         Task<ApiResponseModel> CustomerOrderStatusUpdate(int userId, string orderNumber, int statusId);
