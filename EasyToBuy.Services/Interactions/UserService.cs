@@ -85,11 +85,10 @@ namespace EasyToBuy.Services.Interactions
                     var userObj = new User();
 
                     userObj.Name = userInputModel.userBasicDetailsInputModel.Name;
-                    userObj.UserCode = "ETB-" + new Random().Next().ToString();
                     userObj.Email = userInputModel.userBasicDetailsInputModel.Email;
                     userObj.Password = userInputModel.userBasicDetailsInputModel.Password;
                     userObj.Mobile = userInputModel.userBasicDetailsInputModel.Mobile;
-                    //userObj.Role = userInputModel.userBasicDetailsInputModel.Role;
+                    userObj.RoleId = userInputModel.userBasicDetailsInputModel.RoleId;
                     userObj.IdentificationType = userInputModel.userBasicDetailsInputModel.IdentificationType;
                     userObj.IdentificationNumber = userInputModel.userBasicDetailsInputModel.IdentificationNumber;
                     userObj.Pincode = userInputModel.userBasicDetailsInputModel.Pincode;
@@ -97,7 +96,6 @@ namespace EasyToBuy.Services.Interactions
                     userObj.State = userInputModel.userBasicDetailsInputModel.State;
                     userObj.Country = userInputModel.userBasicDetailsInputModel.Country;
                     userObj.FullAddress = userInputModel.userBasicDetailsInputModel.FullAddress;
-                    //userObj.Status = "Pending";
                     userObj.StatusRemarks = "Your request has been sent to admin.";
                     userObj.CreatedBy = 1;
                     userObj.CreatedOn = DateTime.Now;
@@ -154,7 +152,7 @@ namespace EasyToBuy.Services.Interactions
                 var msg = ex.Message;
                 transaction.Rollback();
                 apiResponseModel.Status = false;
-                apiResponseModel.Message = "Sorry, an error occured while saving the entries, please check your " + errorArea + ".";
+                apiResponseModel.Message = "Sorry, an error occurred while saving the entries, please check your " + errorArea + ".";
             }
 
             return apiResponseModel;
@@ -180,7 +178,6 @@ namespace EasyToBuy.Services.Interactions
                         State = user.State,
                         Country = user.Country,
                         FullAddress = user.FullAddress,
-                        //Status = user.Status,
                         StatusRemarks = user.StatusRemarks,
                         IsLicensed = user.IsLicensed,
                         LicenseExpiredOn = user.LicenseExpiredOn,
@@ -193,7 +190,7 @@ namespace EasyToBuy.Services.Interactions
             }
             return userList;
         }
-        public async Task<ApiResponseModel> UserStatusUpdate(int userId, string status, string statusRemarks)
+        public async Task<ApiResponseModel> UserStatusUpdate(int userId, string statusRemarks)
         {
             var apiResponseModel = new ApiResponseModel();
 
@@ -203,14 +200,14 @@ namespace EasyToBuy.Services.Interactions
 
                 if (dbUser != null)
                 {
-                    //dbUser.Status = status;
                     dbUser.StatusRemarks = statusRemarks;
+                    dbUser.IsActive = true;
                     dbUser.UpdatedBy = userId;
                     dbUser.UpdatedOn = DateTime.Now;
                     await _dbContext.SaveChangesAsync();
 
                     apiResponseModel.Status = true;
-                    apiResponseModel.Message = "Your request has been " + status;
+                    apiResponseModel.Message = "Your request has been " + statusRemarks;
                 }
 
             }

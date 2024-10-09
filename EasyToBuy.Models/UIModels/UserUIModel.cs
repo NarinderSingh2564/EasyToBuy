@@ -18,7 +18,7 @@
         public string Email { get; set; } = string.Empty;
         public string Mobile { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
-        public string Role { get; set; } = string.Empty;
+        public int RoleId { get; set; }
         public string IdentificationType { get; set; } = string.Empty;
         public string IdentificationNumber { get; set; } = string.Empty;
         public int Pincode { get; set; }

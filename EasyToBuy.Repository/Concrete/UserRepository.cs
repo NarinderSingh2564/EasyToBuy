@@ -30,11 +30,11 @@ namespace EasyToBuy.Repository.Concrete
                 return await userService.GetUserList();
             }
         }
-        public async Task<ApiResponseModel> UserStatusUpdate(int userId, string status, string statusRemarks)
+        public async Task<ApiResponseModel> UserStatusUpdate(int userId, string statusRemarks)
         {
             using (UserService userService = new UserService())
             {
-                return await userService.UserStatusUpdate(userId, status, statusRemarks);
+                return await userService.UserStatusUpdate(userId, statusRemarks);
             }
         }
         public async Task<IEnumerable<SPGetUserOrdersCountById_Result>> GetUserOrdersCount(int userId)
