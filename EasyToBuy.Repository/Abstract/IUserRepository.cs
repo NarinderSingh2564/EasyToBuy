@@ -14,7 +14,7 @@ namespace EasyToBuy.Repository.Abstract
     {
         Task<ApiResponseModel> UserRegistration(UserInputModel userInputModel);
         Task<IEnumerable<UserModel>> GetUserList();
-        Task<ApiResponseModel> UserStatusUpdate(int userId, string status, string statusRemarks);
+        Task<ApiResponseModel> UserStatusUpdate(int userId, string statusRemarks);
         Task<IEnumerable<SPGetUserOrdersCountById_Result>> GetUserOrdersCount(int userId);
     }
 }
