@@ -162,7 +162,6 @@ namespace EasyToBuy.Services.Interactions
                     apiResponseModel.Status = true;
                     apiResponseModel.Message = productInputModel.Id > 0 ? "Product updated successfully." : "Product added successfully.";
                 }
-
             }
             catch (Exception ex)
             {
@@ -732,36 +731,64 @@ namespace EasyToBuy.Services.Interactions
             {
                 var productRatingObj = new ProductRating();
 
+                productRatingObj.Id = productRatingInputModel.Id;
                 productRatingObj.ProductId = productRatingInputModel.ProductId;
                 productRatingObj.Rating = productRatingInputModel.Rating;
                 productRatingObj.ReviewTitle = productRatingInputModel.ReviewTitle;
                 productRatingObj.ReviewDescription = productRatingInputModel.ReviewDescription;
                 productRatingObj.CreatedBy = productRatingInputModel.CreatedBy;
                 productRatingObj.CreatedDate = DateTime.Now;
-                productRatingObj.IsActive = productRatingInputModel.IsActive;
+                productRatingObj.IsActive = true;
 
                 await _dbContext.AddAsync(productRatingObj);
-
                 await _dbContext.SaveChangesAsync();
 
                 apiResponseModel.Status = true;
                 apiResponseModel.Message = "Product RatingAndReview Add successfully.";
+                apiResponseModel.Response = productRatingObj.Id;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 var msg = ex.Message;
             }
             return apiResponseModel;
         }
-        public void ProductRatingImageAdd(ProductRatingImageInputModel productRatingImagesInputModel)
+        public async Task<ApiResponseModel> CheckRatingImagesCountById(int productRatingId)
+        {
+            var apiResponseModel = new ApiResponseModel();
+
+            try
+            {
+                var dbImagesCount = await _dbContext.tblProductRatingImages.Where(x => x.ProductRatingId == productRatingId).ToListAsync();
+
+                if (dbImagesCount.Count == 3)
+                {
+                    apiResponseModel.Status = false;
+                    apiResponseModel.Message = "You have already uploaded 5 images of this Product. Please delete some images to upload.";
+                }
+                else if (dbImagesCount.Count < 3)
+                {
+                    apiResponseModel.Status = true;
+                    apiResponseModel.Response = 3 - dbImagesCount.Count;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return apiResponseModel;
+        }
+        public void ProductRatingImageAdd(ProductRatingInputModel productRatingInputModel)
         {
             try
             {
                 var ratingImagesObj = new ProductRatingImages();
 
-                ratingImagesObj.ProductRatingId = productRatingImagesInputModel.ProductRatingId;
-                ratingImagesObj.ProductImage = productRatingImagesInputModel.ProductRatingImage;
-                ratingImagesObj.CreatedBy = productRatingImagesInputModel.CreatedBy;
+                ratingImagesObj.ProductRatingId = productRatingInputModel.ProductRatingId;
+                ratingImagesObj.ProductImage = productRatingInputModel.ProductRatingImage;
+                ratingImagesObj.CreatedBy = productRatingInputModel.CreatedBy;
                 ratingImagesObj.CreatedOn = DateTime.Now;
                 ratingImagesObj.IsActive = true;
 

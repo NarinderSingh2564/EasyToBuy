@@ -303,12 +303,13 @@ namespace EasyToBuy.Web.Controllers
         }
 
         [HttpPost("ProductRatingAdd")]
-        public async Task<ApiResponseModel> ProductRatingAdd(ProductRatingUIModel productRatingUIModel)
+        public async Task<ApiResponseModel> ProductRatingAdd([FromForm] ProductRatingUIModel productRatingUIModel)
         {
             var returnResponse = new ApiResponseModel();
 
             var productRatingInputModel = new ProductRatingInputModel();
 
+            productRatingInputModel.Id = productRatingUIModel.Id;
             productRatingInputModel.ProductId = productRatingUIModel.ProductId;
             productRatingInputModel.Rating = productRatingUIModel.Rating;
             productRatingInputModel.ReviewTitle = productRatingUIModel.ReviewTitle;
@@ -319,39 +320,31 @@ namespace EasyToBuy.Web.Controllers
 
             returnResponse = await _productRepository.ProductRatingAdd(productRatingInputModel);
 
-            return returnResponse;
-        }
-
-        [HttpPost("ProductRatingImageAdd")]
-        public async Task<ApiResponseModel> ProductRatingImageAdd([FromForm] ProductRatingImageUIModel productRatingImageUIModel)
-        {
-            var apiResponseModel = new ApiResponseModel();
-
-            try
+            if(returnResponse.Status == true)
             {
-                foreach (var item in productRatingImageUIModel.ProductRatingImage)
+                foreach (var item in productRatingUIModel.ProductRatingImage)
                 {
                     var imageName = string.Empty;
                     UploadProductImage(item, out imageName, "ProductReviewImage", null);
                     string productRatingImageName = imageName;
 
-                    var productRatingImagesInputModel = new ProductRatingImageInputModel();
+                    productRatingInputModel.ProductRatingId = Convert.ToInt32(returnResponse.Response);
+                    productRatingInputModel.ProductRatingImage = productRatingImageName != null ? productRatingImageName : "";
+                    productRatingInputModel.CreatedBy = productRatingUIModel.CreatedBy;
 
-                    productRatingImagesInputModel.ProductRatingId = productRatingImageUIModel.ProductRatingId;
-                    productRatingImagesInputModel.ProductRatingImage = productRatingImageName != null ? productRatingImageName : "";
-                    productRatingImagesInputModel.CreatedBy = productRatingImageUIModel.CreatedBy;
-
-                    _productRepository.ProductRatingImageAdd(productRatingImagesInputModel);
+                    _productRepository.ProductRatingImageAdd(productRatingInputModel);
                 }
-                apiResponseModel.Status = true;
-                apiResponseModel.Message = "Product Images uploaded successfully.";
-            } 
-            catch (Exception ex)
-            {
-                var msg = ex.Message;
             }
 
-            return apiResponseModel;
+            return returnResponse;
+        }
+
+        [HttpGet("CheckRatingImagesCountById")]
+        public async Task<ApiResponseModel> CheckRatingImagesCountById(int productRatingId)
+        {
+            var response = await _productRepository.CheckRatingImagesCountById(productRatingId);
+
+            return response;
         }
 
     }

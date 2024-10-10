@@ -1,0 +1,2110 @@
+USE [EasyToBuyDb]
+GO
+/****** Object:  User [EasyToBuyAdmin]    Script Date: 2024-08-21 11:51:33 AM ******/
+CREATE USER [EasyToBuyAdmin] FOR LOGIN [EasyToBuyAdmin] WITH DEFAULT_SCHEMA=[EasyToBuyAdmin]
+GO
+/****** Object:  DatabaseRole [gd_execprocs]    Script Date: 2024-08-21 11:51:34 AM ******/
+CREATE ROLE [gd_execprocs]
+GO
+ALTER ROLE [db_securityadmin] ADD MEMBER [EasyToBuyAdmin]
+GO
+ALTER ROLE [db_ddladmin] ADD MEMBER [EasyToBuyAdmin]
+GO
+ALTER ROLE [db_backupoperator] ADD MEMBER [EasyToBuyAdmin]
+GO
+ALTER ROLE [db_datareader] ADD MEMBER [EasyToBuyAdmin]
+GO
+ALTER ROLE [db_datawriter] ADD MEMBER [EasyToBuyAdmin]
+GO
+/****** Object:  Schema [EasyToBuyAdmin]    Script Date: 2024-08-21 11:51:34 AM ******/
+CREATE SCHEMA [EasyToBuyAdmin]
+GO
+/****** Object:  Schema [Ordering]    Script Date: 2024-08-21 11:51:34 AM ******/
+CREATE SCHEMA [Ordering]
+GO
+/****** Object:  Table [dbo].[tblCategory]    Script Date: 2024-08-21 11:51:34 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tblCategory](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[CategoryName] [varchar](30) NOT NULL,
+	[PackingModeId] [int] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime2](7) NOT NULL,
+	[UpdatedBy] [int] NULL,
+	[UpdatedOn] [datetime2](7) NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_tblCategory] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[tblProduct]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tblProduct](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[VendorId] [int] NOT NULL,
+	[ProductName] [varchar](200) NOT NULL,
+	[ProductDescription] [varchar](500) NOT NULL,
+	[ProductImage] [varchar](150) NOT NULL,
+	[CategoryId] [int] NOT NULL,
+	[PackingModeId] [int] NOT NULL,
+	[TotalVolume] [decimal](18, 2) NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime2](7) NOT NULL,
+	[UpdatedBy] [int] NULL,
+	[UpdatedOn] [datetime2](7) NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_tblProduct] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[tblProductPackingMode]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tblProductPackingMode](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[PackingMode] [varchar](20) NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime2](7) NOT NULL,
+	[UpdatedBy] [int] NULL,
+	[UpdatedOn] [datetime2](7) NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_tblProductPackingMode] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  View [EasyToBuyAdmin].[view_GetProductList]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [EasyToBuyAdmin].[view_GetProductList]
+AS
+SELECT        TP.Id, TP.ProductName, TP.ProductImage, TP.ProductDescription, TP.CategoryId, TP.TotalVolume, TC.PackingModeId, TPPM.PackingMode, TP.IsActive, TP.VendorId
+FROM            dbo.tblProduct AS TP INNER JOIN
+                         dbo.tblCategory AS TC ON TC.Id = TP.CategoryId INNER JOIN
+                         dbo.tblProductPackingMode AS TPPM ON TPPM.Id = TC.PackingModeId
+GO
+/****** Object:  Table [dbo].[cartDetailsByCustomerId_Results]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[cartDetailsByCustomerId_Results](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[VariationId] [int] NOT NULL,
+	[VendorName] [nvarchar](max) NOT NULL,
+	[ProductName] [nvarchar](max) NOT NULL,
+	[ProductDescription] [nvarchar](max) NOT NULL,
+	[ProductImage] [nvarchar](max) NOT NULL,
+	[ProductWeight] [nvarchar](max) NOT NULL,
+	[MRP] [decimal](18, 2) NOT NULL,
+	[Discount] [decimal](18, 2) NOT NULL,
+	[DiscountPrice] [decimal](18, 2) NOT NULL,
+	[PriceAfterDiscount] [decimal](18, 2) NOT NULL,
+	[Quantity] [int] NOT NULL,
+	[TotalProductPrice] [decimal](18, 2) NOT NULL,
+	[ShowProductWeight] [bit] NOT NULL,
+	[SetAsDefault] [bit] NOT NULL,
+ CONSTRAINT [PK_cartDetailsByCustomerId_Results] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[getTrackingStatusListByOrderId_Results]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[getTrackingStatusListByOrderId_Results](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Status] [nvarchar](max) NOT NULL,
+	[IsPending] [bit] NOT NULL,
+	[StatusDate] [nvarchar](max) NULL,
+ CONSTRAINT [PK_getTrackingStatusListByOrderId_Results] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[orderList_Results]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[orderList_Results](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[UserName] [nvarchar](max) NOT NULL,
+	[VendorName] [nvarchar](max) NOT NULL,
+	[OrderNumber] [nvarchar](max) NOT NULL,
+	[OrderDate] [datetime2](7) NOT NULL,
+	[Status] [nvarchar](max) NOT NULL,
+	[ProductName] [nvarchar](max) NOT NULL,
+	[Quantity] [int] NOT NULL,
+	[MRP] [decimal](18, 2) NOT NULL,
+	[Discount] [decimal](18, 2) NOT NULL,
+	[AmountToBePaid] [decimal](18, 2) NOT NULL,
+	[UserId] [int] NOT NULL,
+	[StatusId] [int] NOT NULL,
+	[VendorId] [int] NOT NULL,
+	[ProductWeight] [nvarchar](max) NOT NULL,
+	[ProductId] [int] NOT NULL,
+	[ProductImage] [nvarchar](max) NOT NULL,
+	[PackingType] [nvarchar](max) NOT NULL,
+ CONSTRAINT [PK_orderList_Results] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[productDescriptionById_Results]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[productDescriptionById_Results](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[VariationId] [int] NOT NULL,
+	[ProductName] [nvarchar](max) NOT NULL,
+	[ProductDescription] [nvarchar](max) NOT NULL,
+	[ProductImage] [nvarchar](max) NOT NULL,
+	[MRP] [decimal](18, 2) NOT NULL,
+	[Discount] [decimal](18, 2) NOT NULL,
+	[PriceAfterDiscount] [decimal](18, 2) NOT NULL,
+	[CategoryId] [int] NOT NULL,
+ CONSTRAINT [PK_productDescriptionById_Results] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[productList_Results]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[productList_Results](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[VendorId] [int] NOT NULL,
+	[ProductName] [nvarchar](max) NOT NULL,
+	[MRP] [decimal](18, 2) NOT NULL,
+	[Discount] [decimal](18, 2) NOT NULL,
+	[DiscountPrice] [decimal](18, 2) NOT NULL,
+	[PriceAfterDiscount] [decimal](18, 2) NOT NULL,
+	[ProductImage] [nvarchar](max) NOT NULL,
+	[ProductDescription] [nvarchar](max) NOT NULL,
+	[CategoryId] [int] NOT NULL,
+	[VariationId] [int] NOT NULL,
+	[ShowProductWeight] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+	[PackingMode] [nvarchar](max) NOT NULL,
+	[ProductWeight] [nvarchar](max) NOT NULL,
+	[Quantity] [int] NOT NULL,
+	[VendorName] [nvarchar](max) NOT NULL,
+	[TotalVolume] [decimal](18, 2) NOT NULL,
+	[PackingModeId] [int] NOT NULL,
+ CONSTRAINT [PK_productList_Results] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[productSliderItemsByCategoryId_Results]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[productSliderItemsByCategoryId_Results](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[VariationId] [int] NOT NULL,
+	[CategoryId] [int] NOT NULL,
+	[PackingMode] [nvarchar](max) NOT NULL,
+	[ProductName] [nvarchar](max) NOT NULL,
+	[ProductDescription] [nvarchar](max) NOT NULL,
+	[ProductImage] [nvarchar](max) NOT NULL,
+	[MRP] [decimal](18, 2) NOT NULL,
+	[Discount] [decimal](18, 2) NOT NULL,
+	[PriceAfterDiscount] [decimal](18, 2) NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_productSliderItemsByCategoryId_Results] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[productSpecificationById_Results]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[productSpecificationById_Results](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Speciality] [nvarchar](max) NOT NULL,
+	[Manufacturer] [nvarchar](max) NOT NULL,
+	[IngredientType] [nvarchar](max) NOT NULL,
+	[Ingredients] [nvarchar](max) NOT NULL,
+	[ShelfLife] [nvarchar](max) NOT NULL,
+	[Benefits] [nvarchar](max) NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_productSpecificationById_Results] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[productVariationImageById_Results]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[productVariationImageById_Results](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Image] [nvarchar](max) NOT NULL,
+ CONSTRAINT [PK_productVariationImageById_Results] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[productVariationListById_Results]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[productVariationListById_Results](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[ProductPackingId] [int] NOT NULL,
+	[PackingType] [nvarchar](max) NOT NULL,
+	[Quantity] [int] NOT NULL,
+	[ProductWeightId] [int] NOT NULL,
+	[ProductWeight] [nvarchar](max) NOT NULL,
+	[MRP] [decimal](18, 2) NOT NULL,
+	[Discount] [decimal](18, 2) NOT NULL,
+	[DiscountPrice] [decimal](18, 2) NOT NULL,
+	[PriceAfterDiscount] [decimal](18, 2) NOT NULL,
+	[StockQuantity] [int] NOT NULL,
+	[ShowProductWeight] [bit] NOT NULL,
+	[SetAsDefault] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+	[ProductWeightValue] [decimal](18, 2) NOT NULL,
+	[IsDeleted] [bit] NOT NULL,
+ CONSTRAINT [PK_productVariationListById_Results] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[tblAddress]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tblAddress](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[UserId] [int] NOT NULL,
+	[City] [nvarchar](max) NOT NULL,
+	[State] [nvarchar](max) NOT NULL,
+	[Country] [nvarchar](max) NOT NULL,
+	[FullAddress] [nvarchar](200) NOT NULL,
+	[AddressTypeId] [int] NOT NULL,
+	[Pincode] [nvarchar](10) NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime2](7) NOT NULL,
+	[UpdatedBy] [int] NULL,
+	[UpdatedOn] [datetime2](7) NULL,
+	[IsActive] [bit] NOT NULL,
+	[IsDeliveryAddress] [bit] NOT NULL,
+ CONSTRAINT [PK_tblAddress] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[tblAddressType]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tblAddressType](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[TypeOfAddress] [nvarchar](50) NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime2](7) NOT NULL,
+	[UpdatedBy] [int] NULL,
+	[UpdatedOn] [datetime2](7) NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_tblAddressType] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[tblCart]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tblCart](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[UserId] [int] NOT NULL,
+	[VariationId] [int] NOT NULL,
+	[Quantity] [int] NOT NULL,
+	[AddedDate] [datetime2](7) NOT NULL,
+	[IsPlaced] [bit] NOT NULL,
+ CONSTRAINT [PK_tblCart] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[tblCustomerOrder]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tblCustomerOrder](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[UserId] [int] NOT NULL,
+	[VariationId] [int] NOT NULL,
+	[OrderNumber] [nvarchar](20) NOT NULL,
+	[OrderDate] [datetime] NOT NULL,
+	[StatusId] [int] NOT NULL,
+	[Quantity] [int] NOT NULL,
+	[MRP] [decimal](7, 2) NOT NULL,
+	[Discount] [decimal](7, 2) NOT NULL,
+	[DiscountPrice] [decimal](7, 2) NOT NULL,
+	[AmountToBePaid] [decimal](7, 2) NOT NULL,
+	[UpdatedBy] [int] NULL,
+	[UpdatedOn] [datetime2](7) NULL,
+ CONSTRAINT [PK_tblCustomerOrder] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[tblCustomerOrderStatusLog]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tblCustomerOrderStatusLog](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[OrderId] [int] NOT NULL,
+	[StatusId] [int] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime2](7) NOT NULL,
+ CONSTRAINT [PK_tblCustomerOrderStatusLog] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[tblOrderStatus]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tblOrderStatus](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Status] [nvarchar](max) NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime2](7) NOT NULL,
+	[UpdatedBy] [int] NULL,
+	[UpdatedOn] [datetime2](7) NULL,
+	[IsActive] [bit] NOT NULL,
+	[StatusNo] [int] NOT NULL,
+ CONSTRAINT [PK_tblOrderStatus] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[tblProductImages]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tblProductImages](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[VariationId] [int] NOT NULL,
+	[Image] [nvarchar](max) NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime2](7) NOT NULL,
+	[UpdatedBy] [int] NULL,
+	[UpdatedOn] [datetime2](7) NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_tblProductImages] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[tblProductPacking]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tblProductPacking](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[PackingType] [nvarchar](max) NOT NULL,
+	[PackingModeId] [int] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime2](7) NOT NULL,
+	[UpdatedBy] [int] NULL,
+	[UpdatedOn] [datetime2](7) NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_tblProductPacking] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[tblProductSpecification]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tblProductSpecification](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[ProductId] [int] NOT NULL,
+	[Speciality] [varchar](150) NOT NULL,
+	[Manufacturer] [varchar](50) NOT NULL,
+	[IngredientType] [varchar](30) NOT NULL,
+	[Ingredients] [varchar](150) NOT NULL,
+	[ShelfLife] [varchar](50) NOT NULL,
+	[Benefits] [varchar](250) NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime2](7) NOT NULL,
+	[UpdatedBy] [int] NULL,
+	[UpdatedOn] [datetime2](7) NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_tblProductSpecification] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[tblProductVariationAndRate]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tblProductVariationAndRate](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[ProductId] [int] NOT NULL,
+	[ProductPackingId] [int] NOT NULL,
+	[Quantity] [int] NOT NULL,
+	[ProductWeightId] [int] NOT NULL,
+	[MRP] [decimal](7, 2) NOT NULL,
+	[Discount] [decimal](7, 2) NOT NULL,
+	[DiscountPrice] [decimal](7, 2) NOT NULL,
+	[PriceAfterDiscount] [decimal](7, 2) NOT NULL,
+	[StockQuantity] [int] NOT NULL,
+	[ShowProductWeight] [bit] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime2](7) NOT NULL,
+	[UpdatedBy] [int] NULL,
+	[UpdatedOn] [datetime2](7) NULL,
+	[SetAsDefault] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+	[IsDeleted] [bit] NOT NULL,
+ CONSTRAINT [PK_tblProductVariationAndRate] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[tblProductWeight]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tblProductWeight](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[ProductWeight] [varchar](50) NOT NULL,
+	[ProductWeightValue] [decimal](18, 2) NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime2](7) NOT NULL,
+	[UpdatedBy] [int] NULL,
+	[UpdatedOn] [datetime2](7) NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_tblProductWeight] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[tblUser]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tblUser](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](30) NOT NULL,
+	[Mobile] [nvarchar](15) NOT NULL,
+	[Email] [nvarchar](50) NOT NULL,
+	[Password] [nvarchar](10) NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime2](7) NOT NULL,
+	[UpdatedBy] [int] NULL,
+	[UpdatedOn] [datetime2](7) NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_tblUser] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[tblVendor]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tblVendor](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[VendorCode] [nvarchar](15) NOT NULL,
+	[Name] [nvarchar](30) NOT NULL,
+	[Email] [nvarchar](50) NOT NULL,
+	[Password] [nvarchar](20) NOT NULL,
+	[Mobile] [nvarchar](12) NOT NULL,
+	[Type] [nvarchar](20) NOT NULL,
+	[IdentificationType] [nvarchar](30) NOT NULL,
+	[IdentificationNumber] [nvarchar](30) NOT NULL,
+	[Pincode] [int] NOT NULL,
+	[City] [nvarchar](30) NOT NULL,
+	[State] [nvarchar](30) NOT NULL,
+	[Country] [nvarchar](30) NOT NULL,
+	[FullAddress] [nvarchar](200) NOT NULL,
+	[Status] [nvarchar](15) NOT NULL,
+	[StatusRemarks] [nvarchar](100) NOT NULL,
+	[IsLicensed] [bit] NOT NULL,
+	[LicenseExpiredOn] [datetime2](7) NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime2](7) NOT NULL,
+	[UpdatedBy] [int] NULL,
+	[UpdatedOn] [datetime2](7) NULL,
+	[LastLoginDate] [datetime2](7) NULL,
+ CONSTRAINT [PK_tblVendor] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[tblVendorBankDetails]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tblVendorBankDetails](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[VendorId] [int] NOT NULL,
+	[AccountHolderName] [nvarchar](30) NOT NULL,
+	[AccountNumber] [nvarchar](30) NOT NULL,
+	[IFSCCode] [nvarchar](20) NOT NULL,
+	[BankName] [nvarchar](50) NOT NULL,
+	[Branch] [nvarchar](50) NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime2](7) NOT NULL,
+	[UpdatedBy] [int] NULL,
+	[UpdatedOn] [datetime2](7) NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_tblVendorBankDetails] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[tblVendorCompanyDetails]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tblVendorCompanyDetails](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[VendorId] [int] NOT NULL,
+	[CompanyName] [nvarchar](30) NOT NULL,
+	[Description] [nvarchar](200) NOT NULL,
+	[DealingPerson] [nvarchar](30) NOT NULL,
+	[GSTIN] [nvarchar](15) NOT NULL,
+	[Pincode] [int] NOT NULL,
+	[City] [nvarchar](30) NOT NULL,
+	[State] [nvarchar](30) NOT NULL,
+	[Country] [nvarchar](30) NOT NULL,
+	[FullAddress] [nvarchar](200) NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime2](7) NOT NULL,
+	[UpdatedBy] [int] NULL,
+	[UpdatedOn] [datetime2](7) NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_tblVendorCompanyDetails] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[vendorOrdersCountById_Results]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[vendorOrdersCountById_Results](
+	[VendorId] [int] IDENTITY(1,1) NOT NULL,
+	[OrderCount] [int] NOT NULL,
+	[OrderStatusId] [int] NOT NULL,
+	[OrderStatus] [nvarchar](max) NOT NULL,
+ CONSTRAINT [PK_vendorOrdersCountById_Results] PRIMARY KEY CLUSTERED 
+(
+	[VendorId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [EasyToBuyAdmin].[__EFMigrationsHistory]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [EasyToBuyAdmin].[__EFMigrationsHistory](
+	[MigrationId] [nvarchar](150) NOT NULL,
+	[ProductVersion] [nvarchar](32) NOT NULL,
+ CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY CLUSTERED 
+(
+	[MigrationId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [EasyToBuyAdmin].[Testing12]    Script Date: 2024-08-21 11:51:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [EasyToBuyAdmin].[Testing12](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [varchar](30) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET IDENTITY_INSERT [dbo].[tblAddress] ON 
+GO
+INSERT [dbo].[tblAddress] ([Id], [UserId], [City], [State], [Country], [FullAddress], [AddressTypeId], [Pincode], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive], [IsDeliveryAddress]) VALUES (1, 1, N'Ludhiana City', N'Punjab', N'India', N'HN-455, The Mall Rd, Civil Lines', 1, N'141006', 1, CAST(N'2024-05-13T15:22:26.4262137' AS DateTime2), NULL, NULL, 1, 1)
+GO
+INSERT [dbo].[tblAddress] ([Id], [UserId], [City], [State], [Country], [FullAddress], [AddressTypeId], [Pincode], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive], [IsDeliveryAddress]) VALUES (2, 2, N'Saharanpur', N'Uttar Pradesh', N'India', N'7, Mission Market, Court Road', 1, N'247001', 2, CAST(N'2024-05-13T15:36:17.6475123' AS DateTime2), NULL, NULL, 1, 0)
+GO
+INSERT [dbo].[tblAddress] ([Id], [UserId], [City], [State], [Country], [FullAddress], [AddressTypeId], [Pincode], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive], [IsDeliveryAddress]) VALUES (3, 3, N'Chandigarh', N'Punjab', N'India', N'General Mahadev Singh Rd, Near SBI Bank', 1, N'160055', 3, CAST(N'2024-05-13T15:41:19.8109598' AS DateTime2), 3, CAST(N'2024-05-20T11:47:36.0746998' AS DateTime2), 1, 1)
+GO
+INSERT [dbo].[tblAddress] ([Id], [UserId], [City], [State], [Country], [FullAddress], [AddressTypeId], [Pincode], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive], [IsDeliveryAddress]) VALUES (4, 3, N'Ludhiana City', N'Punjab', N'India', N'test', 2, N'141015', 3, CAST(N'2024-05-22T12:34:37.0839680' AS DateTime2), NULL, NULL, 1, 0)
+GO
+INSERT [dbo].[tblAddress] ([Id], [UserId], [City], [State], [Country], [FullAddress], [AddressTypeId], [Pincode], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive], [IsDeliveryAddress]) VALUES (5, 3, N'Saharanpur', N'Uttar Pradesh', N'India', N'tsts', 1, N'247340', 3, CAST(N'2024-05-22T12:34:49.7282089' AS DateTime2), NULL, NULL, 1, 0)
+GO
+INSERT [dbo].[tblAddress] ([Id], [UserId], [City], [State], [Country], [FullAddress], [AddressTypeId], [Pincode], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive], [IsDeliveryAddress]) VALUES (6, 3, N'Ludhiana City', N'Punjab', N'India', N'tsts', 1, N'141012', 3, CAST(N'2024-05-22T12:34:59.1047853' AS DateTime2), NULL, NULL, 1, 0)
+GO
+INSERT [dbo].[tblAddress] ([Id], [UserId], [City], [State], [Country], [FullAddress], [AddressTypeId], [Pincode], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive], [IsDeliveryAddress]) VALUES (7, 2, N'Saharanpur', N'Uttar Pradesh', N'India', N'jnj', 1, N'247340', 2, CAST(N'2024-07-17T15:38:57.0309973' AS DateTime2), NULL, NULL, 1, 0)
+GO
+INSERT [dbo].[tblAddress] ([Id], [UserId], [City], [State], [Country], [FullAddress], [AddressTypeId], [Pincode], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive], [IsDeliveryAddress]) VALUES (8, 2, N'Saharanpur', N'Uttar Pradesh', N'India', N'hvhj', 1, N'247001', 2, CAST(N'2024-07-17T15:39:23.3341728' AS DateTime2), NULL, NULL, 1, 0)
+GO
+INSERT [dbo].[tblAddress] ([Id], [UserId], [City], [State], [Country], [FullAddress], [AddressTypeId], [Pincode], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive], [IsDeliveryAddress]) VALUES (9, 2, N'New Delhi Central', N'Delhi', N'India', N'Vasundra Colony ', 1, N'110011', 2, CAST(N'2024-07-17T15:39:52.7664062' AS DateTime2), NULL, NULL, 1, 1)
+GO
+INSERT [dbo].[tblAddress] ([Id], [UserId], [City], [State], [Country], [FullAddress], [AddressTypeId], [Pincode], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive], [IsDeliveryAddress]) VALUES (10, 2, N'Ludhiana City', N'Punjab', N'India', N'fgh', 2, N'141015', 2, CAST(N'2024-07-17T15:40:19.1567073' AS DateTime2), NULL, NULL, 1, 0)
+GO
+SET IDENTITY_INSERT [dbo].[tblAddress] OFF
+GO
+SET IDENTITY_INSERT [dbo].[tblAddressType] ON 
+GO
+INSERT [dbo].[tblAddressType] ([Id], [TypeOfAddress], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (1, N'Home', 1, CAST(N'2024-04-10T13:11:18.8200000' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblAddressType] ([Id], [TypeOfAddress], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (2, N'Office', 1, CAST(N'2024-04-10T13:11:18.8200000' AS DateTime2), NULL, NULL, 1)
+GO
+SET IDENTITY_INSERT [dbo].[tblAddressType] OFF
+GO
+SET IDENTITY_INSERT [dbo].[tblCart] ON 
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (3, 2, 26, 1, CAST(N'2024-07-05T17:39:42.2124811' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (4, 2, 27, 1, CAST(N'2024-07-05T17:43:56.0943823' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (8, 3, 9, 2, CAST(N'2024-07-10T12:11:27.2587125' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (9, 3, 27, 3, CAST(N'2024-07-10T12:11:36.4226353' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (11, 2, 27, 1, CAST(N'2024-07-11T14:59:48.0486588' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (16, 3, 3, 1, CAST(N'2024-07-18T11:46:35.0256599' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (21, 3, 70, 1, CAST(N'2024-07-19T11:32:33.8065001' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (48, 2, 9, 1, CAST(N'2024-07-24T17:17:32.4218915' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (49, 2, 3, 1, CAST(N'2024-07-24T17:18:22.8971055' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (51, 2, 34, 1, CAST(N'2024-07-24T17:39:33.8536053' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (52, 2, 34, 1, CAST(N'2024-07-24T17:39:33.7284066' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (53, 2, 30, 1, CAST(N'2024-07-24T17:39:38.9294658' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (54, 2, 48, 1, CAST(N'2024-07-24T17:41:51.4620020' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (55, 2, 30, 1, CAST(N'2024-07-24T17:41:59.1276183' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (57, 2, 52, 1, CAST(N'2024-07-25T11:21:58.3360595' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (58, 2, 44, 2, CAST(N'2024-07-29T13:21:10.3649377' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (60, 2, 30, 1, CAST(N'2024-07-30T17:56:46.4067760' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (61, 2, 44, 2, CAST(N'2024-07-30T18:07:40.3576294' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (62, 2, 44, 3, CAST(N'2024-07-30T18:15:39.4586601' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (63, 2, 34, 5, CAST(N'2024-07-30T18:19:25.5991572' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (64, 2, 34, 5, CAST(N'2024-07-30T18:21:05.9870739' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (65, 2, 35, 4, CAST(N'2024-07-30T18:21:32.5690405' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (66, 2, 30, 1, CAST(N'2024-07-30T19:05:26.2442766' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (69, 3, 30, 1, CAST(N'2024-07-31T12:42:35.5008127' AS DateTime2), 0)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (70, 3, 44, 1, CAST(N'2024-07-31T12:47:21.6261706' AS DateTime2), 0)
+GO
+INSERT [dbo].[tblCart] ([Id], [UserId], [VariationId], [Quantity], [AddedDate], [IsPlaced]) VALUES (71, 2, 35, 1, CAST(N'2024-08-07T17:39:26.4228546' AS DateTime2), 1)
+GO
+SET IDENTITY_INSERT [dbo].[tblCart] OFF
+GO
+SET IDENTITY_INSERT [dbo].[tblCategory] ON 
+GO
+INSERT [dbo].[tblCategory] ([Id], [CategoryName], [PackingModeId], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (1, N'Vegetables', 1, 1, CAST(N'2008-11-08T00:00:00.0000000' AS DateTime2), 2, CAST(N'2024-07-19T17:07:58.3549564' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCategory] ([Id], [CategoryName], [PackingModeId], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (2, N'Dairy Products', 2, 1, CAST(N'2008-11-08T00:00:00.0000000' AS DateTime2), 1, CAST(N'2024-04-30T13:57:17.4372718' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCategory] ([Id], [CategoryName], [PackingModeId], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (3, N'Bakery', 2, 1, CAST(N'2008-11-08T00:00:00.0000000' AS DateTime2), 2, CAST(N'2024-07-19T17:08:15.7329163' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCategory] ([Id], [CategoryName], [PackingModeId], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (4, N'Fruits', 1, 1, CAST(N'2024-07-15T10:41:49.8194775' AS DateTime2), 2, CAST(N'2024-07-19T17:01:19.1144329' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblCategory] ([Id], [CategoryName], [PackingModeId], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (5, N'Beverages', 2, 2, CAST(N'2024-07-19T17:08:57.1594453' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblCategory] ([Id], [CategoryName], [PackingModeId], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (7, N'Pulses', 2, 1, CAST(N'2024-07-22T10:38:23.6519647' AS DateTime2), 1, CAST(N'2024-07-22T10:38:49.9151284' AS DateTime2), 1)
+GO
+SET IDENTITY_INSERT [dbo].[tblCategory] OFF
+GO
+SET IDENTITY_INSERT [dbo].[tblCustomerOrder] ON 
+GO
+INSERT [dbo].[tblCustomerOrder] ([Id], [UserId], [VariationId], [OrderNumber], [OrderDate], [StatusId], [Quantity], [MRP], [Discount], [DiscountPrice], [AmountToBePaid], [UpdatedBy], [UpdatedOn]) VALUES (25, 3, 70, N'ETB-19526994', CAST(N'2024-07-19T11:32:45.703' AS DateTime), 1, 1, CAST(40.00 AS Decimal(7, 2)), CAST(50.00 AS Decimal(7, 2)), CAST(20.00 AS Decimal(7, 2)), CAST(20.00 AS Decimal(7, 2)), NULL, NULL)
+GO
+INSERT [dbo].[tblCustomerOrder] ([Id], [UserId], [VariationId], [OrderNumber], [OrderDate], [StatusId], [Quantity], [MRP], [Discount], [DiscountPrice], [AmountToBePaid], [UpdatedBy], [UpdatedOn]) VALUES (26, 2, 9, N'ETB-432634872', CAST(N'2024-07-24T17:38:42.327' AS DateTime), 1, 1, CAST(30.00 AS Decimal(7, 2)), CAST(25.00 AS Decimal(7, 2)), CAST(7.50 AS Decimal(7, 2)), CAST(22.50 AS Decimal(7, 2)), NULL, NULL)
+GO
+INSERT [dbo].[tblCustomerOrder] ([Id], [UserId], [VariationId], [OrderNumber], [OrderDate], [StatusId], [Quantity], [MRP], [Discount], [DiscountPrice], [AmountToBePaid], [UpdatedBy], [UpdatedOn]) VALUES (27, 2, 3, N'ETB-285383182', CAST(N'2024-07-24T17:38:42.610' AS DateTime), 1, 1, CAST(70.00 AS Decimal(7, 2)), CAST(32.00 AS Decimal(7, 2)), CAST(22.40 AS Decimal(7, 2)), CAST(47.60 AS Decimal(7, 2)), NULL, NULL)
+GO
+INSERT [dbo].[tblCustomerOrder] ([Id], [UserId], [VariationId], [OrderNumber], [OrderDate], [StatusId], [Quantity], [MRP], [Discount], [DiscountPrice], [AmountToBePaid], [UpdatedBy], [UpdatedOn]) VALUES (28, 2, 34, N'ETB-1930537024', CAST(N'2024-07-24T17:41:21.683' AS DateTime), 1, 1, CAST(110.00 AS Decimal(7, 2)), CAST(27.00 AS Decimal(7, 2)), CAST(29.70 AS Decimal(7, 2)), CAST(80.30 AS Decimal(7, 2)), NULL, NULL)
+GO
+INSERT [dbo].[tblCustomerOrder] ([Id], [UserId], [VariationId], [OrderNumber], [OrderDate], [StatusId], [Quantity], [MRP], [Discount], [DiscountPrice], [AmountToBePaid], [UpdatedBy], [UpdatedOn]) VALUES (29, 2, 34, N'ETB-855417543', CAST(N'2024-07-24T17:41:25.203' AS DateTime), 1, 1, CAST(110.00 AS Decimal(7, 2)), CAST(27.00 AS Decimal(7, 2)), CAST(29.70 AS Decimal(7, 2)), CAST(80.30 AS Decimal(7, 2)), NULL, NULL)
+GO
+INSERT [dbo].[tblCustomerOrder] ([Id], [UserId], [VariationId], [OrderNumber], [OrderDate], [StatusId], [Quantity], [MRP], [Discount], [DiscountPrice], [AmountToBePaid], [UpdatedBy], [UpdatedOn]) VALUES (30, 2, 34, N'ETB-1852688164', CAST(N'2024-07-24T17:41:25.240' AS DateTime), 1, 1, CAST(110.00 AS Decimal(7, 2)), CAST(27.00 AS Decimal(7, 2)), CAST(29.70 AS Decimal(7, 2)), CAST(80.30 AS Decimal(7, 2)), NULL, NULL)
+GO
+INSERT [dbo].[tblCustomerOrder] ([Id], [UserId], [VariationId], [OrderNumber], [OrderDate], [StatusId], [Quantity], [MRP], [Discount], [DiscountPrice], [AmountToBePaid], [UpdatedBy], [UpdatedOn]) VALUES (31, 2, 34, N'ETB-901394114', CAST(N'2024-07-24T17:41:25.350' AS DateTime), 1, 1, CAST(110.00 AS Decimal(7, 2)), CAST(27.00 AS Decimal(7, 2)), CAST(29.70 AS Decimal(7, 2)), CAST(80.30 AS Decimal(7, 2)), NULL, NULL)
+GO
+INSERT [dbo].[tblCustomerOrder] ([Id], [UserId], [VariationId], [OrderNumber], [OrderDate], [StatusId], [Quantity], [MRP], [Discount], [DiscountPrice], [AmountToBePaid], [UpdatedBy], [UpdatedOn]) VALUES (32, 2, 30, N'ETB-2137563049', CAST(N'2024-07-24T17:41:25.407' AS DateTime), 1, 1, CAST(40.00 AS Decimal(7, 2)), CAST(10.00 AS Decimal(7, 2)), CAST(4.00 AS Decimal(7, 2)), CAST(36.00 AS Decimal(7, 2)), NULL, NULL)
+GO
+INSERT [dbo].[tblCustomerOrder] ([Id], [UserId], [VariationId], [OrderNumber], [OrderDate], [StatusId], [Quantity], [MRP], [Discount], [DiscountPrice], [AmountToBePaid], [UpdatedBy], [UpdatedOn]) VALUES (33, 2, 30, N'ETB-1722401278', CAST(N'2024-07-24T17:41:25.520' AS DateTime), 1, 1, CAST(40.00 AS Decimal(7, 2)), CAST(10.00 AS Decimal(7, 2)), CAST(4.00 AS Decimal(7, 2)), CAST(36.00 AS Decimal(7, 2)), NULL, NULL)
+GO
+INSERT [dbo].[tblCustomerOrder] ([Id], [UserId], [VariationId], [OrderNumber], [OrderDate], [StatusId], [Quantity], [MRP], [Discount], [DiscountPrice], [AmountToBePaid], [UpdatedBy], [UpdatedOn]) VALUES (34, 2, 48, N'ETB-1685710663', CAST(N'2024-07-24T17:45:20.537' AS DateTime), 1, 1, CAST(150.00 AS Decimal(7, 2)), CAST(20.00 AS Decimal(7, 2)), CAST(30.00 AS Decimal(7, 2)), CAST(120.00 AS Decimal(7, 2)), NULL, NULL)
+GO
+INSERT [dbo].[tblCustomerOrder] ([Id], [UserId], [VariationId], [OrderNumber], [OrderDate], [StatusId], [Quantity], [MRP], [Discount], [DiscountPrice], [AmountToBePaid], [UpdatedBy], [UpdatedOn]) VALUES (35, 2, 30, N'ETB-920951699', CAST(N'2024-07-24T17:45:20.697' AS DateTime), 1, 1, CAST(40.00 AS Decimal(7, 2)), CAST(10.00 AS Decimal(7, 2)), CAST(4.00 AS Decimal(7, 2)), CAST(36.00 AS Decimal(7, 2)), NULL, NULL)
+GO
+INSERT [dbo].[tblCustomerOrder] ([Id], [UserId], [VariationId], [OrderNumber], [OrderDate], [StatusId], [Quantity], [MRP], [Discount], [DiscountPrice], [AmountToBePaid], [UpdatedBy], [UpdatedOn]) VALUES (36, 2, 52, N'ETB-285749514', CAST(N'2024-07-26T12:52:46.833' AS DateTime), 1, 1, CAST(60.00 AS Decimal(7, 2)), CAST(16.00 AS Decimal(7, 2)), CAST(9.60 AS Decimal(7, 2)), CAST(50.40 AS Decimal(7, 2)), NULL, NULL)
+GO
+INSERT [dbo].[tblCustomerOrder] ([Id], [UserId], [VariationId], [OrderNumber], [OrderDate], [StatusId], [Quantity], [MRP], [Discount], [DiscountPrice], [AmountToBePaid], [UpdatedBy], [UpdatedOn]) VALUES (37, 2, 44, N'ETB-1260195635', CAST(N'2024-07-30T18:06:46.633' AS DateTime), 1, 2, CAST(133.00 AS Decimal(7, 2)), CAST(25.00 AS Decimal(7, 2)), CAST(33.25 AS Decimal(7, 2)), CAST(199.50 AS Decimal(7, 2)), NULL, NULL)
+GO
+INSERT [dbo].[tblCustomerOrder] ([Id], [UserId], [VariationId], [OrderNumber], [OrderDate], [StatusId], [Quantity], [MRP], [Discount], [DiscountPrice], [AmountToBePaid], [UpdatedBy], [UpdatedOn]) VALUES (38, 2, 30, N'ETB-1232738094', CAST(N'2024-07-30T18:06:46.883' AS DateTime), 1, 1, CAST(40.00 AS Decimal(7, 2)), CAST(10.00 AS Decimal(7, 2)), CAST(4.00 AS Decimal(7, 2)), CAST(36.00 AS Decimal(7, 2)), NULL, NULL)
+GO
+INSERT [dbo].[tblCustomerOrder] ([Id], [UserId], [VariationId], [OrderNumber], [OrderDate], [StatusId], [Quantity], [MRP], [Discount], [DiscountPrice], [AmountToBePaid], [UpdatedBy], [UpdatedOn]) VALUES (39, 2, 44, N'ETB-699742473', CAST(N'2024-07-30T18:08:46.380' AS DateTime), 1, 1, CAST(133.00 AS Decimal(7, 2)), CAST(25.00 AS Decimal(7, 2)), CAST(33.25 AS Decimal(7, 2)), CAST(99.75 AS Decimal(7, 2)), NULL, NULL)
+GO
+INSERT [dbo].[tblCustomerOrder] ([Id], [UserId], [VariationId], [OrderNumber], [OrderDate], [StatusId], [Quantity], [MRP], [Discount], [DiscountPrice], [AmountToBePaid], [UpdatedBy], [UpdatedOn]) VALUES (40, 2, 44, N'ETB-1517417449', CAST(N'2024-07-30T18:10:42.753' AS DateTime), 1, 2, CAST(133.00 AS Decimal(7, 2)), CAST(25.00 AS Decimal(7, 2)), CAST(33.25 AS Decimal(7, 2)), CAST(199.50 AS Decimal(7, 2)), NULL, NULL)
+GO
+INSERT [dbo].[tblCustomerOrder] ([Id], [UserId], [VariationId], [OrderNumber], [OrderDate], [StatusId], [Quantity], [MRP], [Discount], [DiscountPrice], [AmountToBePaid], [UpdatedBy], [UpdatedOn]) VALUES (41, 2, 44, N'ETB-906273848', CAST(N'2024-07-30T18:16:14.233' AS DateTime), 1, 3, CAST(133.00 AS Decimal(7, 2)), CAST(25.00 AS Decimal(7, 2)), CAST(33.25 AS Decimal(7, 2)), CAST(299.25 AS Decimal(7, 2)), NULL, NULL)
+GO
+INSERT [dbo].[tblCustomerOrder] ([Id], [UserId], [VariationId], [OrderNumber], [OrderDate], [StatusId], [Quantity], [MRP], [Discount], [DiscountPrice], [AmountToBePaid], [UpdatedBy], [UpdatedOn]) VALUES (42, 2, 34, N'ETB-1424817221', CAST(N'2024-07-30T18:20:38.790' AS DateTime), 1, 5, CAST(110.00 AS Decimal(7, 2)), CAST(27.00 AS Decimal(7, 2)), CAST(29.70 AS Decimal(7, 2)), CAST(401.50 AS Decimal(7, 2)), NULL, NULL)
+GO
+INSERT [dbo].[tblCustomerOrder] ([Id], [UserId], [VariationId], [OrderNumber], [OrderDate], [StatusId], [Quantity], [MRP], [Discount], [DiscountPrice], [AmountToBePaid], [UpdatedBy], [UpdatedOn]) VALUES (43, 2, 34, N'ETB-2052750180', CAST(N'2024-07-30T18:20:38.780' AS DateTime), 1, 5, CAST(110.00 AS Decimal(7, 2)), CAST(27.00 AS Decimal(7, 2)), CAST(29.70 AS Decimal(7, 2)), CAST(401.50 AS Decimal(7, 2)), NULL, NULL)
+GO
+INSERT [dbo].[tblCustomerOrder] ([Id], [UserId], [VariationId], [OrderNumber], [OrderDate], [StatusId], [Quantity], [MRP], [Discount], [DiscountPrice], [AmountToBePaid], [UpdatedBy], [UpdatedOn]) VALUES (44, 2, 34, N'ETB-503299578', CAST(N'2024-07-30T18:20:38.323' AS DateTime), 1, 5, CAST(110.00 AS Decimal(7, 2)), CAST(27.00 AS Decimal(7, 2)), CAST(29.70 AS Decimal(7, 2)), CAST(401.50 AS Decimal(7, 2)), NULL, NULL)
+GO
+INSERT [dbo].[tblCustomerOrder] ([Id], [UserId], [VariationId], [OrderNumber], [OrderDate], [StatusId], [Quantity], [MRP], [Discount], [DiscountPrice], [AmountToBePaid], [UpdatedBy], [UpdatedOn]) VALUES (45, 2, 34, N'ETB-1139809072', CAST(N'2024-07-30T18:21:16.137' AS DateTime), 1, 5, CAST(110.00 AS Decimal(7, 2)), CAST(27.00 AS Decimal(7, 2)), CAST(29.70 AS Decimal(7, 2)), CAST(401.50 AS Decimal(7, 2)), NULL, NULL)
+GO
+INSERT [dbo].[tblCustomerOrder] ([Id], [UserId], [VariationId], [OrderNumber], [OrderDate], [StatusId], [Quantity], [MRP], [Discount], [DiscountPrice], [AmountToBePaid], [UpdatedBy], [UpdatedOn]) VALUES (46, 2, 35, N'ETB-29247594', CAST(N'2024-07-30T18:21:41.617' AS DateTime), 1, 4, CAST(110.00 AS Decimal(7, 2)), CAST(27.00 AS Decimal(7, 2)), CAST(29.70 AS Decimal(7, 2)), CAST(321.20 AS Decimal(7, 2)), NULL, NULL)
+GO
+INSERT [dbo].[tblCustomerOrder] ([Id], [UserId], [VariationId], [OrderNumber], [OrderDate], [StatusId], [Quantity], [MRP], [Discount], [DiscountPrice], [AmountToBePaid], [UpdatedBy], [UpdatedOn]) VALUES (47, 2, 35, N'ETB-252899932', CAST(N'2024-08-07T17:39:52.443' AS DateTime), 1, 1, CAST(110.00 AS Decimal(7, 2)), CAST(27.00 AS Decimal(7, 2)), CAST(29.70 AS Decimal(7, 2)), CAST(80.30 AS Decimal(7, 2)), NULL, NULL)
+GO
+SET IDENTITY_INSERT [dbo].[tblCustomerOrder] OFF
+GO
+SET IDENTITY_INSERT [dbo].[tblCustomerOrderStatusLog] ON 
+GO
+INSERT [dbo].[tblCustomerOrderStatusLog] ([Id], [OrderId], [StatusId], [CreatedBy], [CreatedOn]) VALUES (13, 25, 1, 3, CAST(N'2024-07-19T11:32:45.8149277' AS DateTime2))
+GO
+INSERT [dbo].[tblCustomerOrderStatusLog] ([Id], [OrderId], [StatusId], [CreatedBy], [CreatedOn]) VALUES (14, 26, 1, 2, CAST(N'2024-07-24T17:38:42.5111302' AS DateTime2))
+GO
+INSERT [dbo].[tblCustomerOrderStatusLog] ([Id], [OrderId], [StatusId], [CreatedBy], [CreatedOn]) VALUES (15, 27, 1, 2, CAST(N'2024-07-24T17:38:42.6863068' AS DateTime2))
+GO
+INSERT [dbo].[tblCustomerOrderStatusLog] ([Id], [OrderId], [StatusId], [CreatedBy], [CreatedOn]) VALUES (16, 28, 1, 2, CAST(N'2024-07-24T17:41:25.1248709' AS DateTime2))
+GO
+INSERT [dbo].[tblCustomerOrderStatusLog] ([Id], [OrderId], [StatusId], [CreatedBy], [CreatedOn]) VALUES (17, 29, 1, 2, CAST(N'2024-07-24T17:41:25.2777601' AS DateTime2))
+GO
+INSERT [dbo].[tblCustomerOrderStatusLog] ([Id], [OrderId], [StatusId], [CreatedBy], [CreatedOn]) VALUES (18, 30, 1, 2, CAST(N'2024-07-24T17:41:25.3254229' AS DateTime2))
+GO
+INSERT [dbo].[tblCustomerOrderStatusLog] ([Id], [OrderId], [StatusId], [CreatedBy], [CreatedOn]) VALUES (19, 31, 1, 2, CAST(N'2024-07-24T17:41:25.4403266' AS DateTime2))
+GO
+INSERT [dbo].[tblCustomerOrderStatusLog] ([Id], [OrderId], [StatusId], [CreatedBy], [CreatedOn]) VALUES (20, 32, 1, 2, CAST(N'2024-07-24T17:41:25.4873079' AS DateTime2))
+GO
+INSERT [dbo].[tblCustomerOrderStatusLog] ([Id], [OrderId], [StatusId], [CreatedBy], [CreatedOn]) VALUES (21, 33, 1, 2, CAST(N'2024-07-24T17:41:25.6011808' AS DateTime2))
+GO
+INSERT [dbo].[tblCustomerOrderStatusLog] ([Id], [OrderId], [StatusId], [CreatedBy], [CreatedOn]) VALUES (22, 34, 1, 2, CAST(N'2024-07-24T17:45:20.6106746' AS DateTime2))
+GO
+INSERT [dbo].[tblCustomerOrderStatusLog] ([Id], [OrderId], [StatusId], [CreatedBy], [CreatedOn]) VALUES (23, 35, 1, 2, CAST(N'2024-07-24T17:45:20.7773837' AS DateTime2))
+GO
+INSERT [dbo].[tblCustomerOrderStatusLog] ([Id], [OrderId], [StatusId], [CreatedBy], [CreatedOn]) VALUES (24, 36, 1, 2, CAST(N'2024-07-26T12:52:53.6329618' AS DateTime2))
+GO
+INSERT [dbo].[tblCustomerOrderStatusLog] ([Id], [OrderId], [StatusId], [CreatedBy], [CreatedOn]) VALUES (25, 37, 1, 2, CAST(N'2024-07-30T18:06:46.7860593' AS DateTime2))
+GO
+INSERT [dbo].[tblCustomerOrderStatusLog] ([Id], [OrderId], [StatusId], [CreatedBy], [CreatedOn]) VALUES (26, 38, 1, 2, CAST(N'2024-07-30T18:06:46.9704515' AS DateTime2))
+GO
+INSERT [dbo].[tblCustomerOrderStatusLog] ([Id], [OrderId], [StatusId], [CreatedBy], [CreatedOn]) VALUES (27, 40, 1, 2, CAST(N'2024-07-30T18:10:50.2490089' AS DateTime2))
+GO
+INSERT [dbo].[tblCustomerOrderStatusLog] ([Id], [OrderId], [StatusId], [CreatedBy], [CreatedOn]) VALUES (28, 41, 1, 2, CAST(N'2024-07-30T18:16:18.9185783' AS DateTime2))
+GO
+INSERT [dbo].[tblCustomerOrderStatusLog] ([Id], [OrderId], [StatusId], [CreatedBy], [CreatedOn]) VALUES (29, 42, 1, 2, CAST(N'2024-07-30T18:20:39.0744733' AS DateTime2))
+GO
+INSERT [dbo].[tblCustomerOrderStatusLog] ([Id], [OrderId], [StatusId], [CreatedBy], [CreatedOn]) VALUES (30, 43, 1, 2, CAST(N'2024-07-30T18:20:39.1423329' AS DateTime2))
+GO
+INSERT [dbo].[tblCustomerOrderStatusLog] ([Id], [OrderId], [StatusId], [CreatedBy], [CreatedOn]) VALUES (31, 44, 1, 2, CAST(N'2024-07-30T18:20:39.8445878' AS DateTime2))
+GO
+INSERT [dbo].[tblCustomerOrderStatusLog] ([Id], [OrderId], [StatusId], [CreatedBy], [CreatedOn]) VALUES (32, 45, 1, 2, CAST(N'2024-07-30T18:21:16.4012748' AS DateTime2))
+GO
+INSERT [dbo].[tblCustomerOrderStatusLog] ([Id], [OrderId], [StatusId], [CreatedBy], [CreatedOn]) VALUES (33, 46, 1, 2, CAST(N'2024-07-30T18:21:41.8735644' AS DateTime2))
+GO
+INSERT [dbo].[tblCustomerOrderStatusLog] ([Id], [OrderId], [StatusId], [CreatedBy], [CreatedOn]) VALUES (34, 47, 1, 2, CAST(N'2024-08-07T17:39:53.4167739' AS DateTime2))
+GO
+SET IDENTITY_INSERT [dbo].[tblCustomerOrderStatusLog] OFF
+GO
+SET IDENTITY_INSERT [dbo].[tblOrderStatus] ON 
+GO
+INSERT [dbo].[tblOrderStatus] ([Id], [Status], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive], [StatusNo]) VALUES (1, N'Ordered', 1, CAST(N'2024-03-27T12:19:38.2052757' AS DateTime2), NULL, NULL, 1, 1)
+GO
+INSERT [dbo].[tblOrderStatus] ([Id], [Status], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive], [StatusNo]) VALUES (2, N'Packed', 1, CAST(N'2024-03-27T12:19:38.2052757' AS DateTime2), NULL, NULL, 1, 2)
+GO
+INSERT [dbo].[tblOrderStatus] ([Id], [Status], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive], [StatusNo]) VALUES (3, N'Shipped', 1, CAST(N'2024-03-27T12:19:38.2052757' AS DateTime2), NULL, NULL, 1, 3)
+GO
+INSERT [dbo].[tblOrderStatus] ([Id], [Status], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive], [StatusNo]) VALUES (4, N'Out For Delivery', 1, CAST(N'2024-03-27T12:19:38.2052757' AS DateTime2), NULL, NULL, 1, 4)
+GO
+INSERT [dbo].[tblOrderStatus] ([Id], [Status], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive], [StatusNo]) VALUES (5, N'Delivered', 1, CAST(N'2024-03-27T12:19:38.2052757' AS DateTime2), NULL, NULL, 1, 5)
+GO
+INSERT [dbo].[tblOrderStatus] ([Id], [Status], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive], [StatusNo]) VALUES (6, N'Cancelled', 1, CAST(N'2024-03-27T12:19:38.2052757' AS DateTime2), NULL, NULL, 1, 6)
+GO
+SET IDENTITY_INSERT [dbo].[tblOrderStatus] OFF
+GO
+SET IDENTITY_INSERT [dbo].[tblProduct] ON 
+GO
+INSERT [dbo].[tblProduct] ([Id], [VendorId], [ProductName], [ProductDescription], [ProductImage], [CategoryId], [PackingModeId], [TotalVolume], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (1, 1, N'Fresho Capsicum', N'Leaving a moderately pungent taste on the tongue, Green capsicums, also known as green peppers are bell shaped, medium-sized fruit pods.
+They have thick and shiny skin with a fleshy texture inside.', N'450486263capsi11.png', 1, 1, CAST(40.00 AS Decimal(18, 2)), 9, CAST(N'2024-05-13T14:55:09.2674336' AS DateTime2), 1, CAST(N'2024-07-23T15:04:30.2477353' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblProduct] ([Id], [VendorId], [ProductName], [ProductDescription], [ProductImage], [CategoryId], [PackingModeId], [TotalVolume], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (2, 1, N'Fresho Carrot', N'A popular sweet-tasting root vegetable, Carrots are narrow and cone shaped.
+They have thick, fleshy, deeply colored root, which grows underground, and feathery green leaves that emerge above the ground.
+While these greens are fresh tasting and slightly bitter, the carrot roots are crunchy textured with a sweet and minty aromatic taste.', N'18222415281720171068643.jpeg', 1, 1, CAST(50.00 AS Decimal(18, 2)), 9, CAST(N'2024-05-13T15:01:14.6516884' AS DateTime2), 1, CAST(N'2024-07-25T11:06:29.1276197' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblProduct] ([Id], [VendorId], [ProductName], [ProductDescription], [ProductImage], [CategoryId], [PackingModeId], [TotalVolume], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (3, 1, N'Fresho Cauliflower', N'Cauliflower is made up of tightly bound clusters of soft, crumbly, sweet cauliflower florets that form a dense head.
+Resembling a classic tree, the florets are attached to a central edible white trunk which is firm and tender.', N'4453207381716896981622.jpeg', 1, 1, CAST(20.00 AS Decimal(18, 2)), 9, CAST(N'2024-05-13T15:02:31.6342164' AS DateTime2), 1, CAST(N'2024-07-15T10:36:30.9692123' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblProduct] ([Id], [VendorId], [ProductName], [ProductDescription], [ProductImage], [CategoryId], [PackingModeId], [TotalVolume], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (4, 2, N'Milky Mist Curd/Dahi ', N'Milky Mist offers Pouch Curd which consists of 3.0% Fat and is widely used in Indian cuisine. Milky Mist Curd varieties are your perfect partner for a nutritional diet. You can turn any usual meal into tasty food with it. It provides daily dosages of calcium and vitamins. It acts as a natural probiotic which is beneficial for the immune system.', N'7860101601718785334161.jpeg', 2, 2, CAST(60.00 AS Decimal(18, 2)), 15, CAST(N'2024-05-13T15:04:34.0986402' AS DateTime2), 2, CAST(N'2024-07-22T12:08:28.5797077' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblProduct] ([Id], [VendorId], [ProductName], [ProductDescription], [ProductImage], [CategoryId], [PackingModeId], [TotalVolume], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (5, 2, N'Amul Pasteurised Butter', N'Amul is synonymous with Butter in India. Several Generation of Indian consumers have grown up with the taste of Amul Butter for the six decades. Utterly Butterly Delicious taste of Amul Butter is must on breakfast table of almost every Indian Household.', N'2782561891721109661850.jpeg', 2, 2, CAST(50.00 AS Decimal(18, 2)), 15, CAST(N'2024-05-13T15:05:51.6288265' AS DateTime2), 2, CAST(N'2024-07-16T11:31:40.5906251' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblProduct] ([Id], [VendorId], [ProductName], [ProductDescription], [ProductImage], [CategoryId], [PackingModeId], [TotalVolume], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (6, 2, N' Amul Masti Buttermilk - Spice', N'Amul Masti Buttermilk is refreshing milk based natural drink. It is an easy to use low calorie drink that refreshes you immediately with goodness of nature. To be taken directly on move (small pack) or at home, parties, picnics etc. (family pack). Tastes best when chilled.', N'5396266171716898030476.jpeg', 2, 2, CAST(30.00 AS Decimal(18, 2)), 15, CAST(N'2024-05-13T15:06:59.9611855' AS DateTime2), 2, CAST(N'2024-07-19T12:38:04.8835726' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblProduct] ([Id], [VendorId], [ProductName], [ProductDescription], [ProductImage], [CategoryId], [PackingModeId], [TotalVolume], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (7, 3, N'Fresho Brown Bread', N'Fresho Brown Bread is the perfect breakfast option for those looking for a filling diet. With no added preservatives or chemicals, this bread is premium quality and super soft. Made from whole wheat flour, these are best to toast or to make sandwiches. Just add sauce, veggies or a meat of your choice and enjoy it with fries on the side. Explore Fresho''s full range of breads, buns and pavs for a fresh experience.', N'10070404211716897275661.jpeg', 3, 2, CAST(50.00 AS Decimal(18, 2)), 18, CAST(N'2024-05-13T15:08:47.1473207' AS DateTime2), 3, CAST(N'2024-07-23T17:37:10.6366566' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblProduct] ([Id], [VendorId], [ProductName], [ProductDescription], [ProductImage], [CategoryId], [PackingModeId], [TotalVolume], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (8, 3, N'Fresho Signature Bread - Garlic', N'The Garlic Bread from Fresho Signature is one-of-a-kind. Crafted with fresh ingredients & herbs, it tastes best when it is heated in the oven to bring out that aromatic garlic flavour. A perfect side dish for any meal, it pairs well with salads, pasta & soups. Can be used as a party snack as well. An artisanal bakery brand, Fresho Signature brings to us a variety of bread hand-crafted with precision and patience for an authentic flavour.', N'1524164001716897380909.jpeg', 3, 2, CAST(50.00 AS Decimal(18, 2)), 18, CAST(N'2024-05-13T15:10:43.2238231' AS DateTime2), 3, CAST(N'2024-07-26T17:23:46.3857088' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblProduct] ([Id], [VendorId], [ProductName], [ProductDescription], [ProductImage], [CategoryId], [PackingModeId], [TotalVolume], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (9, 3, N'The Baker''s Dozen Ragi Crackers', N'Unique crunchy chips embodied with Ragi, we are loaded with garlic and are perfect with any dip that you may choose to have.', N'5746196821716897461088.jpeg', 3, 2, CAST(50.00 AS Decimal(18, 2)), 18, CAST(N'2024-05-13T15:11:44.8280739' AS DateTime2), 3, CAST(N'2024-07-26T17:24:07.5971865' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblProduct] ([Id], [VendorId], [ProductName], [ProductDescription], [ProductImage], [CategoryId], [PackingModeId], [TotalVolume], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (13, 1, N'Fresho Onion', N'Onion can fill your kitchen with a thick spicy aroma. It is a common base vegetable in most Indian dishes, thanks to the wonderful flavor that it adds to any dish.', N'2499359811718714160901.jpeg', 1, 1, CAST(15.00 AS Decimal(18, 2)), 1, CAST(N'2024-06-18T18:09:41.6394638' AS DateTime2), 1, CAST(N'2024-07-25T16:46:38.7814935' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblProduct] ([Id], [VendorId], [ProductName], [ProductDescription], [ProductImage], [CategoryId], [PackingModeId], [TotalVolume], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (14, 3, N'Coriander Leaves', N'Coriander leaves are green, fragile with a decorative appearance. They contain minimal aroma and have a spicy sweet taste.', N'12010431751718861693733.jpeg', 1, 1, CAST(10.00 AS Decimal(18, 2)), 3, CAST(N'2024-06-20T11:06:10.8470587' AS DateTime2), 3, CAST(N'2024-07-26T17:23:33.1299769' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblProduct] ([Id], [VendorId], [ProductName], [ProductDescription], [ProductImage], [CategoryId], [PackingModeId], [TotalVolume], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (22, 1, N'Potato', N'Fresh from farms, our potatoes are a staple in kitchens across the country. Versatile and nutritious, they bring hearty flavour to curries, snacks, and sides. Grown with care, each potato promises quality and freshness, perfect for traditional dishes or innovative recipes.', N'282896755potato.png', 1, 1, CAST(25.00 AS Decimal(18, 2)), 1, CAST(N'2024-07-05T17:34:12.6226517' AS DateTime2), 1, CAST(N'2024-07-15T10:37:00.9350230' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblProduct] ([Id], [VendorId], [ProductName], [ProductDescription], [ProductImage], [CategoryId], [PackingModeId], [TotalVolume], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (28, 1, N'lady finger', N'Ladies''-fingers is a low-growing, perennial plant with one or several short branching stems arising from a woody base. Each branch produces a rosette of fleshy green leaves, which together form a compact mound.', N'1368200668pngegg(28).png', 1, 1, CAST(30.00 AS Decimal(18, 2)), 1, CAST(N'2024-07-10T12:39:35.7154629' AS DateTime2), 1, CAST(N'2024-07-23T10:58:41.3723736' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblProduct] ([Id], [VendorId], [ProductName], [ProductDescription], [ProductImage], [CategoryId], [PackingModeId], [TotalVolume], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (29, 1, N'Alphanso Mango', N'The Kesar mango has a deep rich Colour, which is quite similar to that of saffron. This variety of mango comes packed with a very sweet taste and a juicy texture. Calcium Carbide is not used in the ripening process of the mangoes.', N'9217579474.png', 4, 1, CAST(55.00 AS Decimal(18, 2)), 1, CAST(N'2024-07-15T10:44:39.8157921' AS DateTime2), 1, CAST(N'2024-08-05T13:01:19.6106352' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblProduct] ([Id], [VendorId], [ProductName], [ProductDescription], [ProductImage], [CategoryId], [PackingModeId], [TotalVolume], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (31, 1, N'Lemon Juice', N'The juice of the lemon is about 5–6% citric acid, with a pH of around 2.2, giving it a sour taste. The distinctive sour taste of lemon juice, derived from the citric acid, makes it a key ingredient in drinks and foods such as lemonade and lemon meringue pie', N'575252659lemon.png', 3, 2, CAST(50.00 AS Decimal(18, 2)), 1, CAST(N'2024-07-16T10:58:09.1091178' AS DateTime2), 1, CAST(N'2024-07-23T15:21:18.2832883' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblProduct] ([Id], [VendorId], [ProductName], [ProductDescription], [ProductImage], [CategoryId], [PackingModeId], [TotalVolume], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (32, 1, N'Broccoli', N'Broccoli (Brassica oleracea var. italica) is an edible green plant in the cabbage family (family Brassicaceae, genus Brassica) whose large flowering head, stalk and small associated leaves are eaten as a vegetable. Broccoli is classified in the Italica cultivar group of the species Brassica oleracea.', N'974308804gobhi1.png', 1, 1, CAST(0.00 AS Decimal(18, 2)), 1, CAST(N'2024-07-17T11:43:58.4387280' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProduct] ([Id], [VendorId], [ProductName], [ProductDescription], [ProductImage], [CategoryId], [PackingModeId], [TotalVolume], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (33, 3, N'Pepsi ', N'Pepsi is a carbonated soft drink with a cola flavor, manufactured
+ by PepsiCo. As of 2023, Pepsi is the second most valuable soft drink brand worldwide behind Coca-Cola; the two share a long-standing rivalry in what has been called the "cola wars".', N'846728545pepsi.png', 3, 2, CAST(50.00 AS Decimal(18, 2)), 3, CAST(N'2024-07-17T12:17:11.8918822' AS DateTime2), 3, CAST(N'2024-07-26T17:32:39.5722747' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblProduct] ([Id], [VendorId], [ProductName], [ProductDescription], [ProductImage], [CategoryId], [PackingModeId], [TotalVolume], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (34, 1, N'Garlic', N'SHDVBJwbsedbvbsBdvbskbvsbvdsabvbhdusbvauobvubuiasvbugas', N'355802922garli.png', 1, 1, CAST(20.00 AS Decimal(18, 2)), 1, CAST(N'2024-07-19T13:24:14.9073400' AS DateTime2), 1, CAST(N'2024-08-01T17:41:31.2681189' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblProduct] ([Id], [VendorId], [ProductName], [ProductDescription], [ProductImage], [CategoryId], [PackingModeId], [TotalVolume], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (35, 1, N'testing', N'testing', N'3418032691718785434133.png', 2, 2, CAST(20.00 AS Decimal(18, 2)), 1, CAST(N'2024-07-25T10:38:04.4095788' AS DateTime2), NULL, NULL, 0)
+GO
+INSERT [dbo].[tblProduct] ([Id], [VendorId], [ProductName], [ProductDescription], [ProductImage], [CategoryId], [PackingModeId], [TotalVolume], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (36, 1, N'Bottle Gourd', N'Loki is also known as doodhi. Loki is a dietitian''s favourite vegetable. Loki helps in weight loss, diabetes,, healthy heart,liver disease and pregnancy. With 90% water content, just a few calories, almost no fat and high fibre along with a horde of nutrients.', N'119610011437aeeba65131ac09c9c7ee2e65c740b9.jpg', 1, 1, CAST(20.00 AS Decimal(18, 2)), 1, CAST(N'2024-07-25T14:50:14.4225146' AS DateTime2), 1, CAST(N'2024-07-25T17:14:58.8095676' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblProduct] ([Id], [VendorId], [ProductName], [ProductDescription], [ProductImage], [CategoryId], [PackingModeId], [TotalVolume], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (37, 1, N'Capsicum', N'Capsicum is a healthy Vegitables.', N'2102902096capsi11.png', 1, 1, CAST(32.00 AS Decimal(18, 2)), 1, CAST(N'2024-07-30T17:47:51.4981813' AS DateTime2), 1, CAST(N'2024-08-01T10:43:15.2979056' AS DateTime2), 1)
+GO
+SET IDENTITY_INSERT [dbo].[tblProduct] OFF
+GO
+SET IDENTITY_INSERT [dbo].[tblProductImages] ON 
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (10, 2, N'1718789806619.jpeg', 1, CAST(N'2024-06-19T02:42:28.4900000' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (11, 3, N'1718789397427.png', 1, CAST(N'2024-06-19T02:43:29.9333333' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (12, 3, N'1718789218821.jpeg', 1, CAST(N'2024-06-19T02:44:31.9866667' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (13, 3, N'1718789630848.jpeg', 1, CAST(N'2024-06-19T02:44:49.1833333' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (33, 26, N'1552562674245.png', 1, CAST(N'2024-07-05T17:37:10.0738984' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (34, 26, N'1275207219pngegg(6).png', 1, CAST(N'2024-07-05T17:37:10.2158272' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (35, 27, N'1345910737pat.jpeg', 1, CAST(N'2024-07-05T17:42:08.5722869' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (64, 1, N'21465800711718789806619.jpeg', 1, CAST(N'2024-07-09T15:58:27.8475297' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (69, 34, N'19646825741.png', 1, CAST(N'2024-07-15T10:46:26.5622939' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (71, 34, N'7263406193.png', 1, CAST(N'2024-07-15T10:46:26.7973189' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (72, 35, N'1323376825.png', 1, CAST(N'2024-07-15T10:50:11.2689297' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (73, 35, N'332451724pngegg(5).png', 1, CAST(N'2024-07-15T10:50:11.3580438' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (74, 30, N'1857870768pngegg(26).png', 1, CAST(N'2024-07-15T10:51:25.7954083' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (75, 30, N'106295110pngegg(29).png', 1, CAST(N'2024-07-15T10:51:25.9093009' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (100, 44, N'931629588pngegg(22).png', 1, CAST(N'2024-07-16T11:03:12.5849146' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (101, 44, N'397675387pngegg(24).png', 1, CAST(N'2024-07-16T11:03:12.6838041' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (102, 44, N'67733670pngegg(25).png', 1, CAST(N'2024-07-16T11:03:12.7865014' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (103, 48, N'1927203619gobhi3.png', 1, CAST(N'2024-07-17T11:45:00.9094416' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (104, 48, N'975302489gobhi2.png', 1, CAST(N'2024-07-17T11:45:01.0672676' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (105, 49, N'393474167gobhi5.png', 1, CAST(N'2024-07-17T11:49:36.4158976' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (106, 49, N'904302578gobhi4.png', 1, CAST(N'2024-07-17T11:49:36.5105801' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (111, 52, N'254150752pngegg(26).png', 3, CAST(N'2024-07-17T12:21:39.6601896' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (112, 52, N'2110402712pngegg(25).png', 3, CAST(N'2024-07-17T12:21:40.0102744' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (113, 53, N'897883093pngegg(30).png', 3, CAST(N'2024-07-17T12:23:00.5096310' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (114, 53, N'365781360pngegg(29).png', 3, CAST(N'2024-07-17T12:23:00.6016869' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (115, 53, N'1705062395pngegg(28).png', 3, CAST(N'2024-07-17T12:23:00.6933778' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (116, 52, N'1345805339pngegg(27).png', 3, CAST(N'2024-07-17T12:23:15.4780554' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (120, 78, N'1264723302pngegg(39).png', 1, CAST(N'2024-07-19T13:26:43.9090385' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (121, 78, N'1415880158pngegg(37).png', 1, CAST(N'2024-07-19T13:26:44.0342666' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (122, 78, N'287991502pngegg(36).png', 1, CAST(N'2024-07-19T13:26:44.1218749' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (126, 78, N'675135369garli.png', 1, CAST(N'2024-07-23T12:20:14.4692269' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (128, 9, N'2024945549capsi11.png', 1, CAST(N'2024-07-23T15:04:20.5057395' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (129, 34, N'135495730114684281712(2).png', 1, CAST(N'2024-07-25T12:36:56.1887689' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (133, 104, N'142048745bottle-gourd-lauki--500x500.webp', 1, CAST(N'2024-07-25T17:14:46.2720020' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductImages] ([Id], [VariationId], [Image], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (134, 104, N'120590313037aeeba65131ac09c9c7ee2e65c740b9.jpg', 1, CAST(N'2024-07-25T17:14:46.3647438' AS DateTime2), NULL, NULL, 1)
+GO
+SET IDENTITY_INSERT [dbo].[tblProductImages] OFF
+GO
+SET IDENTITY_INSERT [dbo].[tblProductPacking] ON 
+GO
+INSERT [dbo].[tblProductPacking] ([Id], [PackingType], [PackingModeId], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (1, N'Bottle', 2, 1, CAST(N'2024-06-18T03:29:17.0000000' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductPacking] ([Id], [PackingType], [PackingModeId], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (2, N'Pouch', 2, 1, CAST(N'2024-06-18T03:29:36.9900000' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductPacking] ([Id], [PackingType], [PackingModeId], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (3, N'Jar', 2, 1, CAST(N'2024-06-18T03:29:42.0900000' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductPacking] ([Id], [PackingType], [PackingModeId], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (4, N'Bucket', 2, 1, CAST(N'2024-06-18T03:29:50.9533333' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductPacking] ([Id], [PackingType], [PackingModeId], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (5, N'Carton', 2, 1, CAST(N'2024-06-18T03:29:58.3366667' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductPacking] ([Id], [PackingType], [PackingModeId], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (6, N'Plastic Net Bag', 1, 1, CAST(N'2024-06-18T03:30:06.1366667' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductPacking] ([Id], [PackingType], [PackingModeId], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (7, N'Plastic Tray', 1, 1, CAST(N'2024-06-18T03:30:06.1366667' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductPacking] ([Id], [PackingType], [PackingModeId], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (8, N'Multipack', 2, 1, CAST(N'2024-06-18T03:30:06.1366667' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductPacking] ([Id], [PackingType], [PackingModeId], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (9, N'Can', 2, 1, CAST(N'2024-06-16T00:00:00.0000000' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductPacking] ([Id], [PackingType], [PackingModeId], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (10, N'Tetrapack', 2, 1, CAST(N'2024-06-18T03:30:06.1366667' AS DateTime2), NULL, NULL, 1)
+GO
+SET IDENTITY_INSERT [dbo].[tblProductPacking] OFF
+GO
+SET IDENTITY_INSERT [dbo].[tblProductPackingMode] ON 
+GO
+INSERT [dbo].[tblProductPackingMode] ([Id], [PackingMode], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (1, N'Kg', 1, CAST(N'2024-07-19T01:07:17.5033333' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductPackingMode] ([Id], [PackingMode], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (2, N'Item', 1, CAST(N'2024-07-19T01:07:17.5033333' AS DateTime2), NULL, NULL, 1)
+GO
+SET IDENTITY_INSERT [dbo].[tblProductPackingMode] OFF
+GO
+SET IDENTITY_INSERT [dbo].[tblProductSpecification] ON 
+GO
+INSERT [dbo].[tblProductSpecification] ([Id], [ProductId], [Speciality], [Manufacturer], [IngredientType], [Ingredients], [ShelfLife], [Benefits], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (2, 1, N'Low in Calories, Source of Antioxidants, High in Dietary Fibre', N'Supermarket Grocery Supplies Pvt. Ltd, Indiranagar', N'Vegetarian', N'Rich in Vitamin C, Contains Vitamin A', N'2-3 days', N'Capsicum may help in managing blood glucose, dyslipidemia, cancers, and healing wounds. Additionally, it may help in boosting immunity, metabolism and preventing cataracts.', 1, CAST(N'2024-06-19T00:30:13.3633333' AS DateTime2), 1, CAST(N'2024-07-25T17:16:39.0933654' AS DateTime2), 0)
+GO
+INSERT [dbo].[tblProductSpecification] ([Id], [ProductId], [Speciality], [Manufacturer], [IngredientType], [Ingredients], [ShelfLife], [Benefits], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (3, 4, N'Rich in Calcium and Phosphorous', N' Milky Mist Dairy Foods Private Limited', N'Vegetarian', N'Pasteurised Toned Milk & Active Lactic Culture', N'4-5 days', N'Strengthens Your Immune System, Supports Healthy Digestion, Controls Blood Sugar Levels', 1, CAST(N'2024-06-19T00:35:35.8900000' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductSpecification] ([Id], [ProductId], [Speciality], [Manufacturer], [IngredientType], [Ingredients], [ShelfLife], [Benefits], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (5, 2, N'Rich in Vitamin C, Low in Calories', N'Supermarket Grocery Supplies P', N'Vegetarian', N'Biotin, potassium, and vitamins A (from beta carotene), K1 (phylloquinone), and B6', N'2-3 days', N'Help Promote Healthy Vision, Aids Weight Loss, Improves Skin Health,  Helps Improve Immunity', 1, CAST(N'2024-06-28T18:06:12.2314792' AS DateTime2), 1, CAST(N'2024-06-28T18:06:33.1151444' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblProductSpecification] ([Id], [ProductId], [Speciality], [Manufacturer], [IngredientType], [Ingredients], [ShelfLife], [Benefits], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (6, 22, N'Rich in essential vitamins and minerals', N'Supermarket Grocery ', N'Vegetarian', N'Vitamins ', N'2-5 Days', N'Gain fat ', 1, CAST(N'2024-07-05T17:37:48.6924588' AS DateTime2), 1, CAST(N'2024-07-09T14:53:44.9946387' AS DateTime2), 1)
+GO
+INSERT [dbo].[tblProductSpecification] ([Id], [ProductId], [Speciality], [Manufacturer], [IngredientType], [Ingredients], [ShelfLife], [Benefits], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (7, 29, N'polyphenols, vitamins, carotenoids, antioxidants,', N'K.P Birla', N'Vegetarian', N'phytochemicals, polyphenols, vitamins,', N'2-5 Days', N'Mangoes are known as the King of Fruits because they are loaded with phytochemicals, polyphenols, vitamins, carotenoids, antioxidants, omega-3 ', 1, CAST(N'2024-07-15T10:48:08.8875454' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductSpecification] ([Id], [ProductId], [Speciality], [Manufacturer], [IngredientType], [Ingredients], [ShelfLife], [Benefits], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (8, 28, N'aabb', N'cdfytch', N'Vegetarian', N'gdrht', N'2-4 Days', N'ftjy', 1, CAST(N'2024-07-15T10:53:35.3520042' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductSpecification] ([Id], [ProductId], [Speciality], [Manufacturer], [IngredientType], [Ingredients], [ShelfLife], [Benefits], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (10, 31, N'rur', N'hrj', N'Vegetarian', N'ruu', N'rjrj', N'rujur', 1, CAST(N'2024-07-16T11:03:33.8650176' AS DateTime2), 1, CAST(N'2024-07-25T15:43:48.5917909' AS DateTime2), 0)
+GO
+INSERT [dbo].[tblProductSpecification] ([Id], [ProductId], [Speciality], [Manufacturer], [IngredientType], [Ingredients], [ShelfLife], [Benefits], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (11, 32, N'blood sugar stable, and strengthening the immune system', N'Chandra Vegitables', N'Vegetarian', N'potassium, calcium, and iron', N'3-7 days', N'Its high vitamin C content boosts the immune system and promotes collagen production, wound healing, and iron absorption . Broccoli is a good calcium.', 1, CAST(N'2024-07-17T11:48:24.5507545' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductSpecification] ([Id], [ProductId], [Speciality], [Manufacturer], [IngredientType], [Ingredients], [ShelfLife], [Benefits], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (12, 13, N'aaa', N'aaaa', N'Vegetarian', N'aadas', N'545', N'dvsdvs', 1, CAST(N'2024-07-17T12:04:05.9885855' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductSpecification] ([Id], [ProductId], [Speciality], [Manufacturer], [IngredientType], [Ingredients], [ShelfLife], [Benefits], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (13, 33, N'xvc', N'zczd', N'Vegetarian', N'sdvsdv', N'1 Month', N'vsdvsdv', 3, CAST(N'2024-07-17T12:23:39.6290152' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductSpecification] ([Id], [ProductId], [Speciality], [Manufacturer], [IngredientType], [Ingredients], [ShelfLife], [Benefits], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (14, 7, N'gdg', N'dgd', N'Vegetarian', N'dbhd', N'4', N'dhdf', 3, CAST(N'2024-07-17T12:36:13.7402442' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductSpecification] ([Id], [ProductId], [Speciality], [Manufacturer], [IngredientType], [Ingredients], [ShelfLife], [Benefits], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (15, 34, N'wsVs', N'sdvsdv', N'Vegetarian', N'sdvsd', N'vsdvsd', N'vsdvs', 1, CAST(N'2024-07-19T13:26:58.0939279' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductSpecification] ([Id], [ProductId], [Speciality], [Manufacturer], [IngredientType], [Ingredients], [ShelfLife], [Benefits], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (16, 36, N'test', N'cvb', N'Vegetarian', N'bgrfr', N'1', N'rfrfrf', 1, CAST(N'2024-07-25T15:35:10.2972081' AS DateTime2), NULL, NULL, 0)
+GO
+SET IDENTITY_INSERT [dbo].[tblProductSpecification] OFF
+GO
+SET IDENTITY_INSERT [dbo].[tblProductVariationAndRate] ON 
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (1, 1, 6, 1, 5, CAST(180.00 AS Decimal(7, 2)), CAST(50.00 AS Decimal(7, 2)), CAST(90.00 AS Decimal(7, 2)), CAST(90.00 AS Decimal(7, 2)), 10, 1, 1, CAST(N'2024-06-19T11:54:39.7828128' AS DateTime2), NULL, CAST(N'2024-06-26T17:11:04.9732614' AS DateTime2), 0, 1, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (2, 1, 6, 1, 3, CAST(40.00 AS Decimal(7, 2)), CAST(27.00 AS Decimal(7, 2)), CAST(10.80 AS Decimal(7, 2)), CAST(29.20 AS Decimal(7, 2)), 0, 1, 1, CAST(N'2024-06-19T12:39:09.5951219' AS DateTime2), NULL, NULL, 0, 1, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (3, 1, 6, 1, 4, CAST(70.00 AS Decimal(7, 2)), CAST(32.00 AS Decimal(7, 2)), CAST(22.40 AS Decimal(7, 2)), CAST(47.60 AS Decimal(7, 2)), 15, 1, 1, CAST(N'2024-06-19T12:40:13.9685083' AS DateTime2), 1, CAST(N'2024-06-28T10:44:21.9663128' AS DateTime2), 0, 1, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (9, 1, 6, 1, 1, CAST(30.00 AS Decimal(7, 2)), CAST(25.00 AS Decimal(7, 2)), CAST(7.50 AS Decimal(7, 2)), CAST(22.50 AS Decimal(7, 2)), 25, 1, 1, CAST(N'2024-06-26T16:45:29.8041198' AS DateTime2), 1, CAST(N'2024-07-25T11:51:25.4480485' AS DateTime2), 0, 0, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (26, 22, 6, 1, 5, CAST(30.00 AS Decimal(7, 2)), CAST(30.00 AS Decimal(7, 2)), CAST(9.00 AS Decimal(7, 2)), CAST(21.00 AS Decimal(7, 2)), 0, 1, 1, CAST(N'2024-07-05T17:35:33.8894922' AS DateTime2), NULL, NULL, 1, 1, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (27, 22, 6, 1, 7, CAST(150.00 AS Decimal(7, 2)), CAST(20.00 AS Decimal(7, 2)), CAST(30.00 AS Decimal(7, 2)), CAST(120.00 AS Decimal(7, 2)), 30, 1, 1, CAST(N'2024-07-05T17:40:58.2137833' AS DateTime2), NULL, NULL, 0, 1, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (30, 28, 6, 1, 4, CAST(40.00 AS Decimal(7, 2)), CAST(10.00 AS Decimal(7, 2)), CAST(4.00 AS Decimal(7, 2)), CAST(36.00 AS Decimal(7, 2)), 20, 1, 1, CAST(N'2024-07-10T12:40:08.4461970' AS DateTime2), 1, CAST(N'2024-07-23T15:12:07.7040015' AS DateTime2), 1, 1, 1)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (31, 28, 6, 1, 5, CAST(60.00 AS Decimal(7, 2)), CAST(21.00 AS Decimal(7, 2)), CAST(12.60 AS Decimal(7, 2)), CAST(47.40 AS Decimal(7, 2)), 20, 1, 1, CAST(N'2024-07-10T12:41:43.3612727' AS DateTime2), 1, CAST(N'2024-07-23T15:11:41.5347620' AS DateTime2), 0, 1, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (32, 1, 8, 2, 5, CAST(150.00 AS Decimal(7, 2)), CAST(30.00 AS Decimal(7, 2)), CAST(45.00 AS Decimal(7, 2)), CAST(105.00 AS Decimal(7, 2)), 10, 1, 1, CAST(N'2024-07-10T13:16:00.3577038' AS DateTime2), 1, CAST(N'2024-07-23T10:58:32.8332276' AS DateTime2), 0, 1, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (34, 29, 6, 1, 5, CAST(110.00 AS Decimal(7, 2)), CAST(27.00 AS Decimal(7, 2)), CAST(29.70 AS Decimal(7, 2)), CAST(80.30 AS Decimal(7, 2)), 40, 1, 1, CAST(N'2024-07-15T10:45:41.6957141' AS DateTime2), NULL, NULL, 1, 1, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (35, 29, 6, 1, 6, CAST(110.00 AS Decimal(7, 2)), CAST(27.00 AS Decimal(7, 2)), CAST(29.70 AS Decimal(7, 2)), CAST(80.30 AS Decimal(7, 2)), -1, 1, 1, CAST(N'2024-07-15T10:49:37.0783972' AS DateTime2), NULL, NULL, 0, 1, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (44, 31, 9, 1, 9, CAST(133.00 AS Decimal(7, 2)), CAST(25.00 AS Decimal(7, 2)), CAST(33.25 AS Decimal(7, 2)), CAST(99.75 AS Decimal(7, 2)), 97, 1, 1, CAST(N'2024-07-16T10:59:35.0103492' AS DateTime2), NULL, NULL, 1, 1, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (48, 32, 6, 1, 5, CAST(150.00 AS Decimal(7, 2)), CAST(20.00 AS Decimal(7, 2)), CAST(30.00 AS Decimal(7, 2)), CAST(120.00 AS Decimal(7, 2)), 80, 1, 1, CAST(N'2024-07-17T11:44:39.9410196' AS DateTime2), NULL, NULL, 1, 1, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (49, 32, 6, 1, 6, CAST(159.00 AS Decimal(7, 2)), CAST(25.00 AS Decimal(7, 2)), CAST(39.75 AS Decimal(7, 2)), CAST(119.25 AS Decimal(7, 2)), 110, 1, 1, CAST(N'2024-07-17T11:49:23.5814281' AS DateTime2), NULL, NULL, 0, 1, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (52, 33, 1, 1, 10, CAST(60.00 AS Decimal(7, 2)), CAST(0.00 AS Decimal(7, 2)), CAST(0.00 AS Decimal(7, 2)), CAST(60.00 AS Decimal(7, 2)), 10, 1, 3, CAST(N'2024-07-17T12:20:41.9256387' AS DateTime2), 3, CAST(N'2024-07-26T18:14:42.2068048' AS DateTime2), 1, 1, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (53, 33, 1, 1, 11, CAST(60.00 AS Decimal(7, 2)), CAST(17.00 AS Decimal(7, 2)), CAST(10.20 AS Decimal(7, 2)), CAST(49.80 AS Decimal(7, 2)), 40, 1, 3, CAST(N'2024-07-17T12:22:29.1454914' AS DateTime2), 3, CAST(N'2024-07-26T17:55:25.6857736' AS DateTime2), 0, 1, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (67, 13, 6, 1, 5, CAST(120.00 AS Decimal(7, 2)), CAST(30.00 AS Decimal(7, 2)), CAST(36.00 AS Decimal(7, 2)), CAST(84.00 AS Decimal(7, 2)), 8, 1, 1, CAST(N'2024-07-18T11:05:55.5751136' AS DateTime2), 1, CAST(N'2024-07-25T11:30:52.7386242' AS DateTime2), 0, 0, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (68, 13, 6, 1, 6, CAST(154.00 AS Decimal(7, 2)), CAST(33.00 AS Decimal(7, 2)), CAST(50.80 AS Decimal(7, 2)), CAST(103.20 AS Decimal(7, 2)), 3, 1, 1, CAST(N'2024-07-18T11:06:57.7381644' AS DateTime2), 1, CAST(N'2024-07-18T12:33:13.7929470' AS DateTime2), 0, 0, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (70, 4, 4, 1, 3, CAST(40.00 AS Decimal(7, 2)), CAST(50.00 AS Decimal(7, 2)), CAST(20.00 AS Decimal(7, 2)), CAST(20.00 AS Decimal(7, 2)), 20, 1, 2, CAST(N'2024-07-18T17:24:27.2939309' AS DateTime2), 2, CAST(N'2024-07-22T19:13:20.7110045' AS DateTime2), 0, 1, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (71, 4, 8, 2, 3, CAST(50.00 AS Decimal(7, 2)), CAST(24.00 AS Decimal(7, 2)), CAST(12.00 AS Decimal(7, 2)), CAST(38.00 AS Decimal(7, 2)), 20, 1, 2, CAST(N'2024-07-18T17:25:39.3880263' AS DateTime2), NULL, CAST(N'2024-07-19T10:44:23.5353341' AS DateTime2), 1, 1, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (78, 34, 6, 1, 5, CAST(110.00 AS Decimal(7, 2)), CAST(18.00 AS Decimal(7, 2)), CAST(19.80 AS Decimal(7, 2)), CAST(90.20 AS Decimal(7, 2)), 40, 1, 1, CAST(N'2024-07-19T13:26:27.2871705' AS DateTime2), NULL, NULL, 1, 1, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (84, 6, 10, 1, 9, CAST(20.00 AS Decimal(7, 2)), CAST(25.00 AS Decimal(7, 2)), CAST(5.00 AS Decimal(7, 2)), CAST(15.00 AS Decimal(7, 2)), 10, 1, 2, CAST(N'2024-07-23T10:46:23.0505450' AS DateTime2), 2, CAST(N'2024-07-24T12:02:48.3617369' AS DateTime2), 1, 1, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (85, 6, 8, 2, 10, CAST(55.00 AS Decimal(7, 2)), CAST(20.00 AS Decimal(7, 2)), CAST(11.00 AS Decimal(7, 2)), CAST(44.00 AS Decimal(7, 2)), 5, 1, 2, CAST(N'2024-07-23T10:46:49.0479492' AS DateTime2), 2, CAST(N'2024-07-24T12:41:13.9894595' AS DateTime2), 0, 1, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (86, 3, 6, 1, 5, CAST(30.00 AS Decimal(7, 2)), CAST(20.00 AS Decimal(7, 2)), CAST(6.00 AS Decimal(7, 2)), CAST(24.00 AS Decimal(7, 2)), 16, 1, 1, CAST(N'2024-07-23T11:41:57.7389956' AS DateTime2), 1, CAST(N'2024-07-23T11:44:53.4090515' AS DateTime2), 1, 1, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (87, 3, 6, 1, 6, CAST(50.00 AS Decimal(7, 2)), CAST(30.00 AS Decimal(7, 2)), CAST(15.00 AS Decimal(7, 2)), CAST(35.00 AS Decimal(7, 2)), 2, 1, 1, CAST(N'2024-07-23T11:43:23.4815806' AS DateTime2), NULL, NULL, 0, 1, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (88, 5, 5, 1, 3, CAST(30.00 AS Decimal(7, 2)), CAST(30.00 AS Decimal(7, 2)), CAST(9.00 AS Decimal(7, 2)), CAST(21.00 AS Decimal(7, 2)), 20, 0, 2, CAST(N'2024-07-23T11:46:29.0441661' AS DateTime2), 2, CAST(N'2024-07-23T11:48:27.1952187' AS DateTime2), 0, 1, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (91, 13, 7, 1, 5, CAST(56.00 AS Decimal(7, 2)), CAST(22.00 AS Decimal(7, 2)), CAST(12.30 AS Decimal(7, 2)), CAST(43.70 AS Decimal(7, 2)), 1, 1, 1, CAST(N'2024-07-23T15:13:20.8561614' AS DateTime2), 1, CAST(N'2024-07-26T16:03:27.7622806' AS DateTime2), 0, 0, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (97, 7, 2, 1, 2, CAST(10.00 AS Decimal(7, 2)), CAST(0.00 AS Decimal(7, 2)), CAST(0.00 AS Decimal(7, 2)), CAST(10.00 AS Decimal(7, 2)), 20, 1, 3, CAST(N'2024-07-23T17:36:57.6489396' AS DateTime2), NULL, NULL, 1, 1, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (98, 7, 8, 3, 4, CAST(25.00 AS Decimal(7, 2)), CAST(20.00 AS Decimal(7, 2)), CAST(5.00 AS Decimal(7, 2)), CAST(20.00 AS Decimal(7, 2)), 10, 0, 3, CAST(N'2024-07-23T17:38:46.3015942' AS DateTime2), 3, CAST(N'2024-07-23T17:39:48.3629813' AS DateTime2), 0, 0, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (99, 6, 10, 1, 10, CAST(123.00 AS Decimal(7, 2)), CAST(15.00 AS Decimal(7, 2)), CAST(18.50 AS Decimal(7, 2)), CAST(104.50 AS Decimal(7, 2)), 10, 0, 2, CAST(N'2024-07-24T12:42:05.5127816' AS DateTime2), NULL, NULL, 0, 0, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (104, 36, 6, 1, 4, CAST(32.00 AS Decimal(7, 2)), CAST(12.00 AS Decimal(7, 2)), CAST(3.80 AS Decimal(7, 2)), CAST(28.20 AS Decimal(7, 2)), 14, 1, 1, CAST(N'2024-07-25T14:51:25.3005826' AS DateTime2), 1, CAST(N'2024-07-25T15:14:06.3852051' AS DateTime2), 1, 1, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (105, 36, 6, 1, 7, CAST(212.00 AS Decimal(7, 2)), CAST(15.00 AS Decimal(7, 2)), CAST(31.80 AS Decimal(7, 2)), CAST(180.20 AS Decimal(7, 2)), 3, 0, 1, CAST(N'2024-07-25T15:05:36.2142930' AS DateTime2), NULL, NULL, 0, 0, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (106, 2, 6, 1, 5, CAST(35.00 AS Decimal(7, 2)), CAST(15.00 AS Decimal(7, 2)), CAST(5.20 AS Decimal(7, 2)), CAST(29.80 AS Decimal(7, 2)), 50, 1, 1, CAST(N'2024-07-25T17:04:28.4261638' AS DateTime2), NULL, NULL, 0, 0, 0)
+GO
+INSERT [dbo].[tblProductVariationAndRate] ([Id], [ProductId], [ProductPackingId], [Quantity], [ProductWeightId], [MRP], [Discount], [DiscountPrice], [PriceAfterDiscount], [StockQuantity], [ShowProductWeight], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [SetAsDefault], [IsActive], [IsDeleted]) VALUES (107, 37, 6, 1, 7, CAST(56.00 AS Decimal(7, 2)), CAST(10.00 AS Decimal(7, 2)), CAST(5.60 AS Decimal(7, 2)), CAST(50.40 AS Decimal(7, 2)), 5, 1, 1, CAST(N'2024-07-30T17:48:19.6758730' AS DateTime2), NULL, NULL, 1, 1, 0)
+GO
+SET IDENTITY_INSERT [dbo].[tblProductVariationAndRate] OFF
+GO
+SET IDENTITY_INSERT [dbo].[tblProductWeight] ON 
+GO
+INSERT [dbo].[tblProductWeight] ([Id], [ProductWeight], [ProductWeightValue], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (1, N'100 gm', CAST(0.10 AS Decimal(18, 2)), 1, CAST(N'2008-11-08T00:00:00.0000000' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductWeight] ([Id], [ProductWeight], [ProductWeightValue], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (2, N'200 gm', CAST(0.20 AS Decimal(18, 2)), 1, CAST(N'2008-11-08T00:00:00.0000000' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductWeight] ([Id], [ProductWeight], [ProductWeightValue], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (3, N'250 gm', CAST(0.25 AS Decimal(18, 2)), 1, CAST(N'2008-11-08T00:00:00.0000000' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductWeight] ([Id], [ProductWeight], [ProductWeightValue], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (4, N'500 gm', CAST(0.50 AS Decimal(18, 2)), 1, CAST(N'2008-11-08T00:00:00.0000000' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductWeight] ([Id], [ProductWeight], [ProductWeightValue], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (5, N'1 kg', CAST(1.00 AS Decimal(18, 2)), 1, CAST(N'2008-11-08T00:00:00.0000000' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductWeight] ([Id], [ProductWeight], [ProductWeightValue], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (6, N'2 kg', CAST(2.00 AS Decimal(18, 2)), 1, CAST(N'2008-11-08T00:00:00.0000000' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductWeight] ([Id], [ProductWeight], [ProductWeightValue], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (7, N'5 kg', CAST(5.00 AS Decimal(18, 2)), 1, CAST(N'2008-11-08T00:00:00.0000000' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductWeight] ([Id], [ProductWeight], [ProductWeightValue], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (9, N'250 ml', CAST(0.25 AS Decimal(18, 2)), 1, CAST(N'2008-11-08T00:00:00.0000000' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductWeight] ([Id], [ProductWeight], [ProductWeightValue], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (10, N'500 ml', CAST(0.50 AS Decimal(18, 2)), 1, CAST(N'2008-11-08T00:00:00.0000000' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblProductWeight] ([Id], [ProductWeight], [ProductWeightValue], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (11, N'1 L', CAST(1.00 AS Decimal(18, 2)), 1, CAST(N'2008-11-08T00:00:00.0000000' AS DateTime2), NULL, NULL, 1)
+GO
+SET IDENTITY_INSERT [dbo].[tblProductWeight] OFF
+GO
+SET IDENTITY_INSERT [dbo].[tblUser] ON 
+GO
+INSERT [dbo].[tblUser] ([Id], [Name], [Mobile], [Email], [Password], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (1, N'Narinder', N'9876543210', N'narinder@gmail.com', N'123', 1, CAST(N'2008-11-08T00:00:00.0000000' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblUser] ([Id], [Name], [Mobile], [Email], [Password], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (2, N'Arun', N'9638527410', N'arun@gmail.com', N'123', 1, CAST(N'2008-11-08T00:00:00.0000000' AS DateTime2), NULL, NULL, 1)
+GO
+INSERT [dbo].[tblUser] ([Id], [Name], [Mobile], [Email], [Password], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (3, N'Simar', N'9874563210', N'simar@gmail.com', N'123', 1, CAST(N'2024-03-27T12:19:38.2052757' AS DateTime2), NULL, NULL, 1)
+GO
+SET IDENTITY_INSERT [dbo].[tblUser] OFF
+GO
+SET IDENTITY_INSERT [dbo].[tblVendor] ON 
+GO
+INSERT [dbo].[tblVendor] ([Id], [VendorCode], [Name], [Email], [Password], [Mobile], [Type], [IdentificationType], [IdentificationNumber], [Pincode], [City], [State], [Country], [FullAddress], [Status], [StatusRemarks], [IsLicensed], [LicenseExpiredOn], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [LastLoginDate]) VALUES (1, N'', N'Ashutosh Vendor', N'ashutosh@gmail.com', N'123456', N'1234567891', N'', N'', N'', 160014, N'Chandigarh', N'Chandigarh', N'India', N'sector 17 Near Playground ', N'Approved', N'approved', 0, NULL, 1, CAST(N'2024-04-12T12:22:59.2915950' AS DateTime2), 1, CAST(N'2024-04-29T13:14:45.1685729' AS DateTime2), CAST(N'2024-08-20T17:58:55.6650878' AS DateTime2))
+GO
+INSERT [dbo].[tblVendor] ([Id], [VendorCode], [Name], [Email], [Password], [Mobile], [Type], [IdentificationType], [IdentificationNumber], [Pincode], [City], [State], [Country], [FullAddress], [Status], [StatusRemarks], [IsLicensed], [LicenseExpiredOn], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [LastLoginDate]) VALUES (2, N'', N'Suraj Vendor', N'suraj@gmail.com', N'123456', N'1234567890', N'', N'', N'', 160014, N'Mohali', N'Punjab', N'India', N'sector 52 Near Playground ', N'Approved', N'approved', 0, NULL, 1, CAST(N'2024-04-12T12:22:59.2915950' AS DateTime2), 1, CAST(N'2024-04-29T13:14:45.1685729' AS DateTime2), CAST(N'2024-08-12T11:50:40.8055228' AS DateTime2))
+GO
+INSERT [dbo].[tblVendor] ([Id], [VendorCode], [Name], [Email], [Password], [Mobile], [Type], [IdentificationType], [IdentificationNumber], [Pincode], [City], [State], [Country], [FullAddress], [Status], [StatusRemarks], [IsLicensed], [LicenseExpiredOn], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [LastLoginDate]) VALUES (3, N'', N'Aman Vendor', N'aman@gmail.com', N'123456', N'9879879870', N'', N'', N'', 160014, N'Mohali', N'Punjab', N'India', N'sector 52 Near Playground ', N'Approved', N'approved', 0, NULL, 1, CAST(N'2024-04-12T12:22:59.2915950' AS DateTime2), 1, CAST(N'2024-04-29T13:14:45.1685729' AS DateTime2), CAST(N'2024-04-29T13:17:39.7676607' AS DateTime2))
+GO
+INSERT [dbo].[tblVendor] ([Id], [VendorCode], [Name], [Email], [Password], [Mobile], [Type], [IdentificationType], [IdentificationNumber], [Pincode], [City], [State], [Country], [FullAddress], [Status], [StatusRemarks], [IsLicensed], [LicenseExpiredOn], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [LastLoginDate]) VALUES (27, N'ETB-1486', N'simar', N'simar@gmail.com', N'Simar@987987', N'9874552148', N'Trader', N'Passport', N'WEFWE8798798', 160055, N'Chandigarh', N'Punjab', N'India', N'HN-278', N'Pending', N'Your request has been sent to admin.', 0, NULL, 1, CAST(N'2024-08-12T11:27:48.0431035' AS DateTime2), NULL, NULL, NULL)
+GO
+SET IDENTITY_INSERT [dbo].[tblVendor] OFF
+GO
+SET IDENTITY_INSERT [dbo].[tblVendorBankDetails] ON 
+GO
+INSERT [dbo].[tblVendorBankDetails] ([Id], [VendorId], [AccountHolderName], [AccountNumber], [IFSCCode], [BankName], [Branch], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (9, 27, N'simar', N'7789789789', N'sbin0050222', N'State Bank of India', N'LUDHIANA GILL ROAD', 1, CAST(N'2024-08-12T11:27:48.3786146' AS DateTime2), NULL, NULL, 1)
+GO
+SET IDENTITY_INSERT [dbo].[tblVendorBankDetails] OFF
+GO
+SET IDENTITY_INSERT [dbo].[tblVendorCompanyDetails] ON 
+GO
+INSERT [dbo].[tblVendorCompanyDetails] ([Id], [VendorId], [CompanyName], [Description], [DealingPerson], [GSTIN], [Pincode], [City], [State], [Country], [FullAddress], [CreatedBy], [CreatedOn], [UpdatedBy], [UpdatedOn], [IsActive]) VALUES (11, 27, N'abc ventures', N'abc ventures', N'simar', N'EFWE877887', 160055, N'Chandigarh', N'Punjab', N'India', N'wave complex', 1, CAST(N'2024-08-12T11:27:48.2068411' AS DateTime2), NULL, NULL, 1)
+GO
+SET IDENTITY_INSERT [dbo].[tblVendorCompanyDetails] OFF
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240513135327_AddDataClasses', N'7.0.0')
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240514205817_VendorCount', N'7.0.0')
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240514211718_Vendorupdates', N'7.0.0')
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240515062732_orderList-SP', N'7.0.0')
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240515065556_abc', N'7.0.0')
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240515103630_abcd', N'7.0.0')
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240520074905_TblCustomerOrderStatusLog_Create', N'7.0.0')
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240520075436_TblCustomerOrderStatusLog_Create1', N'7.0.0')
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240521123217_OrderTrackStatusList', N'7.0.0')
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240521134038_OrderListSPResultChange', N'7.0.0')
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240522100552_Add-StatusNo-In-OrderStatus', N'7.0.0')
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240524120454_VendorDashBoardCount', N'7.0.0')
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240618082659_ProductTable-Changes', N'7.0.0')
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240618100548_ProductPackingTable-Add', N'7.0.0')
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240618100853_ProductVariationId-Add-Cart-and-CustomerOrderTable', N'7.0.0')
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240618114532_Decimal-DataType-Changed-For-Amount', N'7.0.0')
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240618121839_Product-Specification_table_add', N'7.0.0')
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240628114536_productList-SP-Changes', N'7.0.0')
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240712061459_total-volume-column-add', N'7.0.0')
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240712113439_weight-value-column-add', N'7.0.0')
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240718071301_isDelete-column-add-in-variation', N'7.0.0')
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240718071648_isDelete-column-add-in-variation-table', N'7.0.0')
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240719080033_Product-Packing-Changes', N'7.0.0')
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240719080421_Product-Packing-Relation-Changes', N'7.0.0')
+GO
+INSERT [EasyToBuyAdmin].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20240806060353_vendor-company-and-bank-details-table-add', N'7.0.0')
+GO
+SET IDENTITY_INSERT [EasyToBuyAdmin].[Testing12] ON 
+GO
+INSERT [EasyToBuyAdmin].[Testing12] ([id], [Name]) VALUES (1, N'simar')
+GO
+SET IDENTITY_INSERT [EasyToBuyAdmin].[Testing12] OFF
+GO
+ALTER TABLE [dbo].[cartDetailsByCustomerId_Results] ADD  DEFAULT (CONVERT([bit],(0))) FOR [SetAsDefault]
+GO
+ALTER TABLE [dbo].[orderList_Results] ADD  DEFAULT ((0)) FOR [UserId]
+GO
+ALTER TABLE [dbo].[orderList_Results] ADD  DEFAULT ((0)) FOR [StatusId]
+GO
+ALTER TABLE [dbo].[orderList_Results] ADD  DEFAULT ((0)) FOR [VendorId]
+GO
+ALTER TABLE [dbo].[orderList_Results] ADD  DEFAULT (N'') FOR [ProductWeight]
+GO
+ALTER TABLE [dbo].[orderList_Results] ADD  DEFAULT ((0)) FOR [ProductId]
+GO
+ALTER TABLE [dbo].[orderList_Results] ADD  DEFAULT (N'') FOR [ProductImage]
+GO
+ALTER TABLE [dbo].[orderList_Results] ADD  DEFAULT (N'') FOR [PackingType]
+GO
+ALTER TABLE [dbo].[productDescriptionById_Results] ADD  DEFAULT ((0)) FOR [CategoryId]
+GO
+ALTER TABLE [dbo].[productList_Results] ADD  DEFAULT (N'') FOR [VendorName]
+GO
+ALTER TABLE [dbo].[productList_Results] ADD  DEFAULT ((0.0)) FOR [TotalVolume]
+GO
+ALTER TABLE [dbo].[productList_Results] ADD  DEFAULT ((0)) FOR [PackingModeId]
+GO
+ALTER TABLE [dbo].[productVariationListById_Results] ADD  DEFAULT ((0.0)) FOR [ProductWeightValue]
+GO
+ALTER TABLE [dbo].[productVariationListById_Results] ADD  DEFAULT (CONVERT([bit],(0))) FOR [IsDeleted]
+GO
+ALTER TABLE [dbo].[tblCategory] ADD  CONSTRAINT [DF__tblCatego__Packi__7CD98669]  DEFAULT ((0)) FOR [PackingModeId]
+GO
+ALTER TABLE [dbo].[tblOrderStatus] ADD  DEFAULT ((0)) FOR [StatusNo]
+GO
+ALTER TABLE [dbo].[tblProduct] ADD  CONSTRAINT [DF__tblProduc__Packi__7BE56230]  DEFAULT ((0)) FOR [PackingModeId]
+GO
+ALTER TABLE [dbo].[tblProduct] ADD  CONSTRAINT [DF__tblProduc__Total__603D47BB]  DEFAULT ((0.0)) FOR [TotalVolume]
+GO
+ALTER TABLE [dbo].[tblProductPacking] ADD  CONSTRAINT [DF__tblProduc__Packi__7AF13DF7]  DEFAULT ((0)) FOR [PackingModeId]
+GO
+ALTER TABLE [dbo].[tblProductVariationAndRate] ADD  DEFAULT (CONVERT([bit],(0))) FOR [IsDeleted]
+GO
+ALTER TABLE [dbo].[tblProductWeight] ADD  CONSTRAINT [DF__tblProduc__Produ__69C6B1F5]  DEFAULT ((0.0)) FOR [ProductWeightValue]
+GO
+ALTER TABLE [dbo].[tblVendor] ADD  CONSTRAINT [DF__tblVendor__Vendo__361203C5]  DEFAULT (N'') FOR [VendorCode]
+GO
+ALTER TABLE [dbo].[tblVendor] ADD  CONSTRAINT [DF__tblVendor__Type__351DDF8C]  DEFAULT (N'') FOR [Type]
+GO
+ALTER TABLE [dbo].[tblVendor] ADD  CONSTRAINT [DF__tblVendor__Ident__3429BB53]  DEFAULT (N'') FOR [IdentificationNumber]
+GO
+ALTER TABLE [dbo].[vendorOrdersCountById_Results] ADD  DEFAULT (N'') FOR [OrderStatus]
+GO
+ALTER TABLE [dbo].[tblAddress]  WITH CHECK ADD  CONSTRAINT [FK_tblAddress_tblAddressType_AddressTypeId] FOREIGN KEY([AddressTypeId])
+REFERENCES [dbo].[tblAddressType] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[tblAddress] CHECK CONSTRAINT [FK_tblAddress_tblAddressType_AddressTypeId]
+GO
+ALTER TABLE [dbo].[tblAddress]  WITH CHECK ADD  CONSTRAINT [FK_tblAddress_tblUser_UserId] FOREIGN KEY([UserId])
+REFERENCES [dbo].[tblUser] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[tblAddress] CHECK CONSTRAINT [FK_tblAddress_tblUser_UserId]
+GO
+ALTER TABLE [dbo].[tblCart]  WITH CHECK ADD  CONSTRAINT [FK_tblCart_tblProductVariationAndRate_VariationId] FOREIGN KEY([VariationId])
+REFERENCES [dbo].[tblProductVariationAndRate] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[tblCart] CHECK CONSTRAINT [FK_tblCart_tblProductVariationAndRate_VariationId]
+GO
+ALTER TABLE [dbo].[tblCart]  WITH CHECK ADD  CONSTRAINT [FK_tblCart_tblUser_UserId] FOREIGN KEY([UserId])
+REFERENCES [dbo].[tblUser] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[tblCart] CHECK CONSTRAINT [FK_tblCart_tblUser_UserId]
+GO
+ALTER TABLE [dbo].[tblCategory]  WITH CHECK ADD  CONSTRAINT [FK_tblCategory_tblProductPackingMode_PackingModeId] FOREIGN KEY([PackingModeId])
+REFERENCES [dbo].[tblProductPackingMode] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[tblCategory] CHECK CONSTRAINT [FK_tblCategory_tblProductPackingMode_PackingModeId]
+GO
+ALTER TABLE [dbo].[tblCustomerOrder]  WITH CHECK ADD  CONSTRAINT [FK_tblCustomerOrder_tblOrderStatus_StatusId] FOREIGN KEY([StatusId])
+REFERENCES [dbo].[tblOrderStatus] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[tblCustomerOrder] CHECK CONSTRAINT [FK_tblCustomerOrder_tblOrderStatus_StatusId]
+GO
+ALTER TABLE [dbo].[tblCustomerOrder]  WITH CHECK ADD  CONSTRAINT [FK_tblCustomerOrder_tblProductVariationAndRate_VariationId] FOREIGN KEY([VariationId])
+REFERENCES [dbo].[tblProductVariationAndRate] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[tblCustomerOrder] CHECK CONSTRAINT [FK_tblCustomerOrder_tblProductVariationAndRate_VariationId]
+GO
+ALTER TABLE [dbo].[tblCustomerOrder]  WITH CHECK ADD  CONSTRAINT [FK_tblCustomerOrder_tblUser_UserId] FOREIGN KEY([UserId])
+REFERENCES [dbo].[tblUser] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[tblCustomerOrder] CHECK CONSTRAINT [FK_tblCustomerOrder_tblUser_UserId]
+GO
+ALTER TABLE [dbo].[tblCustomerOrderStatusLog]  WITH CHECK ADD  CONSTRAINT [FK_tblCustomerOrderStatusLog_tblCustomerOrder_OrderId] FOREIGN KEY([OrderId])
+REFERENCES [dbo].[tblCustomerOrder] ([Id])
+GO
+ALTER TABLE [dbo].[tblCustomerOrderStatusLog] CHECK CONSTRAINT [FK_tblCustomerOrderStatusLog_tblCustomerOrder_OrderId]
+GO
+ALTER TABLE [dbo].[tblCustomerOrderStatusLog]  WITH CHECK ADD  CONSTRAINT [FK_tblCustomerOrderStatusLog_tblOrderStatus_StatusId] FOREIGN KEY([StatusId])
+REFERENCES [dbo].[tblOrderStatus] ([Id])
+GO
+ALTER TABLE [dbo].[tblCustomerOrderStatusLog] CHECK CONSTRAINT [FK_tblCustomerOrderStatusLog_tblOrderStatus_StatusId]
+GO
+ALTER TABLE [dbo].[tblProduct]  WITH CHECK ADD  CONSTRAINT [FK_tblProduct_tblCategory_CategoryId] FOREIGN KEY([CategoryId])
+REFERENCES [dbo].[tblCategory] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[tblProduct] CHECK CONSTRAINT [FK_tblProduct_tblCategory_CategoryId]
+GO
+ALTER TABLE [dbo].[tblProduct]  WITH CHECK ADD  CONSTRAINT [FK_tblProduct_tblProductPackingMode_PackingModeId] FOREIGN KEY([PackingModeId])
+REFERENCES [dbo].[tblProductPackingMode] ([Id])
+GO
+ALTER TABLE [dbo].[tblProduct] CHECK CONSTRAINT [FK_tblProduct_tblProductPackingMode_PackingModeId]
+GO
+ALTER TABLE [dbo].[tblProduct]  WITH CHECK ADD  CONSTRAINT [FK_tblProduct_tblVendor_VendorId] FOREIGN KEY([VendorId])
+REFERENCES [dbo].[tblVendor] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[tblProduct] CHECK CONSTRAINT [FK_tblProduct_tblVendor_VendorId]
+GO
+ALTER TABLE [dbo].[tblProductImages]  WITH CHECK ADD  CONSTRAINT [FK_tblProductImages_tblProductVariationAndRate_VariationId] FOREIGN KEY([VariationId])
+REFERENCES [dbo].[tblProductVariationAndRate] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[tblProductImages] CHECK CONSTRAINT [FK_tblProductImages_tblProductVariationAndRate_VariationId]
+GO
+ALTER TABLE [dbo].[tblProductPacking]  WITH CHECK ADD  CONSTRAINT [FK_tblProductPacking_tblProductPackingMode_PackingModeId] FOREIGN KEY([PackingModeId])
+REFERENCES [dbo].[tblProductPackingMode] ([Id])
+GO
+ALTER TABLE [dbo].[tblProductPacking] CHECK CONSTRAINT [FK_tblProductPacking_tblProductPackingMode_PackingModeId]
+GO
+ALTER TABLE [dbo].[tblProductSpecification]  WITH CHECK ADD  CONSTRAINT [FK_tblProductSpecification_tblProduct_ProductId] FOREIGN KEY([ProductId])
+REFERENCES [dbo].[tblProduct] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[tblProductSpecification] CHECK CONSTRAINT [FK_tblProductSpecification_tblProduct_ProductId]
+GO
+ALTER TABLE [dbo].[tblProductVariationAndRate]  WITH CHECK ADD  CONSTRAINT [FK_tblProductVariationAndRate_tblProduct_ProductId] FOREIGN KEY([ProductId])
+REFERENCES [dbo].[tblProduct] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[tblProductVariationAndRate] CHECK CONSTRAINT [FK_tblProductVariationAndRate_tblProduct_ProductId]
+GO
+ALTER TABLE [dbo].[tblProductVariationAndRate]  WITH CHECK ADD  CONSTRAINT [FK_tblProductVariationAndRate_tblProductPacking_ProductPackingId] FOREIGN KEY([ProductPackingId])
+REFERENCES [dbo].[tblProductPacking] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[tblProductVariationAndRate] CHECK CONSTRAINT [FK_tblProductVariationAndRate_tblProductPacking_ProductPackingId]
+GO
+ALTER TABLE [dbo].[tblProductVariationAndRate]  WITH CHECK ADD  CONSTRAINT [FK_tblProductVariationAndRate_tblProductWeight_ProductWeightId] FOREIGN KEY([ProductWeightId])
+REFERENCES [dbo].[tblProductWeight] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[tblProductVariationAndRate] CHECK CONSTRAINT [FK_tblProductVariationAndRate_tblProductWeight_ProductWeightId]
+GO
+ALTER TABLE [dbo].[tblVendorBankDetails]  WITH CHECK ADD  CONSTRAINT [FK_tblVendorBankDetails_tblVendor_VendorId] FOREIGN KEY([VendorId])
+REFERENCES [dbo].[tblVendor] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[tblVendorBankDetails] CHECK CONSTRAINT [FK_tblVendorBankDetails_tblVendor_VendorId]
+GO
+ALTER TABLE [dbo].[tblVendorCompanyDetails]  WITH CHECK ADD  CONSTRAINT [FK_tblVendorCompanyDetails_tblVendor_VendorId] FOREIGN KEY([VendorId])
+REFERENCES [dbo].[tblVendor] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[tblVendorCompanyDetails] CHECK CONSTRAINT [FK_tblVendorCompanyDetails_tblVendor_VendorId]
+GO
+/****** Object:  StoredProcedure [dbo].[spGetCartDetailsByCustomerId]    Script Date: 2024-08-21 11:51:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE procedure [dbo].[spGetCartDetailsByCustomerId] @CustomerId int
+
+as 
+
+begin
+        select    
+		          TC.Id,
+				  TPV.Id as VariationId,
+				  TP.ProductName,
+				  TV.Name as VendorName,
+				  TP.ProductDescription,
+			      TP.ProductImage,
+				  TW.ProductWeight,
+			      TC.Quantity,     
+	              TC.Quantity * TPV.MRP as MRP,
+				  TPV.Discount,
+				  TC.Quantity * TPV.DiscountPrice as DiscountPrice,
+				  TC.Quantity * TPV.PriceAfterDiscount as PriceAfterDiscount,
+				  TPV.PriceAfterDiscount *  TC.Quantity as TotalProductPrice,
+			      TPV.ShowProductWeight,
+				  TPV.SetAsDefault
+
+	              from tblCart TC
+		       
+				   inner join tblProductVariationAndRate TPV on TPV.Id = TC.VariationId
+		           inner join tblUser TU on TU.Id = TC.UserId
+			       inner join tblProduct TP on TP.Id = TPV.ProductId
+				   inner join  tblVendor TV on TV.Id = TP.VendorId
+				   inner join tblProductWeight TW on TW.Id = TPV.ProductWeightId
+
+				 where TC.UserId = @CustomerId  and TC.IsPlaced = 0
+end
+
+
+GO
+/****** Object:  StoredProcedure [dbo].[spGetOrderList]    Script Date: 2024-08-21 11:51:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE procedure [dbo].[spGetOrderList] @CustomerId int ,@VendorId int ,  @SearchText varchar(15) , @StatusId int=null,@StartDate date ,@EndDate date 
+
+as
+
+begin
+
+declare @queryText varchar(Max);
+
+set @queryText=
+				'select 
+						tco.Id,
+						tco.UserId,
+				        tu.Name as UserName,
+						tv.Id as VendorId,
+				        tv.Name as VendorName,
+						tco.OrderNumber,
+						tco.OrderDate, 
+						tp.Id as ProductId,
+						tpv.Id as VariationId,
+						tp.ProductName,
+						tp.ProductImage,
+						tpw.ProductWeight,
+						tpp.PackingType,
+						tco.Quantity,  
+						tco.MRP,
+						tco.Discount,
+						tco.AmountToBePaid,
+						tco.StatusId,
+						tos.Status
+
+				from tblCustomerOrder as tco
+				inner join tblOrderStatus as tos on tos.Id = tco.StatusId
+				inner join tblUser tu on tu.Id = tco.UserId
+				inner join tblProductVariationAndRate tpv on tpv.Id = tco.VariationId
+				inner join tblProduct as tp on tp.Id = tpv.ProductId
+				inner join tblVendor tv on tv.Id = tp.VendorId
+				inner join tblProductWeight tpw on tpw.Id = tpv.ProductWeightId
+				inner join tblProductPacking tpp on tpp.Id = tpv.ProductPackingId
+				where 1=1'  
+
+				If(@CustomerId > 0)
+				Begin
+					set	@queryText = @queryText +' and tco.UserId = '+ cast(@CustomerId as varchar(10))
+				End
+
+					If(@VendorId > 0)
+				Begin
+					set	@queryText = @queryText +' and tp.VendorId = '+ cast(@VendorId as varchar(10))
+				End
+				
+				If (@SearchText is not null)
+			    Begin
+				    set	@queryText = @queryText +' and (tp.ProductName like ''%'+@SearchText+'%'')'
+				End
+
+				If(@StatusId is not null)
+				Begin
+						If(@StatusId =5 OR @StatusId = 6)
+						Begin
+							set @queryText = @queryText + ' and tco.StatusId in('+(cast(@StatusId as varchar(10)))+')'
+						End
+
+						If(@StatusId <> 5 and @StatusId <> 6)
+						Begin
+							set @queryText = @queryText + ' and tco.StatusId not in(5,6)'
+						End
+				End
+
+				If(@StartDate is not null and @EndDate is not null)
+				Begin
+					set @queryText = @queryText + ' and tco.OrderDate between ''' + (cast(@StartDate as varchar(50)) + ''' AND ''' + cast(@EndDate as varchar(50))) + ''''
+				End 
+					
+				exec(@queryText)
+		
+					
+				
+end
+GO
+/****** Object:  StoredProcedure [dbo].[spGetProductDescriptionById]    Script Date: 2024-08-21 11:51:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE procedure [dbo].[spGetProductDescriptionById]  @ProductId int
+  
+as 
+
+begin
+
+  select    
+		    TP.Id,
+		    TPV.Id as VariationId ,
+			TP.CategoryId,
+			TP.ProductName,
+			TP.ProductDescription,
+			TP.ProductImage,
+			TPV.MRP,
+			TPV.Discount,
+			TPV.PriceAfterDiscount
+
+	        from tblProduct TP
+		    inner join tblCategory TC on TC.Id = TP.CategoryId
+			inner join tblProductVariationAndRate TPV on TPV.ProductId = TP.Id
+
+			where TP.Id = @ProductId And TP.IsActive = 1 And TPV.SetAsDefault = 1
+			
+end
+
+
+GO
+/****** Object:  StoredProcedure [dbo].[spGetProductList]    Script Date: 2024-08-21 11:51:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE procedure [dbo].[spGetProductList] @CategoryId int , @SearchText varchar(15),@VendorId  int null,@Role varchar(10) null
+  
+as 
+
+begin
+
+declare @queryText varchar(Max);
+
+            If (@Role = 'Vendor')
+			    Begin
+
+				set @queryText = 'select    
+		                                 TP.*,
+		                                 TV.Name as VendorName,
+	                                     cast(0 as decimal(18,2)) as MRP,
+		                                 cast(0 as decimal(18,2)) as Discount,
+		                                 cast(0 as decimal(18,2)) as DiscountPrice,
+		                                 cast(0 as decimal(18,2)) as PriceAfterDiscount,
+		                                 0 as VariationId,
+		                                 cast(0 as varchar(10)) as ProductWeight,
+		                                 cast(0 as bit) as ShowProductWeight,
+		                                 1 as Quantity
+
+	                               from view_GetProductList TP		
+			                       inner join tblVendor TV on TV.Id = TP.VendorId where 1=1 
+			                       and TP.VendorId = '+ cast(@VendorId as varchar(10));
+				End
+
+			Else
+				Begin 
+
+				set @queryText = 'select    
+		                                 TP.*,
+										 TV.Name as VendorName,
+		                                 TPV.MRP,
+		                                 TPV.Discount,
+		                                 TPV.DiscountPrice,
+		                                 TPV.PriceAfterDiscount,
+		                                 TPV.Id as VariationId,
+		                                 PW.ProductWeight,
+		                                 TPV.ShowProductWeight,
+		                                 1 as Quantity
+	    
+	                               from view_GetProductList TP		    
+	                               inner join tblProductVariationAndRate TPV on TPV.ProductId = TP.Id
+	                               inner join tblProductWeight PW on PW.Id = TPV.ProductWeightId
+	                               inner join tblVendor TV on TV.Id = TP.VendorId where 1=1 and TP.IsActive = 1 and TPV.SetAsDefault = 1';
+				End
+
+				If(@CategoryId > 0)
+				Begin
+					set	@queryText = @queryText +' and TP.CategoryId = '+ cast(@CategoryId as varchar(10))
+				End
+
+			    If (@SearchText is not null)
+			    Begin
+				    set	@queryText = @queryText +' and (TP.ProductName like ''%'+@SearchText+'%'' or TC.CategoryName  like ''%'+@SearchText+'%'')'
+				End
+				exec(@queryText)
+			
+end
+
+
+GO
+/****** Object:  StoredProcedure [dbo].[spGetProductSliderItemsByCategoryId]    Script Date: 2024-08-21 11:51:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Arun Kumar>
+-- Create date: <12/07/2024>
+-- Description:	<Get Products Different Category or same Category  Information show on Slider>
+-- =============================================
+CREATE PROCEDURE [dbo].[spGetProductSliderItemsByCategoryId]  @CategoryId int, @ProductId int , @DataTypes varchar(40) null
+AS
+
+BEGIN
+
+ declare @queryText varchar(Max);
+
+              set @queryText = 'select    
+		                                  TP.Id,
+		                                  TPV.Id as VariationId ,
+		                                  TP.CategoryId,
+		                                  TP.ProductName,
+		                                  TPPM.PackingMode,
+		                                  TP.ProductDescription,
+		                                  TP.ProductImage,
+		                                  TPV.MRP,
+		                                  TPV.Discount,
+		                                  TPV.PriceAfterDiscount,
+		                                  TP.IsActive
+		                                  
+	                                      from tblProduct TP
+		                                  inner join tblCategory TC on TC.Id = TP.CategoryId
+		                                  inner join tblProductVariationAndRate TPV on TPV.ProductId = TP.Id
+		                                  inner join tblProductPackingMode TPPM on TPPM.Id = TP.PackingModeId
+			                              where 1=1'
+
+                  If (@DataTypes = 'SameCategoryProducts')
+			         Begin
+         				   set @queryText = @queryText +  'and TP.CategoryId = ' + cast(@CategoryId as varchar(5)) + 'And TP.IsActive = 1 And
+										        TPV.SetAsDefault = 1 And TP.Id !=' +  cast(@ProductId as varchar(5))
+	           End
+
+		     else
+				  Begin 
+				        set @queryText = @queryText + 'and TP.CategoryId !='+cast(@CategoryId as varchar(5))  +' And TP.IsActive = 1 And TPV.SetAsDefault = 1'
+			   End
+				 
+exec (@queryText)
+
+END
+
+
+
+
+GO
+/****** Object:  StoredProcedure [dbo].[spGetProductSpecificationById]    Script Date: 2024-08-21 11:51:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Arun Kumar>
+-- Create date: <19/06/2024>
+-- Description:	<Products Specifications>
+-- =============================================
+CREATE PROCEDURE [dbo].[spGetProductSpecificationById]  @ProductId int
+as 
+
+begin
+
+  select    
+		    TPS.Id,
+			TPS.Speciality,
+			TPS.Manufacturer,
+			TPS.IngredientType,
+			TPS.Ingredients,
+			TPS.ShelfLife,
+			TPS.Benefits,
+			TPS.IsActive
+
+	        from tblProductSpecification TPS
+		    inner join tblProduct TP on TP.Id = TPS.ProductId
+
+			where TP.Id = @ProductId 
+
+			
+end
+
+GO
+/****** Object:  StoredProcedure [dbo].[spGetProductVariationImageById]    Script Date: 2024-08-21 11:51:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Arun Kumar>
+-- Create date: <19/06/2024>
+-- Description:	<Product Image According to Product Variation>
+-- =============================================
+CREATE PROCEDURE [dbo].[spGetProductVariationImageById]  @VariationId int
+as 
+
+begin
+
+  select    
+		    TPI.Id,
+			TPI.Image 
+
+	        from tblProductImages TPI
+		    inner join tblProductVariationAndRate TPV on TPV.Id = TPI.VariationId
+			
+			where TPI.VariationId = @VariationId And TPV.IsActive = 1  
+			
+end
+GO
+/****** Object:  StoredProcedure [dbo].[spGetProductVariationListById]    Script Date: 2024-08-21 11:51:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Arun Kumar>
+-- Create date: <19/06/2024>
+-- Description:	<Product Variation List>
+-- =============================================
+CREATE PROCEDURE [dbo].[spGetProductVariationListById]  @ProductId int
+as 
+
+begin
+
+  select    
+			TPV.Id,
+			TPV.ProductPackingId,
+			TPP.PackingType,
+			TPV.Quantity,
+			TPV.ProductWeightId,
+			TPW.ProductWeight,
+			TPW.ProductWeightValue,
+			TPV.MRP,
+			TPV.Discount,
+			TPV.DiscountPrice,
+			TPV.PriceAfterDiscount,
+			TPV.StockQuantity,
+			TPV.ShowProductWeight,
+			TPV.SetAsDefault,
+			TPV.IsActive,
+			TPV.IsDeleted
+
+	        from tblProductVariationAndRate TPV
+
+		    inner join tblProduct TP on TP.Id = TPV.ProductId
+			inner join tblProductPacking TPP on TPP.Id = TPV.ProductPackingId
+			inner join tblProductWeight TPW on TPW.Id = TPV.ProductWeightId
+
+			where TP.Id = @ProductId 
+			ORDER BY TPW.Id
+end
+
+GO
+/****** Object:  StoredProcedure [dbo].[spGetTrackingStatusListByOrderId]    Script Date: 2024-08-21 11:51:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Narinder Singh>
+-- Create date: <21-05-2024>
+-- Description:	<This sp is using to get Tracking Status List of any Order>
+-- =============================================
+CREATE PROCEDURE [dbo].[spGetTrackingStatusListByOrderId] @OrderId int
+AS
+BEGIN
+
+	
+select 
+	       OS.Id, OS.Status , 
+		   CASE
+				WHEN COSL.id is not null THEN cast(1 as bit )
+		        ELSE cast(0 as bit )
+		   END AS IsPending,
+		   Convert(varchar(30),COSL.CreatedOn,109) as StatusDate
+
+		   from tblOrderStatus OS
+		   Left Join tblcustomerorderstatuslog COSL on OS.id = COSL.statusid and COSL.orderid = @OrderId
+		   order by OS.StatusNo asc
+   
+   
+END
+GO
+/****** Object:  StoredProcedure [dbo].[spGetVendorOrdersCountById]    Script Date: 2024-08-21 11:51:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Arun Kumar>
+-- Create date: <14/05/2024>
+-- Description:	<Get Vendor Order Count like(Total Order, Cancel Order, Pending Order, Delivered Order)>
+-- =============================================
+CREATE procedure [dbo].[spGetVendorOrdersCountById]  @VendorId int
+  
+as 
+
+begin
+
+declare @VendorOrderCount int = 0
+
+select @VendorOrderCount = count(TCO.Id) 
+        from tblCustomerOrder TCO
+       	inner join tblProductVariationAndRate TPV on TPV.Id = TCO.VariationId
+        inner join tblProduct TP on TP.Id = TPV.ProductId
+		inner join tblVendor TV on TV.Id = TP.VendorId
+		group by TV.Id having(TV.Id = @VendorId)
+
+if(@VendorOrderCount > 0)
+begin
+	Select  
+	        1 as Id,TV.Id as VendorId,0 as OrderStatusId,'Total Orders' as OrderStatus,SUM(1) AS OrderCount,'bi bi-archive-fill fs-1 primary-text  rounded-full secondary-bg p-3 mycol' as IconClass
+			
+			from tblCustomerOrder TCO
+	      	inner join tblProductVariationAndRate TPV on TPV.Id = TCO.VariationId
+		    inner join tblProduct TP on TP.Id = TPV.ProductId
+			inner join tblVendor TV on TV.Id = TP.VendorId
+	        inner join tblOrderStatus TOS on TOS.Id  = TCO.StatusId
+		    group by TV.Id having(TV.Id =  @VendorId)
+	union all 
+	Select     
+			2 as Id,TV.Id as VendorId, 1 as OrderStatusId,'Pending' as OrderStatus,
+			SUM(CASE WHEN TOS.Id = '1' or  TOS.Id = '2' or TOS.Id = '3' or TOS.Id = '4'  THEN 1 ELSE 0 END) AS OrderCount,'bi bi-hourglass fs-1 primary-text  rounded-full secondary-bg p-3' as IconClass
+	        
+			from tblCustomerOrder TCO
+	     	inner join tblProductVariationAndRate TPV on TPV.Id = TCO.VariationId
+			inner join tblProduct TP on TP.Id = TPV.ProductId
+			inner join tblVendor TV on TV.Id = TP.VendorId
+	        inner join tblOrderStatus TOS on TOS.Id  = TCO.StatusId
+		    group by TV.Id having(TV.Id =  @VendorId ) 
+	union all 
+	Select     
+			3 as Id,TV.Id as VendorId,5 as OrderStatusId,'Delivered' as OrderStatus,SUM(CASE WHEN TOS.Id = '5' THEN 1 ELSE 0 END) AS OrderCount,'bi bi-check-circle-fill fs-1 primary-text  rounded-full secondary-bg p-3' as IconClass
+		    
+			from tblCustomerOrder TCO
+	        inner join tblProductVariationAndRate TPV on TPV.Id = TCO.VariationId
+			inner join tblProduct TP on TP.Id = TPV.ProductId
+			inner join tblVendor TV on TV.Id = TP.VendorId
+	        inner join tblOrderStatus TOS on TOS.Id  = TCO.StatusId
+		    group by TV.Id having(TV.Id =  @VendorId  )	
+	union all 
+	Select     
+			4 as Id,TV.Id as VendorId,6 as OrderStatusId,'Cancelled ' as OrderStatus,SUM(CASE WHEN TOS.Id = '6' THEN 1 ELSE 0 END) AS OrderCount,'bi bi-slash-circle fs-1 primary-text  rounded-full secondary-bg p-3' as IconClass
+	        
+			from tblCustomerOrder TCO
+	     	inner join tblProductVariationAndRate TPV on TPV.Id = TCO.VariationId
+            inner join tblProduct TP on TP.Id = TPV.ProductId
+		    inner join tblVendor TV on TV.Id = TP.VendorId
+	        inner join tblOrderStatus TOS on TOS.Id  = TCO.StatusId
+		    group by TV.Id having(TV.Id =  @VendorId  )
+end
+
+else
+begin
+	Select  
+	        1 as Id, @VendorId  as VendorId,0 as OrderStatusId,'Total Orders' as OrderStatus,0 AS OrderCount,'bi bi-archive-fill fs-1 primary-text  rounded-full secondary-bg p-3 mycol' as IconClass
+	union all 
+	Select     
+			2 as Id,@VendorId as VendorId, 1 as OrderStatusId,'Pending' as OrderStatus,0 AS OrderCount,'bi bi-hourglass fs-1 primary-text  rounded-full secondary-bg p-3' as IconClass
+	union all 
+	Select     
+			3 as Id,@VendorId as VendorId,5 as OrderStatusId,'Delivered' as OrderStatus,0 AS OrderCount,'bi bi-check-circle-fill fs-1 primary-text  rounded-full secondary-bg p-3' as IconClass	
+	union all 
+	Select     
+			4 as Id,@VendorId as VendorId,6 as OrderStatusId,'Cancelled ' as OrderStatus,0 AS OrderCount,'bi bi-slash-circle fs-1 primary-text  rounded-full secondary-bg p-3' as IconClass	
+end
+
+
+end
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
+Begin DesignProperties = 
+   Begin PaneConfigurations = 
+      Begin PaneConfiguration = 0
+         NumPanes = 4
+         Configuration = "(H (1[17] 4[34] 2[18] 3) )"
+      End
+      Begin PaneConfiguration = 1
+         NumPanes = 3
+         Configuration = "(H (1 [50] 4 [25] 3))"
+      End
+      Begin PaneConfiguration = 2
+         NumPanes = 3
+         Configuration = "(H (1 [50] 2 [25] 3))"
+      End
+      Begin PaneConfiguration = 3
+         NumPanes = 3
+         Configuration = "(H (4 [30] 2 [40] 3))"
+      End
+      Begin PaneConfiguration = 4
+         NumPanes = 2
+         Configuration = "(H (1 [56] 3))"
+      End
+      Begin PaneConfiguration = 5
+         NumPanes = 2
+         Configuration = "(H (2 [66] 3))"
+      End
+      Begin PaneConfiguration = 6
+         NumPanes = 2
+         Configuration = "(H (4 [50] 3))"
+      End
+      Begin PaneConfiguration = 7
+         NumPanes = 1
+         Configuration = "(V (3))"
+      End
+      Begin PaneConfiguration = 8
+         NumPanes = 3
+         Configuration = "(H (1[56] 4[18] 2) )"
+      End
+      Begin PaneConfiguration = 9
+         NumPanes = 2
+         Configuration = "(H (1 [75] 4))"
+      End
+      Begin PaneConfiguration = 10
+         NumPanes = 2
+         Configuration = "(H (1[66] 2) )"
+      End
+      Begin PaneConfiguration = 11
+         NumPanes = 2
+         Configuration = "(H (4 [60] 2))"
+      End
+      Begin PaneConfiguration = 12
+         NumPanes = 1
+         Configuration = "(H (1) )"
+      End
+      Begin PaneConfiguration = 13
+         NumPanes = 1
+         Configuration = "(V (4))"
+      End
+      Begin PaneConfiguration = 14
+         NumPanes = 1
+         Configuration = "(V (2))"
+      End
+      ActivePaneConfig = 0
+   End
+   Begin DiagramPane = 
+      Begin Origin = 
+         Top = 0
+         Left = 0
+      End
+      Begin Tables = 
+         Begin Table = "TP"
+            Begin Extent = 
+               Top = 6
+               Left = 38
+               Bottom = 136
+               Right = 229
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "TC"
+            Begin Extent = 
+               Top = 6
+               Left = 267
+               Bottom = 136
+               Right = 437
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "TPPM"
+            Begin Extent = 
+               Top = 6
+               Left = 475
+               Bottom = 136
+               Right = 645
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+      End
+   End
+   Begin SQLPane = 
+   End
+   Begin DataPane = 
+      Begin ParameterDefaults = ""
+      End
+      Begin ColumnWidths = 9
+         Width = 284
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+      End
+   End
+   Begin CriteriaPane = 
+      Begin ColumnWidths = 11
+         Column = 1440
+         Alias = 900
+         Table = 1170
+         Output = 720
+         Append = 1400
+         NewValue = 1170
+         SortType = 1350
+         SortOrder = 1410
+         GroupBy = 1350
+         Filter = 1350
+         Or = 1350
+         Or = 1350
+         Or = 1350
+      End
+   End
+End
+' , @level0type=N'SCHEMA',@level0name=N'EasyToBuyAdmin', @level1type=N'VIEW',@level1name=N'view_GetProductList'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'EasyToBuyAdmin', @level1type=N'VIEW',@level1name=N'view_GetProductList'
+GO
