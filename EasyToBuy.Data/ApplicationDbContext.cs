@@ -31,6 +31,8 @@ namespace EasyToBuy.Data
         public DbSet<OrderStatus> tblOrderStatus { get; set; }
         public DbSet<CustomerOrderStatusLog> tblCustomerOrderStatusLog { get; set; }     
         public DbSet<Cart> tblCart { get; set; }
+        public DbSet<Pincodes> tblPincodes { get; set; }     
+        public DbSet<Stores> tblStores { get; set; }     
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
