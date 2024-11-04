@@ -4,6 +4,7 @@ using EasyToBuy.Models.InputModels;
 using EasyToBuy.Models.Models;
 using EasyToBuy.Models.UIModels;
 using EasyToBuy.Repository.Abstract;
+using EasyToBuy.Repository.Concrete;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -339,13 +340,6 @@ namespace EasyToBuy.Web.Controllers
             return returnResponse;
         }
 
-        [HttpGet("CheckRatingImagesCountById")]
-        public async Task<ApiResponseModel> CheckRatingImagesCountById(int productRatingId)
-        {
-            var response = await _productRepository.CheckRatingImagesCountById(productRatingId);
-
-            return response;
-        }
-
+       
     }
 }

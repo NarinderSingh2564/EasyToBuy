@@ -753,33 +753,6 @@ namespace EasyToBuy.Services.Interactions
             }
             return apiResponseModel;
         }
-        public async Task<ApiResponseModel> CheckRatingImagesCountById(int productRatingId)
-        {
-            var apiResponseModel = new ApiResponseModel();
-
-            try
-            {
-                var dbImagesCount = await _dbContext.tblProductRatingImages.Where(x => x.ProductRatingId == productRatingId).ToListAsync();
-
-                if (dbImagesCount.Count == 3)
-                {
-                    apiResponseModel.Status = false;
-                    apiResponseModel.Message = "You have already uploaded 5 images of this Product. Please delete some images to upload.";
-                }
-                else if (dbImagesCount.Count < 3)
-                {
-                    apiResponseModel.Status = true;
-                    apiResponseModel.Response = 3 - dbImagesCount.Count;
-                }
-            }
-
-            catch (Exception ex)
-            {
-                var msg = ex.Message;
-            }
-
-            return apiResponseModel;
-        }
         public void ProductRatingImageAdd(ProductRatingInputModel productRatingInputModel)
         {
             try
@@ -801,5 +774,7 @@ namespace EasyToBuy.Services.Interactions
             }
 
         }
+
+     
     }
 }

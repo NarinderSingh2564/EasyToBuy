@@ -29,6 +29,6 @@ namespace EasyToBuy.Repository.Abstract
         Task<ApiResponseModel> DeleteProductVariationImage(int productImageId);
         Task<ApiResponseModel> ProductRatingAdd(ProductRatingInputModel productRatingInputModel);
         void ProductRatingImageAdd(ProductRatingInputModel productRatingInputModel);
-        Task<ApiResponseModel> CheckRatingImagesCountById(int productRatingId);
+       
     }
 }
