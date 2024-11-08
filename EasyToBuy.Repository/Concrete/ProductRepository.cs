@@ -167,6 +167,12 @@ namespace EasyToBuy.Repository.Concrete
             }
         }
 
-        
+        public async Task<IEnumerable<SPGetProductRatingReviewByProductId_Result>> GetProductRatingReviewByProductId(int productId)
+        {
+            using (ProductService productService = new ProductService())
+            {
+                return await productService.GetProductRatingReviewByProductId(productId);
+            }
+        }
     }
 }

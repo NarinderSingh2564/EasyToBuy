@@ -315,7 +315,7 @@ namespace EasyToBuy.Web.Controllers
             productRatingInputModel.Rating = productRatingUIModel.Rating;
             productRatingInputModel.ReviewTitle = productRatingUIModel.ReviewTitle;
             productRatingInputModel.ReviewDescription = productRatingUIModel.ReviewDescription;
-            productRatingInputModel.CreatedBy = productRatingUIModel.CreatedBy;
+            productRatingInputModel.CustomerId = productRatingUIModel.CustomerId;
             productRatingInputModel.CreatedDate = productRatingUIModel.CreatedDate;
             productRatingInputModel.IsActive = productRatingUIModel.IsActive;
 
@@ -331,7 +331,7 @@ namespace EasyToBuy.Web.Controllers
 
                     productRatingInputModel.ProductRatingId = Convert.ToInt32(returnResponse.Response);
                     productRatingInputModel.ProductRatingImage = productRatingImageName != null ? productRatingImageName : "";
-                    productRatingInputModel.CreatedBy = productRatingUIModel.CreatedBy;
+                    productRatingInputModel.CustomerId = productRatingUIModel.CustomerId;
 
                     _productRepository.ProductRatingImageAdd(productRatingInputModel);
                 }
@@ -340,6 +340,13 @@ namespace EasyToBuy.Web.Controllers
             return returnResponse;
         }
 
-       
+        [HttpGet("GetProductRatingReviewByProductId")]
+        public async Task<IEnumerable<SPGetProductRatingReviewByProductId_Result>> GetProductRatingReviewByProductId(int productId)
+        {
+            var response = await _productRepository.GetProductRatingReviewByProductId(productId);
+
+            return response;
+        }
+
     }
 }

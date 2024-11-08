@@ -18,7 +18,7 @@ namespace EasyToBuy.Data.DBClasses
         public virtual ProductRating ProductRating { get; set; }
 
         [Column(TypeName = "varchar(150)")]
-        public string ProductImage { get; set; }
+        public string? ProductImage { get; set; }
         public int CreatedBy {  get; set; }
         public DateTime CreatedOn { get; set; }
         public bool IsActive {  get; set; }
