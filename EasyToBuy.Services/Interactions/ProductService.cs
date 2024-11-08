@@ -736,7 +736,7 @@ namespace EasyToBuy.Services.Interactions
                 productRatingObj.Rating = productRatingInputModel.Rating;
                 productRatingObj.ReviewTitle = productRatingInputModel.ReviewTitle;
                 productRatingObj.ReviewDescription = productRatingInputModel.ReviewDescription;
-                productRatingObj.CreatedBy = productRatingInputModel.CreatedBy;
+                productRatingObj.CustomerId = productRatingInputModel.CustomerId;
                 productRatingObj.CreatedDate = DateTime.Now;
                 productRatingObj.IsActive = true;
 
@@ -761,7 +761,7 @@ namespace EasyToBuy.Services.Interactions
 
                 ratingImagesObj.ProductRatingId = productRatingInputModel.ProductRatingId;
                 ratingImagesObj.ProductImage = productRatingInputModel.ProductRatingImage;
-                ratingImagesObj.CreatedBy = productRatingInputModel.CreatedBy;
+                ratingImagesObj.CreatedBy = productRatingInputModel.CustomerId;
                 ratingImagesObj.CreatedOn = DateTime.Now;
                 ratingImagesObj.IsActive = true;
 
@@ -774,7 +774,22 @@ namespace EasyToBuy.Services.Interactions
             }
 
         }
+        public async Task<IEnumerable<SPGetProductRatingReviewByProductId_Result>> GetProductRatingReviewByProductId(int productId)
+        {
+            var productRatingReview = new List<SPGetProductRatingReviewByProductId_Result>();
 
-     
+            try
+            {
+                var sqlQuery = "exec spGetProductRatingReviewByProductId @ProductId";
+                SqlParameter parameter = new SqlParameter("@ProductId", productId);
+                productRatingReview = await _dbContext.productRatingReviewByProductId_Result.FromSqlRaw(sqlQuery, parameter).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return productRatingReview;
+        }
     }
 }

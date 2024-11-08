@@ -54,6 +54,6 @@ namespace EasyToBuy.Data
         public DbSet<SPGetProductSliderItemsByCategoryId_Result> productSliderItemsByCategoryId_Results { get; set; }
         public DbSet<SPGetUserOrdersListByUserId_Result> userOrdersListByUserId_Result { get; set; }
         public DbSet<SPGetProductDetailsByOrderNumberAndUserId_Result> productDetailsByOrderNumberAndUserId_Result { get; set; }
-
+        public DbSet<SPGetProductRatingReviewByProductId_Result> productRatingReviewByProductId_Result { get; set; }
     }
 }

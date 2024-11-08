@@ -11,6 +11,7 @@
         public decimal MRP { get; set; }
         public decimal Discount { get; set; }
         public decimal PriceAfterDiscount { get; set; }
-
+        public int TotalRatingAndReviewCount { get; set; }
+        public string Rating { get; set; }
     }
 }

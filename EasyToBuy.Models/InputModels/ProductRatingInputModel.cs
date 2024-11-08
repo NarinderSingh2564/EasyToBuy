@@ -15,7 +15,7 @@ namespace EasyToBuy.Models.InputModels
         public int Rating { get; set; }
         public string ReviewTitle { get; set; }
         public string? ReviewDescription { get; set; }
-        public int CreatedBy { get; set; }
+        public int CustomerId { get; set; }
         public DateTime CreatedDate { get; set; }
         public bool IsActive { get; set; }
     }
