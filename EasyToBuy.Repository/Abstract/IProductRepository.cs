@@ -30,5 +30,6 @@ namespace EasyToBuy.Repository.Abstract
         Task<ApiResponseModel> ProductRatingAdd(ProductRatingInputModel productRatingInputModel);
         void ProductRatingImageAdd(ProductRatingInputModel productRatingInputModel);
         Task<IEnumerable<SPGetProductRatingReviewByProductId_Result>> GetProductRatingReviewByProductId(int productId);
+        Task<IEnumerable<SPGetDiscountProductByDiscount_Result>> GetDiscountProductsListByDiscountValue(int discountValue);
     }
 }
