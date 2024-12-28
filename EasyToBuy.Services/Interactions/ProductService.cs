@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Security.Cryptography.X509Certificates;
 using EasyToBuy.Data;
 using EasyToBuy.Data.DBClasses;
@@ -536,7 +537,7 @@ namespace EasyToBuy.Services.Interactions
             {
                 var sqlQuery = "exec spGetProductDescriptionById @ProductId";
                 SqlParameter parameter = new SqlParameter("@ProductId", productId);
-                productDescription =  _dbContext.productDescriptionById_Results.FromSqlRaw(sqlQuery, parameter).ToList().FirstOrDefault();
+                productDescription = _dbContext.productDescriptionById_Results.FromSqlRaw(sqlQuery, parameter).ToList().FirstOrDefault();
             }
             catch (Exception ex)
             {
@@ -725,7 +726,7 @@ namespace EasyToBuy.Services.Interactions
         }
         public async Task<ApiResponseModel> ProductRatingAdd(ProductRatingInputModel productRatingInputModel)
         {
-          var apiResponseModel = new ApiResponseModel();
+            var apiResponseModel = new ApiResponseModel();
 
             try
             {
@@ -744,8 +745,9 @@ namespace EasyToBuy.Services.Interactions
                 await _dbContext.SaveChangesAsync();
 
                 apiResponseModel.Status = true;
-                apiResponseModel.Message = "Product RatingAndReview Add successfully.";
+                apiResponseModel.Message = "Product Rating And Review Add successfully.";
                 apiResponseModel.Response = productRatingObj.Id;
+
             }
             catch (Exception ex)
             {
@@ -790,6 +792,24 @@ namespace EasyToBuy.Services.Interactions
             }
 
             return productRatingReview;
+        }
+
+        public async Task<IEnumerable<SPGetDiscountProductByDiscount_Result>> GetDiscountProductsListByDiscountValue(int discountValue)
+        {
+            var discountProduct = new List<SPGetDiscountProductByDiscount_Result>();
+
+            try
+            {
+                var sqlQuery = "exec spGetDiscountProductsListByDiscount @DiscountValue";
+                SqlParameter parameter = new SqlParameter("@DiscountValue", discountValue);
+                discountProduct = await _dbContext.discountProductListByDiscount_Result.FromSqlRaw(sqlQuery, parameter).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return discountProduct;
         }
     }
 }

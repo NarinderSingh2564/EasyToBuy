@@ -11,7 +11,7 @@ namespace EasyToBuy.Models.InputModels
         public int Id { get; set; }
         public int ProductId { get; set; }
         public int ProductRatingId { get; set; }
-        public string ProductRatingImage { get; set; }
+        public string? ProductRatingImage { get; set; }
         public int Rating { get; set; }
         public string ReviewTitle { get; set; }
         public string? ReviewDescription { get; set; }

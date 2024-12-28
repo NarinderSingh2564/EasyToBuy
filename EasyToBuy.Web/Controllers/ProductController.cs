@@ -323,20 +323,22 @@ namespace EasyToBuy.Web.Controllers
 
             if(returnResponse.Status == true)
             {
-                foreach (var item in productRatingUIModel.ProductRatingImage)
+                if(productRatingUIModel.ProductRatingImage != null)
                 {
-                    var imageName = string.Empty;
-                    UploadProductImage(item, out imageName, "ProductReviewImage", null);
-                    string productRatingImageName = imageName;
+                    foreach (var item in productRatingUIModel.ProductRatingImage)
+                    {
+                        var imageName = string.Empty;
+                        UploadProductImage(item, out imageName, "ProductReviewImage", null);
+                        string productRatingImageName = imageName;
 
-                    productRatingInputModel.ProductRatingId = Convert.ToInt32(returnResponse.Response);
-                    productRatingInputModel.ProductRatingImage = productRatingImageName != null ? productRatingImageName : "";
-                    productRatingInputModel.CustomerId = productRatingUIModel.CustomerId;
+                        productRatingInputModel.ProductRatingId = Convert.ToInt32(returnResponse.Response);
+                        productRatingInputModel.ProductRatingImage = productRatingImageName != null ? productRatingImageName : "";
+                        productRatingInputModel.CustomerId = productRatingUIModel.CustomerId;
 
-                    _productRepository.ProductRatingImageAdd(productRatingInputModel);
+                        _productRepository.ProductRatingImageAdd(productRatingInputModel);
+                    }
                 }
             }
-
             return returnResponse;
         }
 
@@ -344,6 +346,15 @@ namespace EasyToBuy.Web.Controllers
         public async Task<IEnumerable<SPGetProductRatingReviewByProductId_Result>> GetProductRatingReviewByProductId(int productId)
         {
             var response = await _productRepository.GetProductRatingReviewByProductId(productId);
+
+            return response;
+        }
+
+
+        [HttpGet("GetDiscountProductsListByDiscountValue")]
+        public async Task<IEnumerable<SPGetDiscountProductByDiscount_Result>> GetDiscountProductsListByDiscountValue(int discountValue)
+        {
+            var response = await _productRepository.GetDiscountProductsListByDiscountValue(discountValue);
 
             return response;
         }
